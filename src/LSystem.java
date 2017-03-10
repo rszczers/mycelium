@@ -36,7 +36,7 @@ public class LSystem {
     }
 
     private String rewrite() {
-
+        return null;
     }
 
     private String iterate(String steps, String rule) {
