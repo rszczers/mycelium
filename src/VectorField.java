@@ -10,7 +10,7 @@ public class VectorField {
         block = new PVector[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                block[i][j] = PVector.random2D().mult(20.0f);
+                block[i][j] = PVector.random2D();
             }
         }
     }

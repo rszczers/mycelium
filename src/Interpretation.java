@@ -1,6 +1,3 @@
-/**
- * Created by rszczers on 08.03.17.
- */
-public class Interpretation {
-
+public interface Interpretation {
+    void show(int x, int y);
 }
