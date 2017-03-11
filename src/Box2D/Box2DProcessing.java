@@ -168,7 +168,7 @@ public class Box2DProcessing {
 	
 	// Scale vector between worlds
 	public Vec2 vectorPixelsToWorld(Vec2 v) {
-		Vec2 u = new Vec2(v.x/scaleFactor,v.y/scaleFactor);
+		Vec2 u = new Vec2(v.x/scaleFactor, v.y/scaleFactor);
 		u.y *=  yFlip;
 		return u;
 	}

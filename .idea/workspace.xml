@@ -2,24 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9b1be5e4-526b-4226-b701-76151033d17d" name="Default" comment="drawGrid, drawVectorField">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/org_jbox2d_jbox2d_library_2_2_1_1.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Box2D/Box2DContactListener.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Box2D/Box2DProcessing.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Cell.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/mycelium/DynamicSystem.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/mycelium/Mover.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/mycelium/mycelium.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/DynamicSystem.java" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/Mover.java" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/mycelium/Ball.class" afterPath="$PROJECT_DIR$/out/production/mycelium/Ball.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/mycelium/Interpretation.class" afterPath="$PROJECT_DIR$/out/production/mycelium/Interpretation.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/mycelium/VectorField.class" afterPath="$PROJECT_DIR$/out/production/mycelium/VectorField.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/mycelium/Cell.class" afterPath="$PROJECT_DIR$/out/production/mycelium/Cell.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/mycelium/mycelium.class" afterPath="$PROJECT_DIR$/out/production/mycelium/mycelium.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mycelium.iml" afterPath="$PROJECT_DIR$/mycelium.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Ball.java" afterPath="$PROJECT_DIR$/src/Ball.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Interpretation.java" afterPath="$PROJECT_DIR$/src/Interpretation.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Box2D/Box2DProcessing.java" afterPath="$PROJECT_DIR$/src/Box2D/Box2DProcessing.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Cell.java" afterPath="$PROJECT_DIR$/src/Cell.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/VectorField.java" afterPath="$PROJECT_DIR$/src/VectorField.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mycelium.java" afterPath="$PROJECT_DIR$/src/mycelium.java" />
     </list>
@@ -43,15 +31,15 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="mycelium.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="mycelium.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/mycelium.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1104">
-              <caret line="119" column="58" selection-start-line="119" selection-start-column="58" selection-end-line="119" selection-end-column="58" />
+            <state relative-caret-position="360">
+              <caret line="79" column="0" selection-start-line="79" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#2503#2504#0" expanded="true" />
-                <element signature="e#2598#2599#0" expanded="true" />
+                <element signature="e#2739#2740#0" expanded="true" />
+                <element signature="e#2834#2835#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -60,28 +48,45 @@
       <file leaf-file-name="Cell.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Cell.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="369">
-              <caret line="33" column="43" selection-start-line="33" selection-start-column="43" selection-end-line="33" selection-end-column="43" />
+            <state relative-caret-position="287">
+              <caret line="28" column="5" selection-start-line="28" selection-start-column="5" selection-end-line="28" selection-end-column="5" />
               <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#741#742#0" expanded="true" />
+                <element signature="e#826#827#0" expanded="true" />
+                <element signature="e#1007#1008#0" expanded="true" />
+                <element signature="e#1034#1035#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Box2DProcessing.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Box2D/Box2DProcessing.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="126">
+              <caret line="173" column="5" selection-start-line="173" selection-start-column="5" selection-end-line="173" selection-end-column="5" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
                 <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Ball.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Ball.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Ball.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="697">
-              <caret line="41" column="22" selection-start-line="41" selection-start-column="22" selection-end-line="41" selection-end-column="22" />
+            <state relative-caret-position="366">
+              <caret line="41" column="24" selection-start-line="41" selection-start-column="24" selection-end-line="41" selection-end-column="24" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1620#1621#0" expanded="true" />
-                <element signature="e#1650#1651#0" expanded="true" />
-                <element signature="e#1687#1688#0" expanded="true" />
-                <element signature="e#1712#1713#0" expanded="true" />
-                <element signature="e#1753#1754#0" expanded="true" />
-                <element signature="e#1778#1779#0" expanded="true" />
+                <element signature="e#1629#1630#0" expanded="true" />
+                <element signature="e#1659#1660#0" expanded="true" />
+                <element signature="e#1696#1697#0" expanded="true" />
+                <element signature="e#1721#1722#0" expanded="true" />
+                <element signature="e#1762#1763#0" expanded="true" />
+                <element signature="e#1787#1788#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -90,8 +95,8 @@
       <file leaf-file-name="VectorField.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/VectorField.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+            <state relative-caret-position="255">
+              <caret line="15" column="118" selection-start-line="15" selection-start-column="118" selection-end-line="15" selection-end-column="118" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -150,10 +155,11 @@
         <option value="$PROJECT_DIR$/src/Boundary.java" />
         <option value="$PROJECT_DIR$/src/Mover.java" />
         <option value="$PROJECT_DIR$/src/Interpretation.java" />
-        <option value="$PROJECT_DIR$/src/Cell.java" />
-        <option value="$PROJECT_DIR$/src/Ball.java" />
-        <option value="$PROJECT_DIR$/src/VectorField.java" />
+        <option value="$PROJECT_DIR$/src/Box2D/Box2DProcessing.java" />
         <option value="$PROJECT_DIR$/src/mycelium.java" />
+        <option value="$PROJECT_DIR$/src/Cell.java" />
+        <option value="$PROJECT_DIR$/src/VectorField.java" />
+        <option value="$PROJECT_DIR$/src/Ball.java" />
       </list>
     </option>
   </component>
@@ -584,7 +590,7 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32826748" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32826748" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -630,8 +636,8 @@
           <caret line="87" column="19" selection-start-line="87" selection-start-column="19" selection-end-line="87" selection-end-column="19" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2503#2504#0" expanded="true" />
-            <element signature="e#2598#2599#0" expanded="true" />
+            <element signature="e#2739#2740#0" expanded="true" />
+            <element signature="e#2834#2835#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -642,6 +648,10 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#741#742#0" expanded="true" />
+            <element signature="e#826#827#0" expanded="true" />
+            <element signature="e#1007#1008#0" expanded="true" />
+            <element signature="e#1034#1035#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -652,12 +662,12 @@
           <caret line="23" column="5" selection-start-line="23" selection-start-column="5" selection-end-line="23" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1620#1621#0" expanded="true" />
-            <element signature="e#1650#1651#0" expanded="true" />
-            <element signature="e#1687#1688#0" expanded="true" />
-            <element signature="e#1712#1713#0" expanded="true" />
-            <element signature="e#1753#1754#0" expanded="true" />
-            <element signature="e#1778#1779#0" expanded="true" />
+            <element signature="e#1629#1630#0" expanded="true" />
+            <element signature="e#1659#1660#0" expanded="true" />
+            <element signature="e#1696#1697#0" expanded="true" />
+            <element signature="e#1721#1722#0" expanded="true" />
+            <element signature="e#1762#1763#0" expanded="true" />
+            <element signature="e#1787#1788#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -696,8 +706,8 @@
           <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2503#2504#0" expanded="true" />
-            <element signature="e#2598#2599#0" expanded="true" />
+            <element signature="e#2739#2740#0" expanded="true" />
+            <element signature="e#2834#2835#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -716,8 +726,8 @@
           <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2503#2504#0" expanded="true" />
-            <element signature="e#2598#2599#0" expanded="true" />
+            <element signature="e#2739#2740#0" expanded="true" />
+            <element signature="e#2834#2835#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -736,8 +746,8 @@
           <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2503#2504#0" expanded="true" />
-            <element signature="e#2598#2599#0" expanded="true" />
+            <element signature="e#2739#2740#0" expanded="true" />
+            <element signature="e#2834#2835#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -778,17 +788,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Box2D/Box2DProcessing.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -801,6 +801,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/SimpleBody.java" />
     <entry file="file://$PROJECT_DIR$/src/Boundary.java" />
+    <entry file="file://$PROJECT_DIR$/src/LSystem.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="305">
+          <caret line="18" column="19" selection-start-line="18" selection-start-column="19" selection-end-line="18" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Interpretation.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
@@ -811,58 +819,65 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/LSystem.java">
+    <entry file="file://$PROJECT_DIR$/src/mycelium.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="305">
-          <caret line="18" column="19" selection-start-line="18" selection-start-column="19" selection-end-line="18" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Cell.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="369">
-          <caret line="33" column="43" selection-start-line="33" selection-start-column="43" selection-end-line="33" selection-end-column="43" />
+        <state relative-caret-position="360">
+          <caret line="79" column="0" selection-start-line="79" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#2739#2740#0" expanded="true" />
+            <element signature="e#2834#2835#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Ball.java">
+    <entry file="file://$PROJECT_DIR$/src/Box2D/Box2DProcessing.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
-          <caret line="41" column="22" selection-start-line="41" selection-start-column="22" selection-end-line="41" selection-end-column="22" />
+        <state relative-caret-position="126">
+          <caret line="173" column="5" selection-start-line="173" selection-start-column="5" selection-end-line="173" selection-end-column="5" />
           <folding>
+            <element signature="n#!!doc" expanded="true" />
             <element signature="imports" expanded="true" />
-            <element signature="e#1620#1621#0" expanded="true" />
-            <element signature="e#1650#1651#0" expanded="true" />
-            <element signature="e#1687#1688#0" expanded="true" />
-            <element signature="e#1712#1713#0" expanded="true" />
-            <element signature="e#1753#1754#0" expanded="true" />
-            <element signature="e#1778#1779#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/VectorField.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+        <state relative-caret-position="255">
+          <caret line="15" column="118" selection-start-line="15" selection-start-column="118" selection-end-line="15" selection-end-column="118" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/mycelium.java">
+    <entry file="file://$PROJECT_DIR$/src/Cell.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1104">
-          <caret line="119" column="58" selection-start-line="119" selection-start-column="58" selection-end-line="119" selection-end-column="58" />
+        <state relative-caret-position="287">
+          <caret line="28" column="5" selection-start-line="28" selection-start-column="5" selection-end-line="28" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2503#2504#0" expanded="true" />
-            <element signature="e#2598#2599#0" expanded="true" />
+            <element signature="e#741#742#0" expanded="true" />
+            <element signature="e#826#827#0" expanded="true" />
+            <element signature="e#1007#1008#0" expanded="true" />
+            <element signature="e#1034#1035#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Ball.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="366">
+          <caret line="41" column="24" selection-start-line="41" selection-start-column="24" selection-end-line="41" selection-end-column="24" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1629#1630#0" expanded="true" />
+            <element signature="e#1659#1660#0" expanded="true" />
+            <element signature="e#1696#1697#0" expanded="true" />
+            <element signature="e#1721#1722#0" expanded="true" />
+            <element signature="e#1762#1763#0" expanded="true" />
+            <element signature="e#1787#1788#0" expanded="true" />
           </folding>
         </state>
       </provider>

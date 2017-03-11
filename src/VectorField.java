@@ -9,11 +9,11 @@ public class VectorField {
     private Vec2[][] block;
 
     public VectorField(int n) {
-        Random random = new Random();
+
         block = new Vec2[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                block[i][j] = new Vec2(random.nextFloat() * 2 - 1, random.nextFloat() * 2 - 1).mulLocal(50);
+                block[i][j] = new Vec2(new Random().nextFloat() * 2 - 1, new Random().nextFloat() * 2 - 1).mulLocal(40);
             }
         }
     }

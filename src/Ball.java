@@ -34,12 +34,12 @@ public class Ball implements Interpretation {
 
         // Definicja kształtu
         ps = new CircleShape();
-        ps.setRadius(world.scalarPixelsToWorld(radius));
+        ps.setRadius(world.scalarPixelsToWorld(radius/2));
 
         // Definicja dowiązania ciała do kształtu
         fd = new FixtureDef();
         fd.shape = ps;
-        fd.density = 1;
+        fd.density = 0.01f;
         fd.friction = 0.3f;
         fd.restitution = 0.5f;
     }
@@ -48,7 +48,7 @@ public class Ball implements Interpretation {
         context.pushMatrix();
         context.translate(v.x, v.y);
         context.rotate(-phi);
-        context.fill(255, 60, 0);
+        context.fill(255, 255, 255);
         context.ellipse(0, 0, radius, radius);
         context.noStroke();
         context.popMatrix();

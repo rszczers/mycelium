@@ -38,7 +38,7 @@ public class mycelium extends PApplet {
 
         world = new Box2DProcessing(this, 10);
         world.createWorld();
-//        world.setGravity(0, 0);
+        world.setGravity(0, 0);
         world.listenForCollisions();
 
         // Rysuj kwadraty w których pole jest takie samo.
@@ -72,9 +72,13 @@ public class mycelium extends PApplet {
         for (int i = 0; i < cells.size(); i++) {
             try {
                 Cell t = cells.get(i);
-                int[] xy = c2vf((int) t.getLocation().x, (int) t.getLocation().y);
-                t.applyForce(vf.getBlock()[xy[0]][xy[1]]);
 
+                Vec2 coords = world.coordWorldToPixels(t.getBody().getPosition());
+                float[] bp =  {coords.x, coords.y};
+                int[] xy = c2vf((int)bp[0], (int) bp[1]);
+//                System.out.println(xy[0] + "; " + xy[1]);
+                t.applyForce(vf.getBlock()[xy[0]][xy[1]]);
+//                System.out.println(vf.getBlock()[xy[0]][xy[1]]));
                 t.display();
             } catch (ArrayIndexOutOfBoundsException e) {
                 cells.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
@@ -89,20 +93,21 @@ public class mycelium extends PApplet {
      * Dodawanie obiektów przez kliknięcie lewym przyciskiem myszki
      */
     public void mouseClicked() {
-        cells.add(new Cell(world, new Vec2(mouseX, mouseY), new Ball(this, world, 20)));
+        cells.add(new Cell(world, new Vec2(mouseX, mouseY), new Ball(this, world, 40)));
     }
 
     /**
      * Mało mądra metoda do rysowania siatki
      */
     private void drawGrid() {
-        stroke(15);
+        stroke(90);
         for (int x = WIDTH/GRID; x < WIDTH; x += WIDTH/GRID) {
             line(x, 0, x, HEIGHT);
         }
         for (int y = HEIGHT/GRID; y < HEIGHT; y += HEIGHT/GRID) {
             line(0, y, WIDTH, y);
         }
+        noStroke();
     }
 
     /**
