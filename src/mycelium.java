@@ -1,10 +1,14 @@
+import org.jbox2d.common.Vec2;
 import processing.core.PApplet;
-import processing.core.PMatrix;
 import processing.core.PVector;
-
 import java.util.ArrayList;
 
+import Box2D.Box2DProcessing;
+
+
 public class mycelium extends PApplet {
+    private Box2DProcessing world;
+
     private static int WIDTH = 800;
     private static int HEIGHT = 600;
     private static int GRID = 8;
@@ -13,13 +17,14 @@ public class mycelium extends PApplet {
     private boolean drawGrids = true;
     private boolean drawVectorFields = true;
     private boolean drawLabels = true;
+    private boolean calculatePhysics = true;
+
 
     private static float[][][] cellColor = new float[GRID][GRID][3];
+    private ArrayList<Cell> cells = new ArrayList<>();
 
-    private ArrayList<Mover> movers = new ArrayList<Mover>();
-
-    LSystem lsystem;
-    VectorField vf = new VectorField(GRID);
+    private LSystem lsystem;
+    private VectorField vf = new VectorField(GRID);
 
     public static void main(String[] args) {
         PApplet.main("mycelium", args);
@@ -30,18 +35,26 @@ public class mycelium extends PApplet {
 
     public void setup() {
         frameRate(60);
+
+        world = new Box2DProcessing(this, 10);
+        world.createWorld();
+//        world.setGravity(0, 0);
+        world.listenForCollisions();
+
+        // Rysuj kwadraty w których pole jest takie samo.
         for (int i = 0; i < GRID; i++) {
             for (int j = 0; j < GRID; j++) {
                 for (int k = 0; k < 3; k++) {
-                    cellColor[i][j][k] = 100 + vf.getBlock()[i][j].dist(new PVector(0, 0, 0));
+                    cellColor[i][j][k] = 100 + vf.getBlock()[i][j].length();
                 }
             }
         }
+
+
     }
 
     public void draw() {
         background(200);
-        //vf.setBlock(new int[] {mouseX/(WIDTH/GRID), mouseY/(HEIGHT/GRID)}, PVector.random2D());
 
         if (drawCells)
             drawCells();
@@ -50,30 +63,33 @@ public class mycelium extends PApplet {
         if (drawVectorFields)
             drawVectorField(vf);
         if (drawLabels) {
-            fill(0, 102, 153);
+            fill(16, 16, 153);
             textSize(32);
             text(mouseX/(WIDTH/GRID) + "; " + mouseY/(HEIGHT/GRID) + "\n" , width / 2, 60);
         }
 
-        // Pętla aktualizująca położenie obiektów klasy Mover
-        for (int i = 0; i < movers.size(); i++) {
+        // Pętla aktualizująca położenie obiektów klasy Cell
+        for (int i = 0; i < cells.size(); i++) {
             try {
-                Mover t = movers.get(i);
+                Cell t = cells.get(i);
                 int[] xy = c2vf((int) t.getLocation().x, (int) t.getLocation().y);
                 t.applyForce(vf.getBlock()[xy[0]][xy[1]]);
-                t.update();
-                t.show();
+
+                t.display();
             } catch (ArrayIndexOutOfBoundsException e) {
-                movers.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
+                cells.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
             }
         }
+
+        if  (calculatePhysics)
+            world.step();
     }
 
     /**
      * Dodawanie obiektów przez kliknięcie lewym przyciskiem myszki
      */
     public void mouseClicked() {
-        movers.add(new Mover(new PVector(mouseX, mouseY), 50, new Ball(this, 20)));
+        cells.add(new Cell(world, new Vec2(mouseX, mouseY), new Ball(this, world, 20)));
     }
 
     /**
@@ -100,13 +116,13 @@ public class mycelium extends PApplet {
                 int[] c = vf2c(i, j);
                 int x1 = c[0] + (WIDTH / (2 * GRID));
                 int y1 = c[1] + (HEIGHT / (2 * GRID));
-                int x2 = x1 + (int) (vf.getBlock()[i][j].x * 50);
-                int y2 = y1 + (int) (vf.getBlock()[i][j].y * 50);
+                int x2 = x1 + (int) (vf.getBlock()[i][j].x);
+                int y2 = y1 + (int) (vf.getBlock()[i][j].y);
                 line(x1, y1, x2, y2);
 
                 PVector px2 = new PVector(x2, y2);
                 PVector px1 = new PVector(x1, y1);
-                PVector cx1 = px1.sub(px2).normalize().rotate(radians(15)).mult(15).add(px2);
+                PVector cx1 = px1.sub(px2).normalize().rotate(radians(15)).mult(10).add(px2);
                 line(x2, y2, cx1.x, cx1.y);
                 PVector cx2 = px1.sub(px2).rotate(radians(-30)).add(px2);
                 line(x2, y2, cx2.x, cx2.y);
@@ -149,5 +165,7 @@ public class mycelium extends PApplet {
     private int[] vf2c(int x, int y) {
         return new int[] {x*(WIDTH/GRID), y*(HEIGHT/GRID)};
     }
+
+
 
 }
