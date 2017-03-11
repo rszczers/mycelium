@@ -111,6 +111,7 @@ public class mycelium extends PApplet {
 //                System.out.println(vf.getBlock()[xy[0]][xy[1]]));
                 t.display();
             } catch (ArrayIndexOutOfBoundsException e) {
+                cells.get(i).killBody(); // usuń obiekt z systemu fizycznego
                 cells.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
             }
         }
