@@ -18,10 +18,18 @@ public class mycelium extends PApplet {
     private boolean drawVectorFields = true;
     private boolean drawLabels = true;
     private boolean calculatePhysics = true;
+    private boolean toggleBoundaries = true;
+    private boolean drawfps = true;
 
 
     private static float[][][] cellColor = new float[GRID][GRID][3];
+
+
+    /**
+     * Definicje obiektów na scenie
+     */
     private ArrayList<Cell> cells = new ArrayList<>();
+    private ArrayList<BoundaryBox> boundaries = new ArrayList<>();
 
     private LSystem lsystem;
     private VectorField vf = new VectorField(GRID);
@@ -41,20 +49,35 @@ public class mycelium extends PApplet {
         world.setGravity(0, 0);
         world.listenForCollisions();
 
-        // Rysuj kwadraty w których pole jest takie samo.
-        for (int i = 0; i < GRID; i++) {
-            for (int j = 0; j < GRID; j++) {
-                for (int k = 0; k < 3; k++) {
-                    cellColor[i][j][k] = 100 + vf.getBlock()[i][j].length();
+        // określ kolory kwadratów w których pole jest takie samo.
+        if (drawCells) {
+            for (int i = 0; i < GRID; i++) {
+                for (int j = 0; j < GRID; j++) {
+                    for (int k = 0; k < 3; k++) {
+                        cellColor[i][j][k] = 100 + vf.getBlock()[i][j].length();
+                    }
                 }
             }
         }
 
-
+        // ograniczenia
+        if (toggleBoundaries) {
+            boundaries.add(new BoundaryBox(world, this,
+                    WIDTH/2, 5, WIDTH, 10));
+            boundaries.add(new BoundaryBox(world, this,
+                    WIDTH/2, HEIGHT-5, WIDTH, 10));
+            boundaries.add(new BoundaryBox(world, this,
+                    5, HEIGHT/2, 10, HEIGHT));
+            boundaries.add(new BoundaryBox(world, this,
+                    WIDTH-5, HEIGHT/2, 10, HEIGHT));
+        }
     }
 
     public void draw() {
         background(200);
+
+        if  (calculatePhysics)
+            world.step();
 
         if (drawCells)
             drawCells();
@@ -66,6 +89,13 @@ public class mycelium extends PApplet {
             fill(16, 16, 153);
             textSize(32);
             text(mouseX/(WIDTH/GRID) + "; " + mouseY/(HEIGHT/GRID) + "\n" , width / 2, 60);
+        }
+
+        if (toggleBoundaries) {
+            for (BoundaryBox t :
+                    boundaries) {
+                t.display();
+            }
         }
 
         // Pętla aktualizująca położenie obiektów klasy Cell
@@ -85,15 +115,18 @@ public class mycelium extends PApplet {
             }
         }
 
-        if  (calculatePhysics)
-            world.step();
+
+        if (drawfps) {
+            fill(0);
+            text(frameRate, 10, 60);
+        }
     }
 
     /**
      * Dodawanie obiektów przez kliknięcie lewym przyciskiem myszki
      */
     public void mouseClicked() {
-        cells.add(new Cell(world, new Vec2(mouseX, mouseY), new Ball(this, world, 40)));
+        cells.add(new Cell(world, new Vec2(mouseX, mouseY), new Ball(this, world, 20)));
     }
 
     /**
@@ -141,6 +174,7 @@ public class mycelium extends PApplet {
      * Zaznacza obszary, w których pole wektorowe zdefiniowane jest tak samo
      */
     private void drawCells() {
+        rectMode(CORNER);
         int dw = WIDTH/GRID;
         int dh = HEIGHT/GRID;
         for (int x = 0; x < WIDTH; x += dw) {
