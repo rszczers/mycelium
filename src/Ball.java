@@ -50,8 +50,14 @@ public class Ball implements Interpretation {
         context.rotate(-phi);
         context.fill(255, 255, 255);
         context.ellipse(0, 0, radius, radius);
+        context.stroke(0);
+        context.strokeWeight(2);
+        context.fill(0, 0, 255);
+        context.line(0, 0,radius/2,0);
+        context.strokeWeight(1);
         context.noStroke();
         context.popMatrix();
+
     }
 
     public BodyDef getBodyDef() {

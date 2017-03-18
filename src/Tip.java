@@ -1,16 +1,17 @@
 import Box2D.Box2DProcessing;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
+import processing.core.PApplet;
 
 /**
  * Created by rszczers on 10.03.17.
  */
-public class Cell {
+public class Tip {
     private Interpretation interp;
     private Box2DProcessing world;
     private Body body;
 
-    public Cell(Box2DProcessing world, Vec2 location, Interpretation interp) {
+    public Tip(Box2DProcessing world, Vec2 location, Interpretation interp) {
         this.world = world;
         this.interp = interp;
 
@@ -19,6 +20,7 @@ public class Cell {
 
         // Inicjalizacja ciała
         body = world.createBody(interp.getBodyDef());
+        body.setUserData(this);
 
         // Dowiązanie ciała do kształtu
         body.createFixture(interp.getFixtureDef());

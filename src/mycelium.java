@@ -1,4 +1,7 @@
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.Fixture;
+import org.jbox2d.dynamics.contacts.Contact;
 import processing.core.PApplet;
 import processing.core.PVector;
 import java.util.ArrayList;
@@ -9,9 +12,9 @@ import Box2D.Box2DProcessing;
 public class mycelium extends PApplet {
     private Box2DProcessing world;
 
-    private static int WIDTH = 800;
-    private static int HEIGHT = 600;
-    private static int GRID = 8;
+    private final static int WIDTH = 800;
+    private final static int HEIGHT = 600;
+    private final static int GRID = 10;
 
     private boolean drawCells = true;
     private boolean drawGrids = true;
@@ -19,6 +22,7 @@ public class mycelium extends PApplet {
     private boolean drawLabels = true;
     private boolean calculatePhysics = true;
     private boolean toggleBoundaries = true;
+    private boolean toggleForceField = false;
     private boolean drawfps = true;
 
 
@@ -28,7 +32,7 @@ public class mycelium extends PApplet {
     /**
      * Definicje obiektów na scenie
      */
-    private ArrayList<Cell> cells = new ArrayList<>();
+    private ArrayList<Tip> tips = new ArrayList<>();
     private ArrayList<BoundaryBox> boundaries = new ArrayList<>();
 
     private LSystem lsystem;
@@ -46,7 +50,7 @@ public class mycelium extends PApplet {
 
         world = new Box2DProcessing(this, 10);
         world.createWorld();
-        world.setGravity(0, 0);
+        world.setGravity(0, 10);
         world.listenForCollisions();
 
         // określ kolory kwadratów w których pole jest takie samo.
@@ -98,21 +102,22 @@ public class mycelium extends PApplet {
             }
         }
 
-        // Pętla aktualizująca położenie obiektów klasy Cell
-        for (int i = 0; i < cells.size(); i++) {
+        // Pętla aktualizująca położenie obiektów klasy Tip
+        for (int i = 0; i < tips.size(); i++) {
             try {
-                Cell t = cells.get(i);
+                Tip t = tips.get(i);
 
                 Vec2 coords = world.coordWorldToPixels(t.getBody().getPosition());
                 float[] bp =  {coords.x, coords.y};
                 int[] xy = c2vf((int)bp[0], (int) bp[1]);
 //                System.out.println(xy[0] + "; " + xy[1]);
-                t.applyForce(vf.getBlock()[xy[0]][xy[1]]);
+                if (toggleForceField)
+                    t.applyForce(vf.getBlock()[xy[0]][xy[1]]);
 //                System.out.println(vf.getBlock()[xy[0]][xy[1]]));
                 t.display();
             } catch (ArrayIndexOutOfBoundsException e) {
-                cells.get(i).killBody(); // usuń obiekt z systemu fizycznego
-                cells.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
+                tips.get(i).killBody(); // usuń obiekt z systemu fizycznego
+                tips.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
             }
         }
 
@@ -127,7 +132,25 @@ public class mycelium extends PApplet {
      * Dodawanie obiektów przez kliknięcie lewym przyciskiem myszki
      */
     public void mouseClicked() {
-        cells.add(new Cell(world, new Vec2(mouseX, mouseY), new Ball(this, world, 20)));
+        tips.add(new Tip(world, new Vec2(mouseX, mouseY), new Ball(this, world, 20)));
+    }
+    public void beginContact(Contact c) {
+//        Fixture f1 = c.getFixtureA();
+//        Fixture f2 = c.getFixtureB();
+//
+//        Body b1 = f1.getBody();
+//        Body b2 = f2.getBody();
+//
+//        Object o1 = b1.getUserData();
+//        Object o2 = b2.getUserData();
+//
+//
+//        if (o1.getClass() == Tip.class && o2.getClass() == Tip.class) {
+//            Tip p1  = (Tip) o1;
+//            //Tutaj można wywołać jakąś metodę p1
+//            Tip p2 = (Tip) o2;
+//            //Tutaj też.
+//        }
     }
 
     /**
@@ -205,7 +228,4 @@ public class mycelium extends PApplet {
     private int[] vf2c(int x, int y) {
         return new int[] {x*(WIDTH/GRID), y*(HEIGHT/GRID)};
     }
-
-
-
 }
