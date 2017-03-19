@@ -34,9 +34,9 @@ public class Fungus {
         context.noStroke();
         context.popMatrix();
 
-        for (Hyphae e:
+        for (Hyphae h:
              root) {
-            e.display();
+            h.display();
         }
     }
 }

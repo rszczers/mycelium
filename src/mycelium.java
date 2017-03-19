@@ -34,7 +34,7 @@ public class mycelium extends PApplet {
      * Definicje obiektów na scenie
      */
     private ArrayList<Tip> tips = new ArrayList<>();
-    private ArrayList<Fungus> funges = new ArrayList<>();
+    private Fungus funges;
     private ArrayList<BoundaryBox> boundaries = new ArrayList<>();
 
     private LSystem lsystem;
@@ -82,6 +82,8 @@ public class mycelium extends PApplet {
             boundaries.add(new BoundaryBox(world, this,
                     WIDTH-5, HEIGHT/2, 10, HEIGHT));
         }
+
+        funges = new Fungus(world, this, new Vec2(width/2, height/2));
     }
 
     public void draw() {
@@ -128,11 +130,7 @@ public class mycelium extends PApplet {
 //            }
 //        }
 
-
-        for (int i = 0; i < funges.size(); i++) {
-            funges.get(i).display();
-        }
-
+        funges.display();
 
         if (drawfps) {
             fill(0);
@@ -144,8 +142,8 @@ public class mycelium extends PApplet {
      * Dodawanie obiektów przez kliknięcie lewym przyciskiem myszki
      */
     public void mouseClicked() {
-        funges.add(new Fungus(world, this, new Vec2(mouseX, mouseY)));
-//        tips.add(new Tip(world, new Vec2(mouseX, mouseY), new Ball(this, world, 20)));
+        funges.addRoot(new Vec2(mouseX, mouseY));
+//        tips.add(new Tip(world, , new Ball(this, world, 20)));
     }
     public void beginContact(Contact c) {
 //        Fixture f1 = c.getFixtureA();

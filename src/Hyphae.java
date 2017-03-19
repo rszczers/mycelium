@@ -165,5 +165,6 @@ public class Hyphae {
                 displayShapes) {
             ps.setVisible(true);
         }
+        tip.display();
     }
 }
