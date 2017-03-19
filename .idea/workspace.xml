@@ -2,14 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9b1be5e4-526b-4226-b701-76151033d17d" name="Default" comment="drawGrid, drawVectorField">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Fungus.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/Hyphae.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/mycelium/Cell.class" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/Cell.java" afterPath="$PROJECT_DIR$/src/Tip.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/mycelium/Ball.class" afterPath="$PROJECT_DIR$/out/production/mycelium/Ball.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/mycelium/Fungus.class" afterPath="$PROJECT_DIR$/out/production/mycelium/Fungus.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/mycelium/Hyphae.class" afterPath="$PROJECT_DIR$/out/production/mycelium/Hyphae.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/mycelium/mycelium.class" afterPath="$PROJECT_DIR$/out/production/mycelium/mycelium.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Ball.java" afterPath="$PROJECT_DIR$/src/Ball.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Fungus.java" afterPath="$PROJECT_DIR$/src/Fungus.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Hyphae.java" afterPath="$PROJECT_DIR$/src/Hyphae.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mycelium.java" afterPath="$PROJECT_DIR$/src/mycelium.java" />
     </list>
     <ignored path="mycelium.iws" />
@@ -35,12 +33,12 @@
       <file leaf-file-name="mycelium.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/mycelium.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="534">
-              <caret line="52" column="30" selection-start-line="52" selection-start-column="30" selection-end-line="52" selection-end-column="30" />
+            <state relative-caret-position="423">
+              <caret line="46" column="5" selection-start-line="46" selection-start-column="5" selection-end-line="46" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#4036#4037#0" expanded="true" />
-                <element signature="e#4129#4130#0" expanded="true" />
+                <element signature="e#4174#4175#0" expanded="true" />
+                <element signature="e#4267#4268#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -49,10 +47,12 @@
       <file leaf-file-name="Hyphae.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Hyphae.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="544">
-              <caret line="34" column="27" selection-start-line="34" selection-start-column="27" selection-end-line="34" selection-end-column="27" />
+            <state relative-caret-position="1666">
+              <caret line="98" column="10" selection-start-line="98" selection-start-column="10" selection-end-line="98" selection-end-column="10" />
               <folding>
                 <element signature="imports" expanded="true" />
+                <element signature="e#1606#1607#0" expanded="true" />
+                <element signature="e#1633#1634#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -61,8 +61,8 @@
       <file leaf-file-name="Fungus.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Fungus.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="9" column="19" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="19" />
+            <state relative-caret-position="442">
+              <caret line="26" column="44" selection-start-line="26" selection-start-column="44" selection-end-line="26" selection-end-column="44" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -73,7 +73,7 @@
       <file leaf-file-name="Tip.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Tip.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
+            <state relative-caret-position="-117">
               <caret line="2" column="18" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
               <folding />
             </state>
@@ -165,8 +165,8 @@
         <option value="$PROJECT_DIR$/src/CollisionEdge.java" />
         <option value="$PROJECT_DIR$/src/Root.java" />
         <option value="$PROJECT_DIR$/src/Ball.java" />
-        <option value="$PROJECT_DIR$/src/mycelium.java" />
         <option value="$PROJECT_DIR$/src/Fungus.java" />
+        <option value="$PROJECT_DIR$/src/mycelium.java" />
         <option value="$PROJECT_DIR$/src/Hyphae.java" />
       </list>
     </option>
@@ -679,8 +679,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#4036#4037#0" expanded="true" />
-            <element signature="e#4129#4130#0" expanded="true" />
+            <element signature="e#4174#4175#0" expanded="true" />
+            <element signature="e#4267#4268#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -758,8 +758,8 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#4036#4037#0" expanded="true" />
-            <element signature="e#4129#4130#0" expanded="true" />
+            <element signature="e#4174#4175#0" expanded="true" />
+            <element signature="e#4267#4268#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -837,8 +837,8 @@
           <caret line="87" column="19" selection-start-line="87" selection-start-column="19" selection-end-line="87" selection-end-column="19" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#4036#4037#0" expanded="true" />
-            <element signature="e#4129#4130#0" expanded="true" />
+            <element signature="e#4174#4175#0" expanded="true" />
+            <element signature="e#4267#4268#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -895,8 +895,8 @@
           <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#4036#4037#0" expanded="true" />
-            <element signature="e#4129#4130#0" expanded="true" />
+            <element signature="e#4174#4175#0" expanded="true" />
+            <element signature="e#4267#4268#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -915,8 +915,8 @@
           <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#4036#4037#0" expanded="true" />
-            <element signature="e#4129#4130#0" expanded="true" />
+            <element signature="e#4174#4175#0" expanded="true" />
+            <element signature="e#4267#4268#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -935,8 +935,8 @@
           <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#4036#4037#0" expanded="true" />
-            <element signature="e#4129#4130#0" expanded="true" />
+            <element signature="e#4174#4175#0" expanded="true" />
+            <element signature="e#4267#4268#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1051,18 +1051,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/mycelium.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="534">
-          <caret line="52" column="30" selection-start-line="52" selection-start-column="30" selection-end-line="52" selection-end-column="30" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#4036#4037#0" expanded="true" />
-            <element signature="e#4129#4130#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Interpretation.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
@@ -1085,7 +1073,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Tip.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
+        <state relative-caret-position="-117">
           <caret line="2" column="18" selection-start-line="2" selection-start-column="18" selection-end-line="2" selection-end-column="18" />
           <folding />
         </state>
@@ -1093,20 +1081,34 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Fungus.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="9" column="19" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="19" />
+        <state relative-caret-position="442">
+          <caret line="26" column="44" selection-start-line="26" selection-start-column="44" selection-end-line="26" selection-end-column="44" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Hyphae.java">
+    <entry file="file://$PROJECT_DIR$/src/mycelium.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="34" column="27" selection-start-line="34" selection-start-column="27" selection-end-line="34" selection-end-column="27" />
+        <state relative-caret-position="423">
+          <caret line="46" column="5" selection-start-line="46" selection-start-column="5" selection-end-line="46" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#4174#4175#0" expanded="true" />
+            <element signature="e#4267#4268#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Hyphae.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1666">
+          <caret line="98" column="10" selection-start-line="98" selection-start-column="10" selection-end-line="98" selection-end-column="10" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1606#1607#0" expanded="true" />
+            <element signature="e#1633#1634#0" expanded="true" />
           </folding>
         </state>
       </provider>

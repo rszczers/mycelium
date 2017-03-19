@@ -17,18 +17,21 @@ public class Fungus {
         this.location = location;
         this.context = context;
         this.world = world;
-
+        this.root = new ArrayList<>();
     }
 
-    public void grow() {
-
+    public void addRoot(Vec2 location) {
+        int newTipYOffset = 20;
+        Vec2 newTipLocation = location.add(new Vec2(0, newTipYOffset));
+        Tip newTip = new Tip(world, newTipLocation, new Ball(context, world, 20));
+        root.add(new Hyphae(context, world, location, newTip, null));
     }
 
     public void display() {
         context.pushMatrix();
         context.translate(location.x, location.y);
         context.fill(255, 0, 0);
-        context.ellipse(0, 0, 1, 1);
+        context.ellipse(0, 0, 10, 10);
         context.noStroke();
         context.popMatrix();
     }

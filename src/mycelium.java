@@ -22,7 +22,8 @@ public class mycelium extends PApplet {
     private boolean drawLabels = true;
     private boolean calculatePhysics = true;
     private boolean toggleBoundaries = true;
-    private boolean toggleForceField = false;
+    private boolean toggleForceField = true;
+    private boolean toggleGravity = true;
     private boolean drawfps = true;
 
 
@@ -50,7 +51,12 @@ public class mycelium extends PApplet {
 
         world = new Box2DProcessing(this, 10);
         world.createWorld();
-        world.setGravity(0, 10);
+        if (toggleGravity) {
+            world.setGravity(0, 10);
+        } else {
+            world.setGravity(0, 0);
+
+        }
         world.listenForCollisions();
 
         // określ kolory kwadratów w których pole jest takie samo.
