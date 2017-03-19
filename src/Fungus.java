@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 public class Fungus {
     Vec2 location;
-    ArrayList<Hyphae> root;
+    ArrayList<Hyphae> roots;
     PApplet context;
     Box2DProcessing world;
 
@@ -17,13 +17,18 @@ public class Fungus {
         this.location = location;
         this.context = context;
         this.world = world;
-        this.root = new ArrayList<>();
+        this.roots = new ArrayList<>();
     }
 
     public void addRoot(Vec2 location) {
-        int newTipYOffset = 20;
-        Vec2 newTipLocation = location.add(new Vec2(0, newTipYOffset));
-        root.add(new Hyphae(context, world, location, new Vec2(0, 0)));
+        roots.add(new Hyphae(context, world, location, new Vec2(0, 0)));
+    }
+
+    public void grow() {
+        for (Hyphae r :
+                roots) {
+            r.grow();
+        }
     }
 
     public void display() {
@@ -35,7 +40,7 @@ public class Fungus {
         context.popMatrix();
 
         for (Hyphae h:
-             root) {
+             roots) {
             h.display();
         }
     }

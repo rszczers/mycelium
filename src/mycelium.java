@@ -1,6 +1,4 @@
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -16,8 +14,8 @@ public class mycelium extends PApplet {
     private final static int HEIGHT = 600;
     private final static int GRID = 10;
 
-    private boolean drawCells = true;
-    private boolean drawGrids = true;
+    private boolean drawCells = false;
+    private boolean drawGrids = false;
     private boolean drawVectorFields = true;
     private boolean drawLabels = true;
     private boolean calculatePhysics = true;
@@ -34,7 +32,7 @@ public class mycelium extends PApplet {
      * Definicje obiektów na scenie
      */
     private ArrayList<Tip> tips = new ArrayList<>();
-    private Fungus funges;
+    private Fungus fungi;
     private ArrayList<BoundaryBox> boundaries = new ArrayList<>();
 
     private LSystem lsystem;
@@ -83,7 +81,7 @@ public class mycelium extends PApplet {
                     WIDTH-5, HEIGHT/2, 10, HEIGHT));
         }
 
-        funges = new Fungus(world, this, new Vec2(width/2, height/2));
+        fungi = new Fungus(world, this, new Vec2(width/2, height/2));
     }
 
     public void draw() {
@@ -129,20 +127,26 @@ public class mycelium extends PApplet {
 //                tips.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
 //            }
 //        }
+        //robić czy nie robić nowego klocka?
 
-        funges.display();
+
+        fungi.grow();
+        fungi.display();
 
         if (drawfps) {
             fill(0);
             text(frameRate, 10, 60);
         }
+
+
+
     }
 
     /**
      * Dodawanie obiektów przez kliknięcie lewym przyciskiem myszki
      */
     public void mouseClicked() {
-        funges.addRoot(new Vec2(mouseX, mouseY));
+        fungi.addRoot(new Vec2(mouseX, mouseY));
 //        tips.add(new Tip(world, , new Ball(this, world, 20)));
     }
     public void beginContact(Contact c) {
