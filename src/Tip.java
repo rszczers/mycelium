@@ -39,6 +39,7 @@ public class Tip {
     public Body getBody() {
         return body;
     }
+    public Interpretation getInterp() {return interp; }
 
     void killBody() {
         world.destroyBody(body);

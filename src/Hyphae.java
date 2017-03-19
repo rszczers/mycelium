@@ -3,6 +3,7 @@ import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
+import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 import processing.core.PApplet;
 import processing.core.PShape;
@@ -25,10 +26,12 @@ public class Hyphae {
     private ArrayList<PolygonShape> collisionShape;
     private ArrayList<PShape> displayShape;
 
-    private ArrayList<BodyDef> bd;
-    private ArrayList<FixtureDef> fd;
+//    private ArrayList<BodyDef> bdArr;
+//    private ArrayList<FixtureDef> fdArr;
 
     private Body body;
+    private BodyDef bd;
+    private FixtureDef fd;
 
     private Tip tip;
     public Hyphae(PApplet context, Box2DProcessing world, Vec2 start, Tip tip, Vec2 initialForce) {
@@ -38,6 +41,11 @@ public class Hyphae {
         this.tip = tip;
         tip.applyForce(initialForce);
         this.start = start;
+
+        bd = new BodyDef();
+        bd.type = BodyType.STATIC;
+        body = world.createBody(bd);
+        bd.position.set(world.coordPixelsToWorld(start));
     }
 
     /**
@@ -45,6 +53,20 @@ public class Hyphae {
      * konstruuje kształty do kolizji
      */
     public void grow() {
+        Vec2 last1 = collisionShape.get(collisionShape.size()-1).getVertex(2);
+        Vec2 last2 = collisionShape.get(collisionShape.size()-1).getVertex(3);
+        Vec2 lastMid = last1.add(last2).mulLocal(0.5f); //Środek końca ostatniego czworokąta
+        Vec2 tipPosition = tip.getBody().getPosition();
+        if(tipPosition.sub(lastMid).length() >= 100) {
+            PolygonShape cs = createCollisionShape(new Vec2[] {last1, last2});
+            PShape ds = createDisplayShape(new Vec2[] {world.vectorWorldToPixels(last1),
+                            world.vectorWorldToPixels(last2)});
+            body.createFixture(cs, 1.0f);
+            collisionShape.add(cs);
+            displayShape.add(ds);
+//                bisect();
+
+        }
     }
 
     /**
@@ -66,34 +88,47 @@ public class Hyphae {
      * tmp[0] niech będzie 3->2, tmp[1] niech będzie 4->1
      * @return
      */
-    private Vec2[] getNewVerticesForShapes() {
-        return null;
+    private Vec2[] createNewVerticesForShapes() {
+        float phi = - (float)Math.PI/2;
+        Vec2[] coords = new Vec2[2];
+        Vec2 tipLocation = tip.getBody().getPosition();
+        float r = ((Ball) tip.getInterp()).getRadius();
+        Vec2 direction = tip.getBody().getLinearVelocity().clone();
+        direction.x = direction.x * (float)Math.cos(phi) - direction.y * (float)Math.sin(phi);
+        direction.y = direction.x * (float)Math.sin(phi) + direction.y * (float)Math.cos(phi);
+        direction.normalize();
+        direction.mulLocal(r);
+        coords[0] = tipLocation.add(direction);
+        coords[1] = tipLocation.sub(direction);
+        return coords;
     }
 
     /**
      * Wygeneruj PShape z czterech punktów
      * @return
      */
-    private PShape makeDisplayShape(Vec2[] coord) {
-        Vec2 coord0 = collisionShape.get(collisionShape.size()-1).getVertex(2);
-        Vec2 coord1 = collisionShape.get(collisionShape.size()-1).getVertex(3);
-        Vec2[] tmp = getNewVerticesForShapes();
+    private PShape createDisplayShape(Vec2[] initCoord) {
+        Vec2[] tmp = createNewVerticesForShapes();
         PShape ps = new PShape();
         ps.setVisible(false);
         ps.beginShape();
-            ps.vertex(coord0.x, coord0.y);
-            ps.vertex(coord1.x, coord1.y);
+            ps.vertex(initCoord[0].x, initCoord[0].y);
+            ps.vertex(initCoord[1].x, initCoord[1].y);
             ps.vertex(tmp[0].x, tmp[0].y);
             ps.vertex(tmp[1].x, tmp[1].y);
         ps.endShape();
         return ps;
     }
 
-    private PolygonShape makeCollisionShape(Vec2[] coord) {
-        Vec2[] tmp = getNewVerticesForShapes();
+    /**
+     * Generuj shape dla kolizji
+     * @return
+     */
+    private PolygonShape createCollisionShape(Vec2[] initCoord) {
+        Vec2[] tmp = createNewVerticesForShapes();
         Vec2[] vertices = {
-            collisionShape.get(collisionShape.size()-1).getVertex(2),
-            collisionShape.get(collisionShape.size()-1).getVertex(3),
+            initCoord[0],
+            initCoord[1],
             tmp[0],
             tmp[1]
         };

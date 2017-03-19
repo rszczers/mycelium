@@ -59,6 +59,7 @@ public class Ball implements Interpretation {
         context.popMatrix();
 
     }
+    public int getRadius() {return radius;}
 
     public BodyDef getBodyDef() {
         return this.bd;
