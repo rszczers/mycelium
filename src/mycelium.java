@@ -34,6 +34,7 @@ public class mycelium extends PApplet {
      * Definicje obiektów na scenie
      */
     private ArrayList<Tip> tips = new ArrayList<>();
+    private ArrayList<Fungus> funges = new ArrayList<>();
     private ArrayList<BoundaryBox> boundaries = new ArrayList<>();
 
     private LSystem lsystem;
@@ -109,22 +110,27 @@ public class mycelium extends PApplet {
         }
 
         // Pętla aktualizująca położenie obiektów klasy Tip
-        for (int i = 0; i < tips.size(); i++) {
-            try {
-                Tip t = tips.get(i);
+//        for (int i = 0; i < tips.size(); i++) {
+//            try {
+//                Tip t = tips.get(i);
+//
+//                Vec2 coords = world.coordWorldToPixels(t.getBody().getPosition());
+//                float[] bp =  {coords.x, coords.y};
+//                int[] xy = c2vf((int)bp[0], (int) bp[1]);
+////                System.out.println(xy[0] + "; " + xy[1]);
+//                if (toggleForceField)
+//                    t.applyForce(vf.getBlock()[xy[0]][xy[1]]);
+////                System.out.println(vf.getBlock()[xy[0]][xy[1]]));
+//                t.display();
+//            } catch (ArrayIndexOutOfBoundsException e) {
+//                tips.get(i).killBody(); // usuń obiekt z systemu fizycznego
+//                tips.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
+//            }
+//        }
 
-                Vec2 coords = world.coordWorldToPixels(t.getBody().getPosition());
-                float[] bp =  {coords.x, coords.y};
-                int[] xy = c2vf((int)bp[0], (int) bp[1]);
-//                System.out.println(xy[0] + "; " + xy[1]);
-                if (toggleForceField)
-                    t.applyForce(vf.getBlock()[xy[0]][xy[1]]);
-//                System.out.println(vf.getBlock()[xy[0]][xy[1]]));
-                t.display();
-            } catch (ArrayIndexOutOfBoundsException e) {
-                tips.get(i).killBody(); // usuń obiekt z systemu fizycznego
-                tips.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
-            }
+
+        for (int i = 0; i < funges.size(); i++) {
+            funges.get(i).display();
         }
 
 
@@ -138,7 +144,8 @@ public class mycelium extends PApplet {
      * Dodawanie obiektów przez kliknięcie lewym przyciskiem myszki
      */
     public void mouseClicked() {
-        tips.add(new Tip(world, new Vec2(mouseX, mouseY), new Ball(this, world, 20)));
+        funges.add(new Fungus(world, this, new Vec2(mouseX, mouseY)));
+//        tips.add(new Tip(world, new Vec2(mouseX, mouseY), new Ball(this, world, 20)));
     }
     public void beginContact(Contact c) {
 //        Fixture f1 = c.getFixtureA();

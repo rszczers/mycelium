@@ -23,8 +23,8 @@ public class Hyphae {
     private Vec2 start;
     private ArrayList<Hyphae> childrens;
 
-    private ArrayList<PolygonShape> collisionShape;
-    private ArrayList<PShape> displayShape;
+    private ArrayList<PolygonShape> collisionShapes;
+    private ArrayList<PShape> displayShapes;
 
 //    private ArrayList<BodyDef> bdArr;
 //    private ArrayList<FixtureDef> fdArr;
@@ -34,39 +34,41 @@ public class Hyphae {
     private FixtureDef fd;
 
     private Tip tip;
-    public Hyphae(PApplet context, Box2DProcessing world, Vec2 start, Tip tip, Vec2 initialForce) {
+    public Hyphae(PApplet context, Box2DProcessing world, Vec2 start, Vec2 initialForce) {
         this.context = context;
         this.world = world;
         this.branchingRate = 0.5f;
-        this.tip = tip;
-        tip.applyForce(initialForce);
         this.start = start;
+
+        this.tip = new Tip(world, start, new Ball(context, world, 20));
+        tip.applyForce(initialForce);
 
         bd = new BodyDef();
         bd.type = BodyType.STATIC;
         body = world.createBody(bd);
         bd.position.set(world.coordPixelsToWorld(start));
+
+        Vec2[] firstLast = createNewVerticesForShapes();
+        grow(firstLast[0], firstLast[1]);
     }
 
     /**
      * Metoda do wykorzystania w petli głownej draw()
      * konstruuje kształty do kolizji
      */
-    public void grow() {
-        Vec2 last1 = collisionShape.get(collisionShape.size()-1).getVertex(2);
-        Vec2 last2 = collisionShape.get(collisionShape.size()-1).getVertex(3);
+    public void grow(Vec2 last1, Vec2 last2) {
         Vec2 lastMid = last1.add(last2).mulLocal(0.5f); //Środek końca ostatniego czworokąta
         Vec2 tipPosition = tip.getBody().getPosition();
         if(tipPosition.sub(lastMid).length() >= 100) {
-            PolygonShape cs = createCollisionShape(new Vec2[] {last1, last2});
-            PShape ds = createDisplayShape(new Vec2[] {world.vectorWorldToPixels(last1),
+            PolygonShape cs = createcollisionShapes(new Vec2[] {last1, last2});
+            PShape ds = createdisplayShapes(new Vec2[] {world.vectorWorldToPixels(last1),
                             world.vectorWorldToPixels(last2)});
             body.createFixture(cs, 1.0f);
-            collisionShape.add(cs);
-            displayShape.add(ds);
-//                bisect();
-
+            collisionShapes.add(cs);
+            displayShapes.add(ds);
         }
+        Vec2[] last = createNewVerticesForShapes();
+        grow(last[0], last[1]);
     }
 
     /**
@@ -107,7 +109,7 @@ public class Hyphae {
      * Wygeneruj PShape z czterech punktów
      * @return
      */
-    private PShape createDisplayShape(Vec2[] initCoord) {
+    private PShape createdisplayShapes(Vec2[] initCoord) {
         Vec2[] tmp = createNewVerticesForShapes();
         PShape ps = new PShape();
         ps.setVisible(false);
@@ -124,7 +126,7 @@ public class Hyphae {
      * Generuj shape dla kolizji
      * @return
      */
-    private PolygonShape createCollisionShape(Vec2[] initCoord) {
+    private PolygonShape createcollisionShapes(Vec2[] initCoord) {
         Vec2[] tmp = createNewVerticesForShapes();
         Vec2[] vertices = {
             initCoord[0],
@@ -152,8 +154,7 @@ public class Hyphae {
             newForce.x = newForce.x * -1.0f;
 
         Vec2 newLocation = world.vectorPixelsToWorld(tip.getBody().getPosition().add(newForce).mul(20.0f));
-        Tip newTip = new Tip(world, newLocation, new Ball(context, world, 20));
-        Hyphae newHyphae = new Hyphae(context, world, newLocation, newTip, newForce);
+        Hyphae newHyphae = new Hyphae(context, world, newLocation, newForce);
 
         childrens.add(newHyphae);
         return newHyphae;
@@ -161,7 +162,7 @@ public class Hyphae {
 
     public void display() {
         for (PShape ps :
-                displayShape) {
+                displayShapes) {
             ps.setVisible(true);
         }
     }

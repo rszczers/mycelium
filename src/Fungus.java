@@ -23,8 +23,7 @@ public class Fungus {
     public void addRoot(Vec2 location) {
         int newTipYOffset = 20;
         Vec2 newTipLocation = location.add(new Vec2(0, newTipYOffset));
-        Tip newTip = new Tip(world, newTipLocation, new Ball(context, world, 20));
-        root.add(new Hyphae(context, world, location, newTip, null));
+        root.add(new Hyphae(context, world, location, new Vec2(0, 0)));
     }
 
     public void display() {
@@ -34,5 +33,10 @@ public class Fungus {
         context.ellipse(0, 0, 10, 10);
         context.noStroke();
         context.popMatrix();
+
+        for (Hyphae e:
+             root) {
+            e.display();
+        }
     }
 }
