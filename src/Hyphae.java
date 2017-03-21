@@ -1,10 +1,5 @@
 import Box2D.Box2DProcessing;
-import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.BodyDef;
-import org.jbox2d.dynamics.BodyType;
-import org.jbox2d.dynamics.FixtureDef;
 import processing.core.PApplet;
 import processing.core.PShape;
 import java.util.ArrayList;
@@ -16,14 +11,11 @@ import java.util.Random;
 public class Hyphae {
     private int length;
     private float branchingRate;
-
     private PApplet context;
     private Box2DProcessing world;
-
     private Vec2 start;
     private ArrayList<Hyphae> childrens;
-
-    private ArrayList<collisionShape> shapes;
+    private ArrayList<CollisionShape> shapes;
     private Tip tip;
 
     public Hyphae(PApplet context, Box2DProcessing world, Vec2 start, Vec2 initialForce) {
@@ -64,7 +56,7 @@ public class Hyphae {
         coords[0] = tipLocation.sub(direction);
         return coords;
     }
-    
+
     private Hyphae bisect() {
         float forceMag = 5.0f; // Tip odrzucamy w bok z pewną sila forceMag
         double phi = 30;

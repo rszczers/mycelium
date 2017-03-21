@@ -11,7 +11,7 @@ import processing.core.PShape;
  * Created by rszczers on 21.03.17.
  */
 
-public class collisionShape {
+public class CollisionShape {
     private int[] color;
     private PApplet context;
     private Box2DProcessing world;
@@ -20,7 +20,7 @@ public class collisionShape {
     private Body body;
     private BodyDef bd;
 
-    public collisionShape(PApplet context, Box2DProcessing world, Vec2[] last, Vec2[] next) {
+    public CollisionShape(PApplet context, Box2DProcessing world, Vec2[] last, Vec2[] next) {
         this.context = context;
         this.world = world;
         this.color = new int[] {127, 127, 127, 127};

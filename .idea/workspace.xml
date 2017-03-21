@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9b1be5e4-526b-4226-b701-76151033d17d" name="Default" comment="drawGrid, drawVectorField">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/collisionShape.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/mycelium/Hyphae.class" afterPath="$PROJECT_DIR$/out/production/mycelium/Hyphae.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/collisionShape.java" afterPath="$PROJECT_DIR$/src/CollisionShape.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Hyphae.java" afterPath="$PROJECT_DIR$/src/Hyphae.java" />
     </list>
     <ignored path="mycelium.iws" />
@@ -67,8 +65,8 @@
       <file leaf-file-name="Hyphae.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Hyphae.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="396">
-              <caret line="66" column="4" selection-start-line="66" selection-start-column="4" selection-end-line="66" selection-end-column="4" />
+            <state relative-caret-position="612">
+              <caret line="36" column="10" selection-start-line="36" selection-start-column="10" selection-end-line="36" selection-end-column="10" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -76,10 +74,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="collisionShape.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/collisionShape.java">
+      <file leaf-file-name="CollisionShape.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/CollisionShape.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="95">
+            <state relative-caret-position="408">
               <caret line="24" column="27" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="27" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -1039,9 +1037,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/collisionShape.java">
+    <entry file="file://$PROJECT_DIR$/src/CollisionShape.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
+        <state relative-caret-position="408">
           <caret line="24" column="27" selection-start-line="24" selection-start-column="27" selection-end-line="24" selection-end-column="27" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1059,8 +1057,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Hyphae.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="396">
-          <caret line="66" column="4" selection-start-line="66" selection-start-column="4" selection-end-line="66" selection-end-column="4" />
+        <state relative-caret-position="612">
+          <caret line="36" column="10" selection-start-line="36" selection-start-column="10" selection-end-line="36" selection-end-column="10" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
