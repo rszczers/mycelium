@@ -1,9 +1,8 @@
 import Box2D.Box2DProcessing;
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
 import processing.core.PApplet;
-import processing.core.PShape;
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by rszczers on 18.03.17.
@@ -18,30 +17,54 @@ public class Hyphae {
     private ArrayList<CollisionShape> shapes;
     private Tip tip;
 
-    public Hyphae(PApplet context, Box2DProcessing world, Vec2 start, Vec2 initialForce) {
+    public Hyphae(PApplet context, Box2DProcessing world, Vec2 start, double phi) {
         this.length = 0;
         this.context = context;
         this.world = world;
         this.branchingRate = 0.5f;
         this.start = start;
-
         this.tip = new Tip(world, start.add(new Vec2(0, -10)), new Ball(context, world, 20));
-        tip.applyForce(initialForce);
 
+        // Rotacja wektora prędkości czubka strzępka
+        Vec2 velocityRot = this.tip.getBody().getLinearVelocity();
+        velocityRot.x = (float)(velocityRot.x * Math.cos(phi) - velocityRot.y * Math.sin(phi));
+        velocityRot.y = (float)(velocityRot.x * Math.sin(phi) + velocityRot.y * Math.cos(phi));
+        this.tip.getBody().setLinearVelocity(velocityRot);
 
-        Vec2[] vertices = {
-                world.vectorPixelsToWorld(new Vec2(10, 10)),
-                world.vectorPixelsToWorld(new Vec2(10, 0)),
-                world.vectorPixelsToWorld(new Vec2(-10, 0)),
-                world.vectorPixelsToWorld(new Vec2(-10, 10)),
+        // Konstrukcja kształtu do kolizji i wyświetlania
+        shapes = new ArrayList<>();
+
+        Vec2[] last = new Vec2[] {
+            world.coordPixelsToWorld(start.add(new Vec2(10.0f, 10.0f))),
+            world.coordPixelsToWorld(start.add(new Vec2(-10.0f, 10.0f))),
         };
+        Vec2[] next = new Vec2[] {
+            world.coordPixelsToWorld(start.add(new Vec2(10.0f, 0.0f))),
+            world.coordPixelsToWorld(start.add(new Vec2(-10.0f, 0.0f))),
+        };
+
+        shapes.add(new CollisionShape(context, world, last, next));
     }
 
 
     public void grow() {
+        int size = shapes.size();
+        Vec2[] last = shapes.get(size - 1).getLast(); //Znajdź dwie współrzędne ostatniego CollisionShape'a
+        Vec2[] next = nextVertices(); //Znajdź dwie współrzędne dla czubka strzępka
+        float d = dist(shapes.get(size - 1), tip.getBody());
+//        System.out.println("Distance: " + d);
+        if (d >= 100.0f) {
+            shapes.add(new CollisionShape(context, world, last, next));
+            this.length++;
+        }
     }
 
-    private Vec2[] createNewVerticesForShapes() {
+    /**
+     * [0] stands for left vertex,
+     * [1] stands for right vertex.
+     * @return
+     */
+    private Vec2[] nextVertices() {
         float phi = - (float)Math.PI/2;
         Vec2[] coords = new Vec2[2];
         Vec2 tipLocation = tip.getBody().getPosition();
@@ -58,23 +81,27 @@ public class Hyphae {
     }
 
     private Hyphae bisect() {
-        float forceMag = 5.0f; // Tip odrzucamy w bok z pewną sila forceMag
-        double phi = 30;
-        Vec2 newForce = new Vec2((float)(forceMag * Math.sin(phi)), (float) (forceMag * Math.cos(phi)));
-
-        Random random = new Random(); // Losujemy czy na lewo czy na prawo
-        if (random.nextBoolean())
-            newForce.x = newForce.x * -1.0f;
-
-        Vec2 newLocation = world.vectorPixelsToWorld(tip.getBody().getPosition().add(newForce).mul(20.0f));
-        Hyphae newHyphae = new Hyphae(context, world, newLocation, newForce);
-
-        childrens.add(newHyphae);
+        Hyphae newHyphae = new Hyphae(context, world, start, Math.PI/6);
         return newHyphae;
     }
 
+    private float dist(CollisionShape s1, CollisionShape s2) {
+        return world.scalarWorldToPixels(s1.getPosition().sub(s2.getPosition()).length());
+    }
+
+    private float dist(CollisionShape s1, Body s2) {
+        Vec2 ps1 = world.getBodyPixelCoord(s1.getBody()).clone();
+        Vec2 ps2 = world.getBodyPixelCoord(s2).clone();
+        float d = ps1.subLocal(ps2).length();
+        return d;
+    }
+
+    public void applyForce(Vec2 force) {
+        tip.applyForce(force);
+    }
+
     public void display() {
-        Vec2[] tmp = createNewVerticesForShapes();
+        Vec2[] tmp = nextVertices();
         for (int i = 0; i < tmp.length; i++) {
             tmp[i] = world.coordWorldToPixels(tmp[i]);
         }
@@ -87,9 +114,9 @@ public class Hyphae {
         context.text("2", tmp[1].x, tmp[1].y-20);
         context.strokeWeight(1);
         context.popMatrix();
-        for (PShape ps :
-                displayShapes) {
-            context.shape(ps);
+        for (CollisionShape p:
+                shapes) {
+            p.display();
         }
         tip.display();
     }

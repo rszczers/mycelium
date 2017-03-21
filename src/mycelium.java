@@ -14,8 +14,8 @@ public class mycelium extends PApplet {
     private final static int HEIGHT = 600;
     private final static int GRID = 10;
 
-    private boolean drawCells = false;
-    private boolean drawGrids = false;
+    private boolean drawCells = true;
+    private boolean drawGrids = true;
     private boolean drawVectorFields = true;
     private boolean drawLabels = true;
     private boolean calculatePhysics = true;
@@ -131,6 +131,7 @@ public class mycelium extends PApplet {
 
 
         fungi.grow();
+//        fungi.applyForce(); TODO
         fungi.display();
 
         if (drawfps) {

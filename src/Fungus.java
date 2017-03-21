@@ -21,13 +21,20 @@ public class Fungus {
     }
 
     public void addRoot(Vec2 location) {
-        roots.add(new Hyphae(context, world, location, new Vec2(0, 0)));
+        roots.add(new Hyphae(context, world, location, 0.0));
     }
 
     public void grow() {
         for (Hyphae r :
                 roots) {
             r.grow();
+        }
+    }
+
+    public void applyForce(Vec2 force) {
+        for (Hyphae h :
+                roots) {
+            h.applyForce(force);
         }
     }
 
