@@ -16,7 +16,7 @@ public class mycelium extends PApplet {
     private final static int GRID = 20;
 
     private boolean drawCells = true;
-    private boolean drawGrids = true;
+    private boolean drawGrids = false;
     private boolean drawVectorFields = true;
     private boolean drawLabels = true;
     private boolean calculatePhysics = true;
@@ -28,15 +28,12 @@ public class mycelium extends PApplet {
 
     private static float[][][] cellColor = new float[GRID][GRID][3];
 
-
     /**
      * Definicje obiektów na scenie
      */
-    private ArrayList<Tip> tips = new ArrayList<>();
+//    private ArrayList<Tip> tips = new ArrayList<>();
     private Fungus fungi;
     private ArrayList<BoundaryBox> boundaries = new ArrayList<>();
-
-    private LSystem lsystem;
     private VectorField vf = new VectorField(GRID);
 
     public static void main(String[] args) {
@@ -55,7 +52,6 @@ public class mycelium extends PApplet {
             world.setGravity(0, 10);
         } else {
             world.setGravity(0, 0);
-
         }
         world.listenForCollisions();
 
@@ -110,42 +106,16 @@ public class mycelium extends PApplet {
             }
         }
 
-        // Pętla aktualizująca położenie obiektów klasy Tip
-//        for (int i = 0; i < tips.size(); i++) {
-//            try {
-//                Tip t = tips.get(i);
-
-//                Vec2 coords = world.coordWorldToPixels(t.getBody().getPosition());
-//                float[] bp =  {coords.x, coords.y};
-//                int[] xy = c2vf((int)bp[0], (int) bp[1]);
-////                System.out.println(xy[0] + "; " + xy[1]);
-//                if (toggleForceField)
-//                    t.applyForce(vf.getBlock()[xy[0]][xy[1]]);
-////                System.out.println(vf.getBlock()[xy[0]][xy[1]]));
-//                t.display();
-//            } catch (ArrayIndexOutOfBoundsException e) {
-//                tips.get(i).killBody(); // usuń obiekt z systemu fizycznego
-//                tips.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
-//            }
-//        }
-        //robić czy nie robić nowego klocka?
-
-        fungi.grow();
-        fungi.display();
-
-        LinkedList<Tip> tcoll = fungi.getTips();
+        ArrayList<Tip> tcoll = fungi.getTips();
 
         for (int i = 0; i < tcoll.size(); i++) {
             try {
                 Tip t = tcoll.get(i);
-
                 Vec2 coords = world.coordWorldToPixels(t.getBody().getPosition());
                 float[] bp =  {coords.x, coords.y};
                 int[] xy = c2vf((int)bp[0], (int) bp[1]);
-//                System.out.println(xy[0] + "; " + xy[1]);
                 if (toggleForceField)
                     t.applyForce(vf.getBlock()[xy[0]][xy[1]]);
-//                System.out.println(vf.getBlock()[xy[0]][xy[1]]));
                 t.display();
             } catch (ArrayIndexOutOfBoundsException e) {
                 tcoll.get(i).killBody(); // usuń obiekt z systemu fizycznego
@@ -159,6 +129,8 @@ public class mycelium extends PApplet {
         }
 
 
+        fungi.grow();
+        fungi.display();
 
     }
 

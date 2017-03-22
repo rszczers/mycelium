@@ -130,19 +130,19 @@ public class Hyphae {
     }
 
     public void display() {
-        Vec2[] tmp = nextVertices();
-        for (int i = 0; i < tmp.length; i++) {
-            tmp[i] = world.coordWorldToPixels(tmp[i]);
-        }
-        context.pushMatrix();
-        context.strokeWeight(3);
-        context.ellipse(tmp[0].x, tmp[0].y, 5.0f, 5.0f);
-        context.textSize(12);
+//        Vec2[] tmp = nextVertices();
+//        for (int i = 0; i < tmp.length; i++) {
+//            tmp[i] = world.coordWorldToPixels(tmp[i]);
+//        }
+//        context.pushMatrix();
+//        context.strokeWeight(3);
+//        context.ellipse(tmp[0].x, tmp[0].y, 5.0f, 5.0f);
+//        context.textSize(12);
 //        context.text("1", tmp[0].x, tmp[0].y-20);
-        context.ellipse(tmp[1].x, tmp[1].y, 5.0f, 5.0f);
+//        context.ellipse(tmp[1].x, tmp[1].y, 5.0f, 5.0f);
 //        context.text("2", tmp[1].x, tmp[1].y-20);
-        context.strokeWeight(1);
-        context.popMatrix();
+//        context.strokeWeight(1);
+//        context.popMatrix();
         for (CollisionShape p:
                 shapes) {
             p.display();

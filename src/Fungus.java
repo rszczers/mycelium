@@ -2,6 +2,7 @@ import Box2D.Box2DProcessing;
 import org.jbox2d.common.Vec2;
 import processing.core.PApplet;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -9,7 +10,7 @@ import java.util.LinkedList;
  * Created by rszczers on 18.03.17.
  */
 public class Fungus {
-    private LinkedList<Tip> leafs;
+    private ArrayList<Tip> leafs;
     private Vec2 location;
     private ArrayList<Hyphae> roots;
     private PApplet context;
@@ -20,7 +21,7 @@ public class Fungus {
         this.context = context;
         this.world = world;
         this.roots = new ArrayList<>();
-        this.leafs = new LinkedList<>();
+        this.leafs = new ArrayList<>();
     }
 
     public void addRoot(Vec2 location) {
@@ -46,12 +47,12 @@ public class Fungus {
     }
 
     public void display() {
-        context.pushMatrix();
-        context.translate(location.x, location.y);
-        context.fill(255, 0, 0);
-        context.ellipse(0, 0, 10, 10);
-        context.noStroke();
-        context.popMatrix();
+//        context.pushMatrix();
+//        context.translate(location.x, location.y);
+//        context.fill(255, 0, 0);
+//        context.ellipse(0, 0, 10, 10);
+//        context.noStroke();
+//        context.popMatrix();
 
         for (Hyphae h:
              roots) {
@@ -59,7 +60,7 @@ public class Fungus {
         }
     }
 
-    public LinkedList<Tip> getTips() {
+    public ArrayList<Tip> getTips() {
         return leafs;
     }
 
