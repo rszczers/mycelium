@@ -3,25 +3,28 @@ import org.jbox2d.common.Vec2;
 import processing.core.PApplet;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Created by rszczers on 18.03.17.
  */
 public class Fungus {
-    Vec2 location;
-    ArrayList<Hyphae> roots;
-    PApplet context;
-    Box2DProcessing world;
+    private LinkedList<Tip> leafs;
+    private Vec2 location;
+    private ArrayList<Hyphae> roots;
+    private PApplet context;
+    private Box2DProcessing world;
 
     public Fungus(Box2DProcessing world, PApplet context, Vec2 location) {
         this.location = location;
         this.context = context;
         this.world = world;
         this.roots = new ArrayList<>();
+        this.leafs = new LinkedList<>();
     }
 
     public void addRoot(Vec2 location) {
-        roots.add(new Hyphae(context, world, location, 0.0));
+        roots.add(new Hyphae(context, world, this, location, 0.0, 0.0f));
     }
 
     public void grow() {
@@ -32,9 +35,13 @@ public class Fungus {
     }
 
     public void applyForce(Vec2 force) {
-        for (Hyphae h :
-                roots) {
-            h.applyForce(force);
+//        for (Hyphae h :
+//                roots) {
+//            h.applyForce(force);
+//        }
+        for (Tip t :
+                leafs) {
+            t.applyForce(force);
         }
     }
 
@@ -50,5 +57,13 @@ public class Fungus {
              roots) {
             h.display();
         }
+    }
+
+    public LinkedList<Tip> getTips() {
+        return leafs;
+    }
+
+    public void addTip(Tip a) {
+        leafs.add(a);
     }
 }

@@ -7,6 +7,8 @@ import org.jbox2d.dynamics.BodyType;
 import processing.core.PApplet;
 import processing.core.PShape;
 
+import java.util.Random;
+
 /**
  * Created by rszczers on 21.03.17.
  */
@@ -21,10 +23,10 @@ public class CollisionShape {
     private BodyDef bd;
     private Vec2[] last;
 
-    public CollisionShape(PApplet context, Box2DProcessing world, Vec2[] last, Vec2[] next) {
+    public CollisionShape(PApplet context, Box2DProcessing world, Vec2[] last, Vec2[] next, int[] color) {
         this.context = context;
         this.world = world;
-        this.color = new int[] {255, 127, 127, 127};
+        this.color = color;
         this.dShape = createDisplayShapes(last, next);
         this.pShape = createCollisionShape(last, next);
         this.last = next;

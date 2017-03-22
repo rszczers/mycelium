@@ -3,6 +3,7 @@ import org.jbox2d.dynamics.contacts.Contact;
 import processing.core.PApplet;
 import processing.core.PVector;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import Box2D.Box2DProcessing;
 
@@ -10,8 +11,8 @@ import Box2D.Box2DProcessing;
 public class mycelium extends PApplet {
     private Box2DProcessing world;
 
-    private final static int WIDTH = 800;
-    private final static int HEIGHT = 600;
+    private final static int WIDTH = 1200;
+    private final static int HEIGHT = 800;
     private final static int GRID = 10;
 
     private boolean drawCells = true;
@@ -21,7 +22,7 @@ public class mycelium extends PApplet {
     private boolean calculatePhysics = true;
     private boolean toggleBoundaries = true;
     private boolean toggleForceField = true;
-    private boolean toggleGravity = true;
+    private boolean toggleGravity = false;
     private boolean drawfps = true;
 
 
@@ -113,7 +114,7 @@ public class mycelium extends PApplet {
 //        for (int i = 0; i < tips.size(); i++) {
 //            try {
 //                Tip t = tips.get(i);
-//
+
 //                Vec2 coords = world.coordWorldToPixels(t.getBody().getPosition());
 //                float[] bp =  {coords.x, coords.y};
 //                int[] xy = c2vf((int)bp[0], (int) bp[1]);
@@ -129,10 +130,28 @@ public class mycelium extends PApplet {
 //        }
         //robić czy nie robić nowego klocka?
 
-
         fungi.grow();
-//        fungi.applyForce(); TODO
         fungi.display();
+
+        LinkedList<Tip> tcoll = fungi.getTips();
+
+        for (int i = 0; i < tcoll.size(); i++) {
+            try {
+                Tip t = tcoll.get(i);
+
+                Vec2 coords = world.coordWorldToPixels(t.getBody().getPosition());
+                float[] bp =  {coords.x, coords.y};
+                int[] xy = c2vf((int)bp[0], (int) bp[1]);
+//                System.out.println(xy[0] + "; " + xy[1]);
+                if (toggleForceField)
+                    t.applyForce(vf.getBlock()[xy[0]][xy[1]]);
+//                System.out.println(vf.getBlock()[xy[0]][xy[1]]));
+                t.display();
+            } catch (ArrayIndexOutOfBoundsException e) {
+                tcoll.get(i).killBody(); // usuń obiekt z systemu fizycznego
+                tcoll.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
+            }
+        }
 
         if (drawfps) {
             fill(0);

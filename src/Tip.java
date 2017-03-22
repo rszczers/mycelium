@@ -11,7 +11,7 @@ public class Tip {
     private Box2DProcessing world;
     private Body body;
 
-    public Tip(Box2DProcessing world, Vec2 location, Interpretation interp) {
+    public Tip(Box2DProcessing world, Fungus fungus, Vec2 location, Interpretation interp) {
         this.world = world;
         this.interp = interp;
 
@@ -24,6 +24,8 @@ public class Tip {
 
         // Dowiązanie ciała do kształtu
         body.createFixture(interp.getFixtureDef());
+
+        fungus.addTip(this);
     }
 
     public void applyForce(Vec2 force) {
