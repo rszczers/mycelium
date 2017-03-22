@@ -13,7 +13,7 @@ public class mycelium extends PApplet {
 
     private final static int WIDTH = 1200;
     private final static int HEIGHT = 800;
-    private final static int GRID = 10;
+    private final static int GRID = 20;
 
     private boolean drawCells = true;
     private boolean drawGrids = true;
@@ -22,7 +22,7 @@ public class mycelium extends PApplet {
     private boolean calculatePhysics = true;
     private boolean toggleBoundaries = true;
     private boolean toggleForceField = true;
-    private boolean toggleGravity = false;
+    private boolean toggleGravity = true;
     private boolean drawfps = true;
 
 

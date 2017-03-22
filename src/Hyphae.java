@@ -3,7 +3,6 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import processing.core.PApplet;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Random;
 
 /**
@@ -29,7 +28,7 @@ public class Hyphae {
         this.branchingRate = 0.5f;
         this.start = start;
         this.childrens = new ArrayList<>();
-        this.tip = new Tip(world, fungus, start.add(new Vec2(0, -10)), new Ball(context, world, 20));
+        this.tip = new Tip(world, fungus, start.add(new Vec2(0, -10)), new Ball(context, world, 10));
 
         // Rotacja wektora prędkości czubka strzępka
         if (phi > 0.1 || phi < -0.1) {
@@ -47,13 +46,14 @@ public class Hyphae {
         shapes = new ArrayList<>();
 
         Vec2[] last = new Vec2[] {
-            world.coordPixelsToWorld(start.add(new Vec2(10.0f, 10.0f))),
-            world.coordPixelsToWorld(start.add(new Vec2(-10.0f, 10.0f))),
+            world.coordPixelsToWorld(start.add(new Vec2(5.0f, 5.0f))),
+            world.coordPixelsToWorld(start.add(new Vec2(-5.0f, 5.0f))),
         };
         Vec2[] next = new Vec2[] {
-            world.coordPixelsToWorld(start.add(new Vec2(10.0f, 0.0f))),
-            world.coordPixelsToWorld(start.add(new Vec2(-10.0f, 0.0f))),
+            world.coordPixelsToWorld(start.add(new Vec2(5.0f, 0.0f))),
+            world.coordPixelsToWorld(start.add(new Vec2(-5.0f, 0.0f))),
         };
+
         Random rand = new Random();
         color = new int[] {rand.nextInt() % 127 + 127, rand.nextInt() % 127 + 127, rand.nextInt() % 127 + 127, 127};
         shapes.add(new CollisionShape(context, world, last, next, color));
@@ -66,9 +66,9 @@ public class Hyphae {
             Vec2[] next = nextVertices(); //Znajdź dwie współrzędne dla czubka strzępka
             float d = dist(shapes.get(size - 1), tip.getBody());
             //        System.out.println("Distance: " + d);
-            if (d >= 40.0f) {
+            if (d >= 20.0f) {
                 shapes.add(new CollisionShape(context, world, last, next, color));
-                if (length % 100 == 60) {
+                if (length % 10 == 9) {
                     bisect();
                 }
                 this.length++;
@@ -103,7 +103,9 @@ public class Hyphae {
 
     private Hyphae bisect() {
         Vec2 newStart = world.getBodyPixelCoord(tip.getBody());
-        Hyphae newHyphae = new Hyphae(context, world, fungus, newStart, Math.PI/6, tip.getBody().getLinearVelocity().length());
+        Random random = new Random();
+        float t = random.nextBoolean() ? 1.0f : -1.0f;
+        Hyphae newHyphae = new Hyphae(context, world, fungus, newStart, t*Math.PI/6, tip.getBody().getLinearVelocity().length());
         childrens.add(newHyphae);
         return newHyphae;
     }

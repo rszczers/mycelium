@@ -36,20 +36,21 @@ public class CollisionShape {
         Vec2 middle = next[0].add(last[1]).mul(0.5f);
         bd.position.set(middle);
         this.body = world.createBody(bd);
-//        this.body.createFixture(pShape, 1.0f);    TODO
-
+        this.body.createFixture(pShape, 1.0f);
     }
     /**
      * Generuj shape dla kolizji
      * @return
      */
     private PolygonShape createCollisionShape(Vec2[] last, Vec2[] next) {
+        Vec2 middle = next[0].add(last[1]).mul(0.5f);
         Vec2[] vertices = {
-                last[0],
-                last[1],
-                next[1],
-                next[0],
+                last[0].sub(middle),
+                last[1].sub(middle),
+                next[1].sub(middle),
+                next[0].sub(middle),
         };
+//        System.out.println("last[0] = " + last[0] + ", last[1] = " + last[1] + ", next[0] = " + next[0] + ", next[1] = " + next[1]);
         PolygonShape ps = new PolygonShape();
         ps.set(vertices, vertices.length);
         return ps;

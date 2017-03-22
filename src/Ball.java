@@ -39,7 +39,7 @@ public class Ball implements Interpretation {
         // Definicja dowiązania ciała do kształtu
         fd = new FixtureDef();
         fd.shape = ps;
-        fd.density = 0.005f;
+        fd.density = 0.07f;
         fd.friction = 0.3f;
         fd.restitution = 0.5f;
     }
