@@ -66,7 +66,7 @@ public class Hyphae {
             Vec2[] next = nextVertices(); //Znajdź dwie współrzędne dla czubka strzępka
             float d = dist(shapes.get(size - 1), tip.getBody());
             //        System.out.println("Distance: " + d);
-            if (d >= 20.0f) {
+            if (d >= 40.0f) {
                 shapes.add(new CollisionShape(context, world, last, next, color));
                 if (length % 100 == 60) {
                     bisect();

@@ -36,6 +36,7 @@ public class CollisionShape {
         Vec2 middle = next[0].add(last[1]).mul(0.5f);
         bd.position.set(middle);
         this.body = world.createBody(bd);
+//        this.body.createFixture(pShape, 1.0f);    TODO
 
     }
     /**
@@ -44,10 +45,10 @@ public class CollisionShape {
      */
     private PolygonShape createCollisionShape(Vec2[] last, Vec2[] next) {
         Vec2[] vertices = {
-                next[0],
-                last[1],
                 last[0],
-                next[1]
+                last[1],
+                next[1],
+                next[0],
         };
         PolygonShape ps = new PolygonShape();
         ps.set(vertices, vertices.length);
