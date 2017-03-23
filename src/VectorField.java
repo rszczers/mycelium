@@ -12,6 +12,7 @@ public class VectorField {
         block = new Vec2[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
+//                block[i][j] = new Vec2(new Random().nextFloat() * 2 - 1, new Random().nextFloat() * 2 - 1);
                 block[i][j] = new Vec2(new Random().nextFloat() * 2 - 1, new Random().nextFloat() * 2 - 1);
                 block[i][j].normalize();
                 block[i][j].mulLocal(20);

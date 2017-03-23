@@ -74,8 +74,8 @@ public class CollisionShape {
         context.pushMatrix();
         ps.beginShape();
             ps.fill(color[0], color[1], color[2], color[3]);
-            ps.stroke(0);
-            ps.strokeWeight(0);
+//            ps.stroke(0);
+//            ps.strokeWeight(0);
             ps.vertex(next[0].x, next[0].y);
             ps.vertex(next[1].x, next[1].y);
             ps.vertex(last[1].x, last[1].y);

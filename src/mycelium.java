@@ -17,7 +17,7 @@ public class mycelium extends PApplet {
 
     private boolean drawCells = true;
     private boolean drawGrids = false;
-    private boolean drawVectorFields = true;
+    private boolean drawVectorFields = false;
     private boolean drawLabels = true;
     private boolean calculatePhysics = true;
     private boolean toggleBoundaries = true;
@@ -35,6 +35,7 @@ public class mycelium extends PApplet {
     private Fungus fungi;
     private ArrayList<BoundaryBox> boundaries = new ArrayList<>();
     private VectorField vf = new VectorField(GRID);
+    private ArrayList<Tip> tcoll;
 
     public static void main(String[] args) {
         PApplet.main("mycelium", args);
@@ -106,14 +107,14 @@ public class mycelium extends PApplet {
             }
         }
 
-        ArrayList<Tip> tcoll = fungi.getTips();
+        tcoll = fungi.getTips();
 
         for (int i = 0; i < tcoll.size(); i++) {
             try {
                 Tip t = tcoll.get(i);
                 Vec2 coords = world.coordWorldToPixels(t.getBody().getPosition());
                 float[] bp =  {coords.x, coords.y};
-                int[] xy = c2vf((int)bp[0], (int) bp[1]);
+                int[] xy = c2vf((int)bp[0], (int)bp[1]);
                 if (toggleForceField)
                     t.applyForce(vf.getBlock()[xy[0]][xy[1]]);
                 t.display();

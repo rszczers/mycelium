@@ -2,13 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9b1be5e4-526b-4226-b701-76151033d17d" name="Default" comment="drawGrid, drawVectorField">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/mycelium/CollisionShape.class" afterPath="$PROJECT_DIR$/out/production/mycelium/CollisionShape.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/mycelium/Fungus.class" afterPath="$PROJECT_DIR$/out/production/mycelium/Fungus.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/mycelium/Hyphae.class" afterPath="$PROJECT_DIR$/out/production/mycelium/Hyphae.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/mycelium/mycelium.class" afterPath="$PROJECT_DIR$/out/production/mycelium/mycelium.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/CollisionShape.java" afterPath="$PROJECT_DIR$/src/CollisionShape.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Fungus.java" afterPath="$PROJECT_DIR$/src/Fungus.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Hyphae.java" afterPath="$PROJECT_DIR$/src/Hyphae.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/VectorField.java" afterPath="$PROJECT_DIR$/src/VectorField.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mycelium.java" afterPath="$PROJECT_DIR$/src/mycelium.java" />
     </list>
     <ignored path="mycelium.iws" />
@@ -31,14 +29,12 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Fungus.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Fungus.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Fungus.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="12" column="12" selection-start-line="12" selection-start-column="12" selection-end-line="12" selection-end-column="21" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="17">
+              <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -46,8 +42,18 @@
       <file leaf-file-name="mycelium.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/mycelium.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="86">
-              <caret line="34" column="25" selection-start-line="34" selection-start-column="25" selection-end-line="34" selection-end-column="25" />
+            <state relative-caret-position="204">
+              <caret line="19" column="44" selection-start-line="19" selection-start-column="44" selection-end-line="19" selection-end-column="44" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="VectorField.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/VectorField.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="289">
+              <caret line="19" column="11" selection-start-line="19" selection-start-column="11" selection-end-line="19" selection-end-column="11" />
               <folding />
             </state>
           </provider>
@@ -56,18 +62,8 @@
       <file leaf-file-name="Hyphae.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Hyphae.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="344">
-              <caret line="145" column="0" selection-start-line="145" selection-start-column="0" selection-end-line="153" selection-end-column="22" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CollisionShape.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/CollisionShape.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1071">
-              <caret line="72" column="42" selection-start-line="72" selection-start-column="42" selection-end-line="72" selection-end-column="42" />
+            <state relative-caret-position="424">
+              <caret line="153" column="8" selection-start-line="153" selection-start-column="8" selection-end-line="153" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -113,11 +109,11 @@
         <option value="$PROJECT_DIR$/src/collisionShape.java" />
         <option value="$PROJECT_DIR$/src/Tip.java" />
         <option value="$PROJECT_DIR$/src/Ball.java" />
-        <option value="$PROJECT_DIR$/src/VectorField.java" />
         <option value="$PROJECT_DIR$/src/Fungus.java" />
+        <option value="$PROJECT_DIR$/src/Hyphae.java" />
         <option value="$PROJECT_DIR$/src/CollisionShape.java" />
         <option value="$PROJECT_DIR$/src/mycelium.java" />
-        <option value="$PROJECT_DIR$/src/Hyphae.java" />
+        <option value="$PROJECT_DIR$/src/VectorField.java" />
       </list>
     </option>
   </component>
@@ -164,9 +160,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -201,6 +194,9 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -890,14 +886,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/VectorField.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="19" column="9" selection-start-line="19" selection-start-column="9" selection-end-line="19" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Ball.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="544">
@@ -918,37 +906,43 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/CollisionShape.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1071">
-          <caret line="72" column="42" selection-start-line="72" selection-start-column="42" selection-end-line="72" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Hyphae.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="344">
-          <caret line="145" column="0" selection-start-line="145" selection-start-column="0" selection-end-line="153" selection-end-column="22" />
+        <state relative-caret-position="424">
+          <caret line="153" column="8" selection-start-line="153" selection-start-column="8" selection-end-line="153" selection-end-column="8" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/mycelium.java">
+    <entry file="file://$PROJECT_DIR$/src/CollisionShape.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="86">
-          <caret line="34" column="25" selection-start-line="34" selection-start-column="25" selection-end-line="34" selection-end-column="25" />
+        <state relative-caret-position="1122">
+          <caret line="75" column="25" selection-start-line="75" selection-start-column="25" selection-end-line="75" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Fungus.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/mycelium.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
-          <caret line="12" column="12" selection-start-line="12" selection-start-column="12" selection-end-line="12" selection-end-column="21" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <caret line="19" column="44" selection-start-line="19" selection-start-column="44" selection-end-line="19" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/VectorField.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="19" column="11" selection-start-line="19" selection-start-column="11" selection-end-line="19" selection-end-column="11" />
+          <folding />
         </state>
       </provider>
     </entry>

@@ -151,7 +151,7 @@ public class Hyphae {
                 childrens) {
             h.display();
         }
-        tip.display();
+        //        tip.display();
     }
 
     public Tip getTip() {

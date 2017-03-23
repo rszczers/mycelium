@@ -1,10 +1,7 @@
 import Box2D.Box2DProcessing;
 import org.jbox2d.common.Vec2;
 import processing.core.PApplet;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 /**
  * Created by rszczers on 18.03.17.
