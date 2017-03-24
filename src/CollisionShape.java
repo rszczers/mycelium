@@ -7,8 +7,6 @@ import org.jbox2d.dynamics.BodyType;
 import processing.core.PApplet;
 import processing.core.PShape;
 
-import java.util.Random;
-
 /**
  * Created by rszczers on 21.03.17.
  */
@@ -21,7 +19,8 @@ public class CollisionShape {
     private PolygonShape pShape;
     private Body body;
     private BodyDef bd;
-    private Vec2[] last;
+    private Vec2[] top;
+    private Vec2[] bottom;
 
     public CollisionShape(PApplet context, Box2DProcessing world, Vec2[] last, Vec2[] next, int[] color) {
         this.context = context;
@@ -29,11 +28,12 @@ public class CollisionShape {
         this.color = color;
         this.dShape = createDisplayShapes(last, next);
         this.pShape = createCollisionShape(last, next);
-        this.last = next;
+        this.top = next.clone();
+        this.bottom = last.clone();
 
         this.bd = new BodyDef();
         bd.type = BodyType.STATIC;
-        Vec2 middle = next[0].add(last[1]).mul(0.5f);
+        Vec2 middle = next[0].add(top[1]).mul(0.5f);
         bd.position.set(middle);
         this.body = world.createBody(bd);
         this.body.createFixture(pShape, 1.0f);
@@ -50,7 +50,7 @@ public class CollisionShape {
                 next[1].sub(middle),
                 next[0].sub(middle),
         };
-//        System.out.println("last[0] = " + last[0] + ", last[1] = " + last[1] + ", next[0] = " + next[0] + ", next[1] = " + next[1]);
+//        System.out.println("top[0] = " + top[0] + ", top[1] = " + top[1] + ", next[0] = " + next[0] + ", next[1] = " + next[1]);
         PolygonShape ps = new PolygonShape();
         ps.set(vertices, vertices.length);
         return ps;
@@ -67,15 +67,15 @@ public class CollisionShape {
         for (int i = 0; i < last.length; i++) {
             last[i] = world.coordWorldToPixels(last[i]);
             next[i] = world.coordWorldToPixels(next[i]);
-//            System.out.println("last[" + i + "] = " + last[i] + ", \t " + "next[" + i + "] = " + next[i]);
+//            System.out.println("top[" + i + "] = " + top[i] + ", \t " + "next[" + i + "] = " + next[i]);
         }
 
         PShape ps = context.createShape();
         context.pushMatrix();
         ps.beginShape();
-            ps.fill(color[0], color[1], color[2], color[3]);
-//            ps.stroke(0);
-//            ps.strokeWeight(0);
+            ps.fill(color[0], color[1], color[2], 127);
+            ps.stroke(0);
+            ps.strokeWeight(1);
             ps.vertex(next[0].x, next[0].y);
             ps.vertex(next[1].x, next[1].y);
             ps.vertex(last[1].x, last[1].y);
@@ -85,6 +85,24 @@ public class CollisionShape {
         context.shape(ps);
         context.popMatrix();
         return ps;
+    }
+
+    public Vec2[] getLeftVerticies(){
+        Vec2[] left_vec = new Vec2[2];
+
+        left_vec[0] = world.coordWorldToPixels(top[0]);
+        left_vec[1] = world.coordWorldToPixels(bottom[0]);
+
+        return left_vec;
+    }
+
+    public Vec2[] getRightVerticies(){
+        Vec2[] right_vec = new Vec2[2];
+
+        right_vec[0] = world.coordWorldToPixels(top[0]);
+        right_vec[1] = world.coordWorldToPixels(bottom[0]);
+
+        return right_vec;
     }
 
     public int[] getColor() {
@@ -107,8 +125,12 @@ public class CollisionShape {
         return body.getPosition();
     }
 
-    public Vec2[] getLast() {
-        return last;
+    public Vec2[] getTop() {
+        return top;
+    }
+
+    public Vec2[] getBottom() {
+        return bottom;
     }
 
     public void display() {

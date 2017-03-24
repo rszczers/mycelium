@@ -21,7 +21,7 @@ public class mycelium extends PApplet {
     private boolean drawLabels = true;
     private boolean calculatePhysics = true;
     private boolean toggleBoundaries = true;
-    private boolean toggleForceField = true;
+    private boolean toggleForceField = false;
     private boolean toggleGravity = true;
     private boolean drawfps = true;
 

@@ -2,6 +2,7 @@ import Box2D.Box2DProcessing;
 import org.jbox2d.common.Vec2;
 import processing.core.PApplet;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by rszczers on 18.03.17.
@@ -22,7 +23,18 @@ public class Fungus {
     }
 
     public void addRoot(Vec2 location) {
-        roots.add(new Hyphae(context, world, this, location, 0.0, 0.0f));
+        Vec2[] last = new Vec2[]{
+                world.coordPixelsToWorld(location.add(new Vec2(5.0f, 5.0f))),
+                world.coordPixelsToWorld(location.add(new Vec2(-5.0f, 5.0f))),
+        };
+        Vec2[] next = new Vec2[]{
+                world.coordPixelsToWorld(location.add(new Vec2(5.0f, 0.0f))),
+                world.coordPixelsToWorld(location.add(new Vec2(-5.0f, 0.0f))),
+        };
+
+
+
+        roots.add(new Hyphae(context, world, this, null, last, 0.0, 0.0f));
     }
 
     public void grow() {
