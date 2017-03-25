@@ -89,20 +89,30 @@ public class CollisionShape {
 
     public Vec2[] getLeftVerticies(){
         Vec2[] left_vec = new Vec2[2];
-
         left_vec[0] = world.coordWorldToPixels(top[0]);
         left_vec[1] = world.coordWorldToPixels(bottom[0]);
-
         return left_vec;
     }
 
     public Vec2[] getRightVerticies(){
         Vec2[] right_vec = new Vec2[2];
-
         right_vec[0] = world.coordWorldToPixels(top[0]);
         right_vec[1] = world.coordWorldToPixels(bottom[0]);
-
         return right_vec;
+    }
+
+    public Vec2[] getLeft(){
+        Vec2[] left = new Vec2[2];
+        left[0] = bottom[0];
+        left[1] = top[0];
+        return left;
+    }
+
+    public Vec2[] getRight(){
+        Vec2[] right = new Vec2[2];
+        right[0] = top[1];
+        right[1] = bottom[1];
+        return right;
     }
 
     public int[] getColor() {
