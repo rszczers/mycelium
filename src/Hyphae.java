@@ -165,10 +165,11 @@ public class Hyphae {
 //        context.text("2", tmp[1].x, tmp[1].y-20);
 //        context.strokeWeight(1);
 //        context.popMatrix();
-        for (CollisionShape p :
-                shapes) {
-            p.display();
-        }
+
+//        for (CollisionShape p :
+//                shapes) {
+//            p.display();
+//        }
         for (Hyphae h :
                 childrens) {
             h.display();

@@ -8,6 +8,8 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.joints.DistanceJointDef;
 import processing.core.PApplet;
+import processing.core.PImage;
+import processing.opengl.PShader;
 
 /**
  * Przykładowa klasa, definiuje wygląd obiektów Ball.
@@ -18,6 +20,12 @@ public class Ball implements Interpretation {
     private CircleShape ps;
     private FixtureDef fd;
     private PApplet context;
+
+    private PShader pointShader;
+    private PImage cloud1;
+    private PImage cloud2;
+    private PImage cloud3;
+
 
 
     public Ball(PApplet context, Box2DProcessing world, int radius) {
@@ -42,20 +50,36 @@ public class Ball implements Interpretation {
         fd.density = 0.07f;
         fd.friction = 0.3f;
         fd.restitution = 0.5f;
+
+        pointShader = context.loadShader("spritefrag.glsl", "spritevert.glsl");
+        pointShader.set("weight", 20.0f);
+        cloud1 = context.loadImage("cloud1.png");
+        cloud2 = context.loadImage("cloud2.png");
+        cloud3 = context.loadImage("cloud3.png");
+        pointShader.set("sprite", cloud3);
+
     }
 
     public void display(Vec2 v, float phi) {
         context.pushMatrix();
         context.translate(v.x, v.y);
         context.rotate(-phi);
-        context.fill(255, 255, 255);
-        context.ellipse(0, 0, radius, radius);
-        context.stroke(0);
-        context.strokeWeight(2);
-        context.fill(0, 0, 255);
-        context.line(0, 0,radius/2,0);
+//        context.fill(255, 255, 255);
+//        context.ellipse(0, 0, radius, radius);
+//        context.stroke(0);
+//        context.strokeWeight(2);
+//        context.fill(0, 0, 255);
+//        context.line(0, 0,radius/2,0);
+//        context.strokeWeight(1);
+//        context.noStroke();
+        context.shader(pointShader, PApplet.POINTS);
+
+        context.strokeWeight(20);
+        context.strokeCap(PApplet.SQUARE);
+        context.stroke(255,70);
+        context.point(0, 0);
         context.strokeWeight(1);
-        context.noStroke();
+        context.resetShader();
         context.popMatrix();
 
     }

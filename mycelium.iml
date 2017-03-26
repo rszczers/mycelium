@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="core" level="project" />
     <orderEntry type="library" name="org.jbox2d:jbox2d-library:2.2.1.1" level="project" />
+    <orderEntry type="library" name="gluegen-rt-natives-linux-amd64" level="project" />
   </component>
 </module>
