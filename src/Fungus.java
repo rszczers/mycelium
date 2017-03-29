@@ -28,13 +28,13 @@ public class Fungus {
                 world.coordPixelsToWorld(location.add(new Vec2(-5.0f, 5.0f))),
         };
         Vec2[] next = new Vec2[]{
-                world.coordPixelsToWorld(location.add(new Vec2(5.0f, 0.0f))),
-                world.coordPixelsToWorld(location.add(new Vec2(-5.0f, 0.0f))),
+                world.coordPixelsToWorld(location.add(new Vec2(-5.0f, 5.0f))),
+                world.coordPixelsToWorld(location.add(new Vec2(5.0f, 5.0f))),
         };
 
 
 
-        roots.add(new Hyphae(context, world, this, null, last, 0.0, 0.0f));
+        roots.add(new Hyphae(context, world, this, null, next, 0.0, 0.0f));
     }
 
     public void grow() {

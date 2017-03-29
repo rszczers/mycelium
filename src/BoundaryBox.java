@@ -47,6 +47,5 @@ public class BoundaryBox {
         context.rectMode(PConstants.CENTER);
         context.rect(x, y, width, height);
         context.noFill();
-        context.noStroke();
     }
 }

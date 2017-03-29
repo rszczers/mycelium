@@ -1,11 +1,12 @@
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.contacts.Contact;
 import processing.core.PApplet;
+import processing.core.PImage;
 import processing.core.PVector;
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 import Box2D.Box2DProcessing;
+import processing.opengl.PShader;
 
 
 public class mycelium extends PApplet {
@@ -15,13 +16,13 @@ public class mycelium extends PApplet {
     private final static int HEIGHT = 800;
     private final static int GRID = 20;
 
-    private boolean drawCells = true;
-    private boolean drawGrids = false;
+    private boolean drawCells = false;
+    private boolean drawGrids = true;
     private boolean drawVectorFields = false;
     private boolean drawLabels = true;
     private boolean calculatePhysics = true;
     private boolean toggleBoundaries = true;
-    private boolean toggleForceField = false;
+    private boolean toggleForceField = true;
     private boolean toggleGravity = true;
     private boolean drawfps = true;
 
@@ -37,15 +38,17 @@ public class mycelium extends PApplet {
     private VectorField vf = new VectorField(GRID);
     private ArrayList<Tip> tcoll;
 
+
     public static void main(String[] args) {
         PApplet.main("mycelium", args);
     }
     public void settings() {
-        size(WIDTH, HEIGHT);
+        size(WIDTH, HEIGHT, P3D);
     }
 
     public void setup() {
         frameRate(60);
+        background(0);
 
         world = new Box2DProcessing(this, 10);
         world.createWorld();
@@ -79,21 +82,22 @@ public class mycelium extends PApplet {
                     WIDTH-5, HEIGHT/2, 10, HEIGHT));
         }
 
-        fungi = new Fungus(world, this, new Vec2(width/2, height/2));
-    }
-
-    public void draw() {
-        background(200);
-
-        if  (calculatePhysics)
-            world.step();
-
         if (drawCells)
             drawCells();
         if (drawGrids)
             drawGrid();
         if (drawVectorFields)
             drawVectorField(vf);
+
+        fungi = new Fungus(world, this, new Vec2(width/2, height/2));
+
+    }
+
+    public void draw() {
+
+        if  (calculatePhysics)
+            world.step();
+
         if (drawLabels) {
             fill(16, 16, 153);
             textSize(32);
@@ -106,6 +110,7 @@ public class mycelium extends PApplet {
                 t.display();
             }
         }
+
 
         tcoll = fungi.getTips();
 
@@ -129,11 +134,11 @@ public class mycelium extends PApplet {
             text(frameRate, 10, 60);
         }
 
-
         fungi.grow();
         fungi.display();
 
     }
+
 
     /**
      * Dodawanie obiektów przez kliknięcie lewym przyciskiem myszki
@@ -142,6 +147,7 @@ public class mycelium extends PApplet {
         fungi.addRoot(new Vec2(mouseX, mouseY));
 //        tips.add(new Tip(world, , new Ball(this, world, 20)));
     }
+
     public void beginContact(Contact c) {
 //        Fixture f1 = c.getFixtureA();
 //        Fixture f2 = c.getFixtureB();
@@ -166,13 +172,13 @@ public class mycelium extends PApplet {
      */
     private void drawGrid() {
         stroke(90);
+        strokeWeight(1);
         for (int x = WIDTH/GRID; x < WIDTH; x += WIDTH/GRID) {
             line(x, 0, x, HEIGHT);
         }
         for (int y = HEIGHT/GRID; y < HEIGHT; y += HEIGHT/GRID) {
             line(0, y, WIDTH, y);
         }
-        noStroke();
     }
 
     /**
@@ -180,7 +186,7 @@ public class mycelium extends PApplet {
      * @param vf
      */
     private void drawVectorField(VectorField vf) {
-        stroke(127,0,0);
+        stroke(1,0,0);
         for (int i = 0; i < vf.getBlock().length; i++) {
             for (int j = 0; j < vf.getBlock().length; j++) {
                 int[] c = vf2c(i, j);
@@ -199,7 +205,6 @@ public class mycelium extends PApplet {
 
             }
         }
-        noStroke();
     }
 
     /**
@@ -211,6 +216,8 @@ public class mycelium extends PApplet {
         int dh = HEIGHT/GRID;
         for (int x = 0; x < WIDTH; x += dw) {
             for (int y = 0; y < HEIGHT; y += dh) {
+                strokeWeight(1);
+                stroke(1);
                 fill(cellColor[x/dw][y/dh][0], cellColor[x/dw][y/dh][1], cellColor[x/dw][y/dh][2]);
                 rect(x, y, WIDTH/GRID, HEIGHT/GRID);
             }
