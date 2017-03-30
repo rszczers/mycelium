@@ -75,7 +75,7 @@ public class Hyphae {
         float d = dist(shapes.get(size - 1), tip.getBody());
         //        System.out.println("Distance: " + d);
         if (d >= 30.0f) {
-            if (length % 20 == 10) {
+            if (length % 20 == 5) {
                 bisect(leftOrRight);
             }
             shapes.add(new CollisionShape(context, world, last, next, color));
@@ -86,8 +86,6 @@ public class Hyphae {
                 childrens) {
             h.grow();
         }
-
-
     }
 
     /**

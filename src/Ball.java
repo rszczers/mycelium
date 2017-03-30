@@ -22,6 +22,7 @@ public class Ball implements Interpretation {
     private PApplet context;
 
     private PShader pointShader;
+    private PShader newShader;
     private PImage cloud1;
     private PImage cloud2;
     private PImage cloud3;
@@ -51,12 +52,12 @@ public class Ball implements Interpretation {
         fd.friction = 0.3f;
         fd.restitution = 0.5f;
 
-        pointShader = context.loadShader("spritefrag.glsl", "spritevert.glsl");
-        pointShader.set("weight", 20.0f);
-        cloud1 = context.loadImage("cloud1.png");
-        cloud2 = context.loadImage("cloud2.png");
-        cloud3 = context.loadImage("cloud3.png");
-        pointShader.set("sprite", cloud3);
+        //pointShader = context.loadShader("spritefrag.glsl", "spritevert.glsl");
+        //pointShader.set("weight", 20.0f);
+//        cloud1 = context.loadImage("cloud1.png");
+//        cloud2 = context.loadImage("cloud2.png");
+//        cloud3 = context.loadImage("cloud3.png");
+        //pointShader.set("sprite", cloud3);
 
     }
 
@@ -72,14 +73,15 @@ public class Ball implements Interpretation {
 //        context.line(0, 0,radius/2,0);
 //        context.strokeWeight(1);
 //        context.noStroke();
-        context.shader(pointShader, PApplet.POINTS);
 
-        context.strokeWeight(20);
-        context.strokeCap(PApplet.SQUARE);
-        context.stroke(255,70);
+        // Tutaj jest fragment chmurkowego szejdera
+//        context.shader(pointShader, PApplet.POINTS);
+//        context.strokeWeight(20);
+//        context.strokeCap(PApplet.SQUARE);
+        context.stroke(255,10);
         context.point(0, 0);
-        context.strokeWeight(1);
-        context.resetShader();
+        context.strokeWeight(10);
+        //context.resetShader();
         context.popMatrix();
 
     }
