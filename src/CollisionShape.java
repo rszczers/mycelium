@@ -37,6 +37,8 @@ public class CollisionShape {
         bd.position.set(middle);
         this.body = world.createBody(bd);
         this.body.createFixture(pShape, 1.0f);
+
+        body.setUserData(this);
     }
     /**
      * Generuj shape dla kolizji

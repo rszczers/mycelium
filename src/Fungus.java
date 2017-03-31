@@ -32,9 +32,8 @@ public class Fungus {
                 world.coordPixelsToWorld(location.add(new Vec2(5.0f, 5.0f))),
         };
 
-
-
-        roots.add(new Hyphae(context, world, this, null, next, 0.0, 0.0f));
+        Hyphae firstHyphae = new Hyphae(context, world, this, null, next, 0.0, 1.0f);
+        roots.add(firstHyphae);
     }
 
     public void grow() {

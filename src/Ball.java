@@ -37,7 +37,7 @@ public class Ball implements Interpretation {
         bd = new BodyDef();
         bd.type = BodyType.DYNAMIC;
 //        bd.fixedRotation = true;
-        bd.linearDamping = 0.8f;
+        bd.linearDamping = 0.5f;
         bd.angularDamping = 0.9f;
 //        bd.bullet = true;
 
@@ -50,7 +50,7 @@ public class Ball implements Interpretation {
         fd.shape = ps;
         fd.density = 0.07f;
         fd.friction = 0.3f;
-        fd.restitution = 0.5f;
+        fd.restitution = 0.0f;
 
         //pointShader = context.loadShader("spritefrag.glsl", "spritevert.glsl");
         //pointShader.set("weight", 20.0f);
@@ -78,9 +78,9 @@ public class Ball implements Interpretation {
 //        context.shader(pointShader, PApplet.POINTS);
 //        context.strokeWeight(20);
 //        context.strokeCap(PApplet.SQUARE);
-        context.stroke(255,10);
+        context.stroke(255,255);
         context.point(0, 0);
-        context.strokeWeight(10);
+        //context.strokeWeight(10);
         //context.resetShader();
         context.popMatrix();
 
