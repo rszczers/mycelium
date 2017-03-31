@@ -1,4 +1,6 @@
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Body;
+import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -21,7 +23,7 @@ public class mycelium extends PApplet {
     private boolean drawVectorFields = false;
     private boolean drawLabels = true;
     private boolean calculatePhysics = true;
-    private boolean toggleBoundaries = true;
+    private boolean toggleBoundaries = false;
     private boolean toggleForceField = false;
     private boolean toggleGravity = true;
     private boolean drawfps = true;
@@ -57,6 +59,7 @@ public class mycelium extends PApplet {
         } else {
             world.setGravity(0, 0);
         }
+
         world.listenForCollisions();
 
         // określ kolory kwadratów w których pole jest takie samo.
@@ -148,22 +151,48 @@ public class mycelium extends PApplet {
 //        tips.add(new Tip(world, , new Ball(this, world, 20)));
     }
 
+
     public void beginContact(Contact c) {
-//        Fixture f1 = c.getFixtureA();
-//        Fixture f2 = c.getFixtureB();
-//
-//        Body b1 = f1.getBody();
-//        Body b2 = f2.getBody();
-//
-//        Object o1 = b1.getUserData();
-//        Object o2 = b2.getUserData();
-//
-//
-//        if (o1.getClass() == Tip.class && o2.getClass() == Tip.class) {
-//            Tip p1  = (Tip) o1;
+
+        Fixture f1 = c.getFixtureA();
+        Fixture f2 = c.getFixtureB();
+
+        Body b1 = f1.getBody();
+        Body b2 = f2.getBody();
+
+        Object o1 = b1.getUserData();
+        Object o2 = b2.getUserData();
+
+
+        if (o1.getClass() == CollisionShape.class && o2.getClass() == CollisionShape.class) {
+            CollisionShape p1  = (CollisionShape) o1;
+            //Tutaj można wywołać jakąś metodę p1
+            CollisionShape p2 = (CollisionShape) o2;
+            System.out.println("CCC");
+            //Tutaj też.
+        }
+
+        if (o1.getClass() == Tip.class) {
+            Tip p1  = (Tip) o1;
+            //Tutaj można wywołać jakąś metodę p1
+            p1.getOwner().kill();
+            System.out.println("Tip-tip1");
+            //Tutaj też.
+        }
+        if (o2.getClass() == Tip.class) {
+            Tip p1  = (Tip) o2;
+            //Tutaj można wywołać jakąś metodę p1
+            p1.getOwner().kill();
+            System.out.println("Tip-tip2");
+            //Tutaj też.
+        }
+
+//        if (o1.getClass() == Tip.class && o2.getClass() == CollisionShape.class) {
+//            Tip t1  = (Tip) o1;
 //            //Tutaj można wywołać jakąś metodę p1
-//            Tip p2 = (Tip) o2;
+//            CollisionShape t2 = (CollisionShape) o2;
 //            //Tutaj też.
+//            System.out.println("Tip-Shape");
 //        }
     }
 

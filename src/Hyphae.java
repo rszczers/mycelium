@@ -22,6 +22,7 @@ public class Hyphae {
     private Tip tip;
     private Fungus fungus;
     private int[] color;
+    private boolean isGrowing;
 
     private int direction;
 
@@ -34,6 +35,7 @@ public class Hyphae {
         this.base = base;
         this.childrens = new ArrayList<>();
         this.parent = parent;
+        this.isGrowing = true;
         Vec2 middle = world.coordWorldToPixels(base[0].add(base[1]).mul(0.5f));
         Vec2 tipOffset = base[0].sub(base[1]);
 
@@ -41,11 +43,11 @@ public class Hyphae {
         tipOffset.x = tipOffset.y;
         tipOffset.y = tmp;
         tipOffset.normalize();
-        this.tip = new Tip(world, fungus, middle.add(tipOffset.mulLocal(12.0f)), new Ball(context, world, 10));
-
+        this.tip = new Tip(world, fungus, middle.add(tipOffset.mulLocal(12.0f)), new Ball(context, world, 10), this);
 
         // Rotacja wektora prędkości czubka strzępka
-        if (phi > 0.1 || phi < -0.1) {
+        //if (phi > 0.1 || phi < -0.1) {
+        if(parent != null){
             Vec2 velocityRot = parent.getTip().getBody().getLinearVelocity().clone();// new Vec2(0, v0);
             tmp = velocityRot.x;
 
@@ -55,7 +57,10 @@ public class Hyphae {
 //                    "Prędkość po rotacji: " + velocityRot);
             this.tip.getBody().setLinearVelocity(velocityRot);
 
+        }else{
+            this.tip.getBody().setLinearVelocity(new Vec2(0.0f, 0.1f));
         }
+
         // Konstrukcja kształtu do kolizji i wyświetlania
         shapes = new ArrayList<>();
         Random rand = new Random();
@@ -65,27 +70,32 @@ public class Hyphae {
 
 
     public void grow() {
-        int size = shapes.size();
-        Vec2[] last = shapes.get(size - 1).getTop().clone(); //Znajdź dwie współrzędne ostatniego CollisionShape'a
-        Vec2[] next = nextVertices(); //Znajdź dwie współrzędne dla czubka strzępka
+        if(isGrowing) {
+            int size = shapes.size();
+            Vec2[] last = shapes.get(size - 1).getTop().clone(); //Znajdź dwie współrzędne ostatniego CollisionShape'a
+            Vec2[] next = nextVertices(); //Znajdź dwie współrzędne dla czubka strzępka
 
-        Random random = new Random();
-        float leftOrRight = random.nextBoolean() ? 1.0f : -1.0f;
+            Random random = new Random();
+            float leftOrRight = random.nextBoolean() ? 1.0f : -1.0f;
 
-        float d = dist(shapes.get(size - 1), tip.getBody());
-        //        System.out.println("Distance: " + d);
-        if (d >= 30.0f) {
-            if (length % 20 == 5) {
-                bisect(leftOrRight);
+            float d = dist(shapes.get(size - 1), tip.getBody());
+            //        System.out.println("Distance: " + d);
+            if (d >= 30.0f) {
+                if (length % 20 == 5) {
+                    bisect(leftOrRight);
+                }
+                shapes.add(new CollisionShape(context, world, last, next, color));
+                this.length++;
             }
-            shapes.add(new CollisionShape(context, world, last, next, color));
-            this.length++;
         }
-
         for (Hyphae h :
                 childrens) {
             h.grow();
         }
+    }
+
+    public void kill(){
+        this.isGrowing = false;
     }
 
     /**
@@ -179,7 +189,12 @@ public class Hyphae {
         return tip;
     }
 
+    public void setTipVelocity(Vec2 v){
+        this.tip.getBody().setLinearVelocity(v);
+    }
+
     public ArrayList<CollisionShape> getShapes() {
         return shapes;
     }
+
 }
