@@ -34,6 +34,7 @@ public class Fungus {
 
         Hyphae firstHyphae = new Hyphae(context, world, this, null, next, 0.0, 1.0f);
         roots.add(firstHyphae);
+
     }
 
     public void grow() {
@@ -74,5 +75,9 @@ public class Fungus {
 
     public void addTip(Tip a) {
         leafs.add(a);
+    }
+
+    public ArrayList<Hyphae> getRoots() {
+        return roots;
     }
 }

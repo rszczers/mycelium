@@ -23,7 +23,6 @@ public class Hyphae {
     private Fungus fungus;
     private int[] color;
     private boolean isGrowing;
-    private boolean joinHyphae;
 
     private int direction;
 
@@ -37,7 +36,6 @@ public class Hyphae {
         this.childrens = new ArrayList<>();
         this.parent = parent;
         this.isGrowing = true;
-        this.joinHyphae = false;
         Vec2 middle = world.coordWorldToPixels(base[0].add(base[1]).mul(0.5f));
         Vec2 tipOffset = base[0].sub(base[1]);
 
@@ -73,6 +71,10 @@ public class Hyphae {
 
     public void grow() {
         if (isGrowing) {
+                for (CollisionShape colS :
+                        shapes) {
+                    colS.init();
+                }
             int size = shapes.size();
             Vec2[] last = shapes.get(size - 1).getTop().clone(); //Znajdź dwie współrzędne ostatniego CollisionShape'a
             Vec2[] next = nextVertices(); //Znajdź dwie współrzędne dla czubka strzępka
@@ -96,20 +98,45 @@ public class Hyphae {
         }
     }
 
-    public void killHyphae(Vec2[] bottom) {
+    public void killHyphae() {
         tip.getBody().setLinearVelocity(new Vec2(0.0f, 0.0f));
         tip.getBody().setAngularVelocity(0.0f);
         tip.getBody().setGravityScale(0);
-        if (joinHyphae && bottom != null) {
-            Vec2[] top = this.getLastVertices();
-            System.out.println("Join");
-            //this.shapes.add(new CollisionShape(context, world, bottom, top, col));
+        this.isGrowing = false;
+        mycelium.tipsToDelete.add(tip);
+    }
 
-            this.joinHyphae = false;
-            tip.killBody();
+    public void joinHyphae(Vec2[] sideVertices){
+            Vec2[] lastVertices = this.getLastVertices();
+            this.shapes.add(new CollisionShape(context, world,  lastVertices, sideVertices, color));
+    }
 
-            this.isGrowing = false;
+    public void collisionWithHyphae(CollisionShape collisionShape){
+        Vec2[] left = collisionShape.getLeft();
+        Vec2[] right = collisionShape.getRight();
+        Vec2[] lastVert = this.getLastVertices();
+        Vec2 midLeft = left[0].add(left[1]).mulLocal(0.5f);
+        Vec2 midRight = right[0].add(right[1]).mulLocal(0.5f);
+        Vec2 midLastVert = lastVert[0].add(lastVert[1]).mulLocal(0.5f);
+        float distLeft = midLeft.sub(midLastVert).length();
+        float distRight = midRight.sub(midLastVert).length();
+        float min = Math.min(distLeft, distRight);
+
+        Vec2 tmp = right[0];
+        right[0] = right[1];
+        right[1] = tmp;
+        tmp = left[0];
+        left[0] = left[1];
+        left[1] = tmp;
+
+        if(min < distLeft){
+            System.out.println("Łączę w prawo!");
+            joinHyphae(right);
+        } else {
+            System.out.println("Łoncze w lewo!");
+            joinHyphae(left);
         }
+        killHyphae();
     }
 
     /**
@@ -186,10 +213,10 @@ public class Hyphae {
 //        context.strokeWeight(1);
 //        context.popMatrix();
 
-//        for (CollisionShape p :
-//                shapes) {
-//            p.display();
-//        }
+        for (CollisionShape p :
+                shapes) {
+            p.display();
+        }
         for (Hyphae h :
                 childrens) {
             h.display();
@@ -217,9 +244,5 @@ public class Hyphae {
     public Vec2[] getLastVertices() {
         int size = this.shapes.size();
         return this.shapes.get(size - 1).getTop();
-    }
-
-    public void setJoinHyphae(boolean joinHyphae) {
-        this.joinHyphae = joinHyphae;
     }
 }
