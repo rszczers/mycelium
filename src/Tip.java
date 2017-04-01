@@ -51,6 +51,7 @@ public class Tip {
 
     public void killBody() {
         world.destroyBody(this.body);
+        body.setUserData(null);
     }
 
     public Hyphae getOwner(){

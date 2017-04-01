@@ -21,6 +21,7 @@ public class CollisionShape {
     private BodyDef bd;
     private Vec2[] top;
     private Vec2[] bottom;
+    private boolean hasBody;
 
     public CollisionShape(PApplet context, Box2DProcessing world, Vec2[] last, Vec2[] next, int[] color) {
         this.context = context;
@@ -30,16 +31,9 @@ public class CollisionShape {
         this.pShape = createCollisionShape(last, next);
         this.top = next.clone();
         this.bottom = last.clone();
-
-        this.bd = new BodyDef();
-        bd.type = BodyType.STATIC;
-        Vec2 middle = next[0].add(top[1]).mul(0.5f);
-        bd.position.set(middle);
-        this.body = world.createBody(bd);
-        this.body.createFixture(pShape, 1.0f);
-
-        body.setUserData(this);
+        hasBody = false;
     }
+
     /**
      * Generuj shape dla kolizji
      * @return
@@ -89,31 +83,17 @@ public class CollisionShape {
         return ps;
     }
 
-    public Vec2[] getLeftVerticies(){
-        Vec2[] left_vec = new Vec2[2];
-        left_vec[0] = world.coordWorldToPixels(top[0]);
-        left_vec[1] = world.coordWorldToPixels(bottom[0]);
-        return left_vec;
-    }
-
-    public Vec2[] getRightVerticies(){
-        Vec2[] right_vec = new Vec2[2];
-        right_vec[0] = world.coordWorldToPixels(top[0]);
-        right_vec[1] = world.coordWorldToPixels(bottom[0]);
-        return right_vec;
-    }
-
     public Vec2[] getLeft(){
         Vec2[] left = new Vec2[2];
-        left[0] = bottom[0];
-        left[1] = top[0];
+        left[0] = bottom[0].clone();
+        left[1] = top[0].clone();
         return left;
     }
 
     public Vec2[] getRight(){
         Vec2[] right = new Vec2[2];
-        right[0] = top[1];
-        right[1] = bottom[1];
+        right[0] = top[1].clone();
+        right[1] = bottom[1].clone();
         return right;
     }
 
@@ -148,4 +128,18 @@ public class CollisionShape {
     public void display() {
         context.shape(dShape);
     }
+
+    public void init(){
+        if(!hasBody) {
+            this.bd = new BodyDef();
+            this.bd.type = BodyType.STATIC;
+            Vec2 middle = top[0].add(top[1]).mul(0.5f);
+            this.bd.position.set(middle);
+            this.body = this.world.createBody(bd);
+            this.body.createFixture(pShape, 1.0f);
+            this.body.setUserData(this);
+            hasBody = true;
+        }
+    }
+
 }
