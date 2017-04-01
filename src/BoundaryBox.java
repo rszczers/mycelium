@@ -39,6 +39,7 @@ public class BoundaryBox {
 
         body = world.createBody(bd);
         body.createFixture(ps, 1);
+        body.setUserData(this);
     }
 
     void display() {

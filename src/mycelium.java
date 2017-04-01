@@ -3,12 +3,11 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 import processing.core.PApplet;
-import processing.core.PImage;
+import processing.core.PGraphics;
 import processing.core.PVector;
 import java.util.ArrayList;
 
 import Box2D.Box2DProcessing;
-import processing.opengl.PShader;
 
 
 public class mycelium extends PApplet {
@@ -19,14 +18,17 @@ public class mycelium extends PApplet {
     private final static int GRID = 20;
 
     private boolean drawCells = false;
-    private boolean drawGrids = true;
+    private boolean drawGrids = false;
     private boolean drawVectorFields = false;
     private boolean drawLabels = true;
     private boolean calculatePhysics = true;
-    private boolean toggleBoundaries = false;
+    private boolean toggleBoundaries = true;
     private boolean toggleForceField = false;
     private boolean toggleGravity = true;
     private boolean drawfps = true;
+
+    public PGraphics collisionLayer;
+    public PGraphics interfaceLayer;
 
 
     private static float[][][] cellColor = new float[GRID][GRID][3];
@@ -50,7 +52,10 @@ public class mycelium extends PApplet {
 
     public void setup() {
         frameRate(60);
-        background(0);
+        background(127);
+
+        collisionLayer = createGraphics(WIDTH, HEIGHT);
+        interfaceLayer = createGraphics(WIDTH, HEIGHT);
 
         world = new Box2DProcessing(this, 10);
         world.createWorld();
@@ -97,7 +102,6 @@ public class mycelium extends PApplet {
     }
 
     public void draw() {
-
         if  (calculatePhysics)
             world.step();
 
@@ -117,29 +121,32 @@ public class mycelium extends PApplet {
 
         tcoll = fungi.getTips();
 
-        for (int i = 0; i < tcoll.size(); i++) {
-            try {
-                Tip t = tcoll.get(i);
-                Vec2 coords = world.coordWorldToPixels(t.getBody().getPosition());
-                float[] bp =  {coords.x, coords.y};
-                int[] xy = c2vf((int)bp[0], (int)bp[1]);
-                if (toggleForceField)
-                    t.applyForce(vf.getBlock()[xy[0]][xy[1]]);
-                t.display();
-            } catch (ArrayIndexOutOfBoundsException e) {
-                tcoll.get(i).killBody(); // usuń obiekt z systemu fizycznego
-                tcoll.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
-            }
-        }
+//        interfaceLayer.beginDraw();
+//        for (int i = 0; i < tcoll.size(); i++) {
+//            try {
+//                Tip t = tcoll.get(i);
+//                Vec2 coords = world.coordWorldToPixels(t.getBody().getPosition());
+//                float[] bp =  {coords.x, coords.y};
+//                int[] xy = c2vf((int)bp[0], (int)bp[1]);
+//                if (toggleForceField)
+//                    t.applyForce(vf.getBlock()[xy[0]][xy[1]]);
+//                t.display();
+//            } catch (ArrayIndexOutOfBoundsException e) {
+//                tcoll.get(i).killBody(); // usuń obiekt z systemu fizycznego
+//                tcoll.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
+//            }
+//        }
+//
+//        if (drawfps) {
+//            fill(0);
+//            text(frameRate, 10, 60);
+//        }
+//        interfaceLayer.endDraw();
 
-        if (drawfps) {
-            fill(0);
-            text(frameRate, 10, 60);
-        }
 
         fungi.grow();
         fungi.display();
-
+//        image(interfaceLayer, 0, 0);
     }
 
 
@@ -163,28 +170,38 @@ public class mycelium extends PApplet {
         Object o1 = b1.getUserData();
         Object o2 = b2.getUserData();
 
-
-        if (o1.getClass() == CollisionShape.class && o2.getClass() == CollisionShape.class) {
-            CollisionShape p1  = (CollisionShape) o1;
-            //Tutaj można wywołać jakąś metodę p1
-            CollisionShape p2 = (CollisionShape) o2;
-            System.out.println("CCC");
-            //Tutaj też.
-        }
-
-        if (o1.getClass() == Tip.class) {
+        if (o1.getClass() == Tip.class && o2.getClass() == CollisionShape.class) {
             Tip p1  = (Tip) o1;
-            //Tutaj można wywołać jakąś metodę p1
-            p1.getOwner().kill();
-            System.out.println("Tip-tip1");
+            CollisionShape p2 = (CollisionShape) o2;
+            System.out.println("Tip-shape 1");
+            Hyphae tipOwner = p1.getOwner();
+            tipOwner.setJoinHyphae(true);
+            tipOwner.killHyphae(p2.getRight());
             //Tutaj też.
         }
-        if (o2.getClass() == Tip.class) {
+        if (o2.getClass() == Tip.class && o1.getClass() == CollisionShape.class) {
             Tip p1  = (Tip) o2;
-            //Tutaj można wywołać jakąś metodę p1
-            p1.getOwner().kill();
-            System.out.println("Tip-tip2");
+            CollisionShape p2 = (CollisionShape) o1;
+            System.out.println("Tip-shape 2");
+            Hyphae tipOwner = p1.getOwner();
+//            ((Tip) o2).setVisible(false);
+            tipOwner.setJoinHyphae(true);
+            tipOwner.killHyphae(p2.getRight());
+//            System.out.println("bottom: " + bottom[0] + ", " + bottom[1] + "\n top" + top[0] + "," + top[1]);
             //Tutaj też.
+        }
+
+        if (o1.getClass() == Tip.class && o2.getClass() == BoundaryBox.class) {
+            System.out.println("Brzeg! 1");
+            Tip p1  = (Tip) o1;
+            p1.getOwner().killHyphae(null);
+        }
+
+        if (o2.getClass() == Tip.class && o1.getClass() == BoundaryBox.class) {
+            System.out.println("Brzeg! 2");
+            System.out.println("Brzeg! 1");
+            Tip p1  = (Tip) o2;
+            p1.getOwner().killHyphae(null);
         }
 
 //        if (o1.getClass() == Tip.class && o2.getClass() == CollisionShape.class) {
