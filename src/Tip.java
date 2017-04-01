@@ -11,11 +11,13 @@ public class Tip {
     private Box2DProcessing world;
     private Body body;
     private Hyphae owner;
+    private boolean visible;
 
     public Tip(Box2DProcessing world, Fungus fungus, Vec2 location, Interpretation interp, Hyphae owner) {
         this.world = world;
         this.interp = interp;
         this.owner = owner;
+        this.visible = true;
 
         // Ustalenie pozycji komórki w BodyDef
         interp.getBodyDef().position.set(world.coordPixelsToWorld(location));
@@ -37,7 +39,9 @@ public class Tip {
     public void display() {
         Vec2 v = world.getBodyPixelCoord(body);
         float phi = body.getAngle();
-        interp.display(v, phi);
+        if(visible) {
+            interp.display(v, phi);
+        }
     }
 
     public Body getBody() {
@@ -45,11 +49,15 @@ public class Tip {
     }
     public Interpretation getInterp() {return interp; }
 
-    void killBody() {
-        world.destroyBody(body);
+    public void killBody() {
+        world.destroyBody(this.body);
     }
 
     public Hyphae getOwner(){
         return owner;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }

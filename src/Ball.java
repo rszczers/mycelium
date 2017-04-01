@@ -28,7 +28,6 @@ public class Ball implements Interpretation {
     private PImage cloud3;
 
 
-
     public Ball(PApplet context, Box2DProcessing world, int radius) {
         this.context = context;
         this.radius = radius;
@@ -65,22 +64,23 @@ public class Ball implements Interpretation {
         context.pushMatrix();
         context.translate(v.x, v.y);
         context.rotate(-phi);
-//        context.fill(255, 255, 255);
-//        context.ellipse(0, 0, radius, radius);
-//        context.stroke(0);
-//        context.strokeWeight(2);
-//        context.fill(0, 0, 255);
-//        context.line(0, 0,radius/2,0);
-//        context.strokeWeight(1);
+
+            context.fill(255, 255, 255);
+            context.ellipse(0, 0, radius, radius);
+            context.stroke(0);
+            context.strokeWeight(2);
+            context.fill(0, 0, 255);
+            context.line(0, 0, radius / 2, 0);
+            context.strokeWeight(1);
 //        context.noStroke();
 
         // Tutaj jest fragment chmurkowego szejdera
 //        context.shader(pointShader, PApplet.POINTS);
 //        context.strokeWeight(20);
 //        context.strokeCap(PApplet.SQUARE);
-        context.stroke(255,255);
-        context.point(0, 0);
-        //context.strokeWeight(10);
+//        context.stroke(255,255);
+//        context.point(0, 0);
+//        context.strokeWeight(10);
         //context.resetShader();
         context.popMatrix();
 
@@ -98,4 +98,5 @@ public class Ball implements Interpretation {
     public FixtureDef getFixtureDef() {
         return fd;
     }
+
 }

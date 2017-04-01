@@ -52,7 +52,7 @@ public class CollisionShape {
                 next[1].sub(middle),
                 next[0].sub(middle),
         };
-//        System.out.println("top[0] = " + top[0] + ", top[1] = " + top[1] + ", next[0] = " + next[0] + ", next[1] = " + next[1]);
+//        System.out.println("top[0] = " + last[0] + ", top[1] = " + last[1] + ", next[0] = " + next[0] + ", next[1] = " + next[1]);
         PolygonShape ps = new PolygonShape();
         ps.set(vertices, vertices.length);
         return ps;

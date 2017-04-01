@@ -5,7 +5,6 @@ import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.FixtureDef;
 
 public interface Interpretation {
-    BodyDef bd = new BodyDef();
 
     void display(Vec2 v, float phi);
     BodyDef getBodyDef();

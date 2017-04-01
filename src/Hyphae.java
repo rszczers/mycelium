@@ -23,6 +23,7 @@ public class Hyphae {
     private Fungus fungus;
     private int[] color;
     private boolean isGrowing;
+    private boolean joinHyphae;
 
     private int direction;
 
@@ -36,6 +37,7 @@ public class Hyphae {
         this.childrens = new ArrayList<>();
         this.parent = parent;
         this.isGrowing = true;
+        this.joinHyphae = false;
         Vec2 middle = world.coordWorldToPixels(base[0].add(base[1]).mul(0.5f));
         Vec2 tipOffset = base[0].sub(base[1]);
 
@@ -47,7 +49,7 @@ public class Hyphae {
 
         // Rotacja wektora prędkości czubka strzępka
         //if (phi > 0.1 || phi < -0.1) {
-        if(parent != null){
+        if (parent != null) {
             Vec2 velocityRot = parent.getTip().getBody().getLinearVelocity().clone();// new Vec2(0, v0);
             tmp = velocityRot.x;
 
@@ -57,7 +59,7 @@ public class Hyphae {
 //                    "Prędkość po rotacji: " + velocityRot);
             this.tip.getBody().setLinearVelocity(velocityRot);
 
-        }else{
+        } else {
             this.tip.getBody().setLinearVelocity(new Vec2(0.0f, 0.1f));
         }
 
@@ -70,7 +72,7 @@ public class Hyphae {
 
 
     public void grow() {
-        if(isGrowing) {
+        if (isGrowing) {
             int size = shapes.size();
             Vec2[] last = shapes.get(size - 1).getTop().clone(); //Znajdź dwie współrzędne ostatniego CollisionShape'a
             Vec2[] next = nextVertices(); //Znajdź dwie współrzędne dla czubka strzępka
@@ -94,8 +96,20 @@ public class Hyphae {
         }
     }
 
-    public void kill(){
-        this.isGrowing = false;
+    public void killHyphae(Vec2[] bottom) {
+        tip.getBody().setLinearVelocity(new Vec2(0.0f, 0.0f));
+        tip.getBody().setAngularVelocity(0.0f);
+        tip.getBody().setGravityScale(0);
+        if (joinHyphae && bottom != null) {
+            Vec2[] top = this.getLastVertices();
+            System.out.println("Join");
+            //this.shapes.add(new CollisionShape(context, world, bottom, top, col));
+
+            this.joinHyphae = false;
+            tip.killBody();
+
+            this.isGrowing = false;
+        }
     }
 
     /**
@@ -130,10 +144,8 @@ public class Hyphae {
         Vec2[] lastInit;
         if (leftOrRight == 1.0f) {  // Rosnij w lewo (sprawdzić)
             lastInit = shapeToGrow.getLeft();
-//            System.out.println("Lewo! ");
         } else {    // Rosnij w prawo
             lastInit = shapeToGrow.getRight();
-//            System.out.println("Prawo!");
         }
 
         Hyphae newHyphae = new Hyphae(context, world, fungus, this, lastInit, leftOrRight * Math.PI / 3, tip.getBody().getLinearVelocity().length());
@@ -189,7 +201,7 @@ public class Hyphae {
         return tip;
     }
 
-    public void setTipVelocity(Vec2 v){
+    public void setTipVelocity(Vec2 v) {
         this.tip.getBody().setLinearVelocity(v);
     }
 
@@ -197,4 +209,17 @@ public class Hyphae {
         return shapes;
     }
 
+    public void addToShapes(Vec2[] top, Vec2[] bottom) {
+        CollisionShape collisionShape = new CollisionShape(context, world, bottom, top, color);
+        this.shapes.add(collisionShape);
+    }
+
+    public Vec2[] getLastVertices() {
+        int size = this.shapes.size();
+        return this.shapes.get(size - 1).getTop();
+    }
+
+    public void setJoinHyphae(boolean joinHyphae) {
+        this.joinHyphae = joinHyphae;
+    }
 }
