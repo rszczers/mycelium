@@ -31,9 +31,9 @@ public class mycelium extends PApplet {
     private boolean toggleGravity = true;
     private boolean drawfps = true;
 
-    private boolean toggleBackgroundLayer = true;
+    private boolean toggleBackgroundLayer = false;
     private boolean toggleDebugLayer = false;
-    private boolean toggleFungiLayer = false;
+    private boolean toggleFungiLayer = true;
     private boolean toggleInterfaceLayer = false;
 
     public PGraphics backgroundLayer;
@@ -42,8 +42,7 @@ public class mycelium extends PApplet {
     public PGraphics fungiLayer;
     public PGraphics interfaceLayer;
 
-    private PShader backgroundShader;
-    private PImage jez;
+    private PShader fungiShader;
 
     public static LinkedList<Tip> tipsToDelete;
 
@@ -70,8 +69,7 @@ public class mycelium extends PApplet {
     public void setup() {
         frameRate(60);
         background(0, 0, 127);
-        jez = loadImage("jez.jpg");
-        backgroundShader = loadShader("fale.glsl");
+        fungiShader = loadShader("fale.glsl");
         tipsToDelete = new LinkedList<>();
 
         backgroundLayer = createGraphics(WIDTH, HEIGHT);
@@ -145,25 +143,8 @@ public class mycelium extends PApplet {
          */
         if(toggleBackgroundLayer) {
             backgroundLayer.beginDraw();
-            ArrayList<Vec2> tipsToDisplay = new ArrayList<>();
-            for (int i = 0; i < tcoll.size(); i++) {
-                if(tcoll.get(i).isVisible())
-                    tipsToDisplay.add(world.coordWorldToPixels(tcoll.get(i).getBody().getPosition()));
-            }
 
-            backgroundShader.set("u_posSize", tipsToDisplay.size());
-            backgroundShader.set("u_resolution", (float) width, (float) height);
-            backgroundShader.set("u_mouse", (float) mouseX, (float) (height - mouseY));
-            backgroundShader.set("u_time", millis() / 1000.0f);
-            backgroundShader.set("u_buf", backbuffer);
-            for(int i = 0; i < tipsToDisplay.size(); i++){
-                backgroundShader.set("u_positions[" + i + "]", (float)(tipsToDisplay.get(i).x), (float)height - tipsToDisplay.get(i).y);
-            }
-            shader(backgroundShader);
-            rect(0, 0, width, height);
-            resetShader();
             backgroundLayer.endDraw();
-            backbuffer = get();
         }
 
 
@@ -224,6 +205,25 @@ public class mycelium extends PApplet {
          */
         if (toggleFungiLayer) {
             fungiLayer.beginDraw();
+            ArrayList<Vec2> tipsToDisplay = new ArrayList<>();
+            for (int i = 0; i < tcoll.size(); i++) {
+                if(tcoll.get(i).isVisible())
+                    tipsToDisplay.add(world.coordWorldToPixels(tcoll.get(i).getBody().getPosition()));
+            }
+
+            fungiShader.set("u_posSize", tipsToDisplay.size());
+            fungiShader.set("u_resolution", (float) width, (float) height);
+            fungiShader.set("u_mouse", (float) mouseX, (float) (height - mouseY));
+            fungiShader.set("u_time", millis() / 1000.0f);
+            fungiShader.set("u_buf", backbuffer);
+            for(int i = 0; i < tipsToDisplay.size(); i++){
+                fungiShader.set("u_positions[" + i + "]", (float)(tipsToDisplay.get(i).x), (float)height - tipsToDisplay.get(i).y);
+            }
+            shader(fungiShader);
+            rect(0, 0, width, height);
+            resetShader();
+            backbuffer = get();
+
             //fungi.display(toggleFungiLayer);
             fungiLayer.endDraw();
         }
