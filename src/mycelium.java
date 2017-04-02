@@ -19,17 +19,27 @@ public class mycelium extends PApplet {
     private final static int HEIGHT = 800;
     private final static int GRID = 20;
 
-    private boolean drawCells = false;
-    private boolean drawGrids = false;
-    private boolean drawVectorFields = false;
+    private static final int HYPHAE_WIDTH = 5;
+    private static final int HYPHAE_HEIGHT = 40;
+
+    private boolean drawCells = true;
+    private boolean drawGrids = true;
+    private boolean drawVectorFields = true;
     private boolean drawLabels = true;
     private boolean calculatePhysics = true;
-    private boolean toggleBoundaries = true;
-    private boolean toggleForceField = false;
+    private boolean toggleBoundaries = false;
+    private boolean toggleForceField = true;
     private boolean toggleGravity = true;
     private boolean drawfps = true;
 
-    public PGraphics collisionLayer;
+    private boolean toggleBackgroundLayer = true;
+    private boolean toggleDebugLayer = true;
+    private boolean toggleFungiLayer = true;
+    private boolean toggleInterfaceLayer = true;
+
+    public PGraphics backgroundLayer;
+    public PGraphics debugLayer;
+    public PGraphics fungiLayer;
     public PGraphics interfaceLayer;
 
     public static LinkedList<Tip> tipsToDelete;
@@ -59,7 +69,9 @@ public class mycelium extends PApplet {
         background(127);
         tipsToDelete = new LinkedList<>();
 
-        collisionLayer = createGraphics(WIDTH, HEIGHT);
+        backgroundLayer = createGraphics(WIDTH, HEIGHT);
+        debugLayer = createGraphics(WIDTH, HEIGHT);
+        fungiLayer = createGraphics(WIDTH, HEIGHT);
         interfaceLayer = createGraphics(WIDTH, HEIGHT);
 
         world = new Box2DProcessing(this, 10);
@@ -95,67 +107,102 @@ public class mycelium extends PApplet {
                     WIDTH - 5, HEIGHT / 2, 10, HEIGHT));
         }
 
-        if (drawCells)
-            drawCells();
-        if (drawGrids)
-            drawGrid();
-        if (drawVectorFields)
-            drawVectorField(vf);
 
         fungi = new Fungus(world, this, new Vec2(width / 2, height / 2));
     }
 
     public void draw() {
-//        background(127);
         if (calculatePhysics)
             world.step();
-
-        if (drawLabels) {
-            fill(16, 16, 153);
-            textSize(32);
-            text(mouseX / (WIDTH / GRID) + "; " + mouseY / (HEIGHT / GRID) + "\n", width / 2, 60);
-        }
-
-        if (toggleBoundaries) {
-            for (BoundaryBox t :
-                    boundaries) {
-                t.display();
+        /**
+         * Apply force to tip
+         */
+        tcoll = fungi.getTips();
+        for (int i = 0; i < tcoll.size(); i++) {
+            if (toggleForceField) {
+                try {
+                    Tip t = tcoll.get(i);
+                    Vec2 coords = world.coordWorldToPixels(t.getBody().getPosition());
+                    float[] bp = {coords.x, coords.y};
+                    int[] xy = c2vf((int) bp[0], (int) bp[1]);
+                    t.applyForce(vf.getBlock()[xy[0]][xy[1]]); // !!!
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    tcoll.get(i).killBody(); // usuń obiekt z systemu fizycznego
+                    tcoll.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
+                }
             }
         }
 
-
-//        tcoll = fungi.getTips();
-
-//        interfaceLayer.beginDraw();
-//        for (int i = 0; i < tcoll.size(); i++) {
-//            try {
-//                Tip t = tcoll.get(i);
-//                Vec2 coords = world.coordWorldToPixels(t.getBody().getPosition());
-//                float[] bp =  {coords.x, coords.y};
-//                int[] xy = c2vf((int)bp[0], (int)bp[1]);
-//                if (toggleForceField)
-//                    t.applyForce(vf.getBlock()[xy[0]][xy[1]]);
-//                t.display();
-//            } catch (ArrayIndexOutOfBoundsException e) {
-//                tcoll.get(i).killBody(); // usuń obiekt z systemu fizycznego
-//                tcoll.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
-//            }
-//        }
-
-        if (drawfps) {
-            fill(0);
-            text(frameRate, 10, 60);
+        /**
+         * Background shader
+         */
+        if(toggleBackgroundLayer) {
+            backgroundLayer.beginDraw();
+            background(250);
+            backgroundLayer.endDraw();
         }
-//        interfaceLayer.endDraw();
 
+        /**
+         * Debug screen
+         */
+        if(toggleDebugLayer) {
+            debugLayer.beginDraw();
+            if (drawCells)
+                drawCells();
+            if (drawGrids)
+                drawGrid();
+            if (drawVectorFields)
+                drawVectorField(vf);
 
-        fungi.grow();
-        fungi.display();
+            for (Tip t :
+                    tcoll) {
+                t.display();
+            }
 
-        for (int i = 0; i < tipsToDelete.size(); i++) {
-//            tipsToDelete.get(i).killBody();
+            if (toggleBoundaries) {
+                for (BoundaryBox t :
+                        boundaries) {
+                    t.display();
+                }
+            }
+            debugLayer.endDraw();
         }
-//        image(interfaceLayer, 0, 0);
+
+        /**
+         * Interface screen
+         */
+        if(toggleInterfaceLayer) {
+            interfaceLayer.beginDraw();
+            if (drawLabels) {
+                fill(16, 16, 153);
+                textSize(32);
+                text(mouseX / (WIDTH / GRID) + "; " + mouseY / (HEIGHT / GRID) + "\n", width / 2, 60);
+            }
+            if (drawfps) {
+                fill(0, 255, 0);
+                text(frameRate, 10, 60);
+            }
+            interfaceLayer.endDraw();
+        }
+
+        /**
+         * Fungus screen
+         */
+        if (toggleFungiLayer) {
+            fungiLayer.beginDraw();
+            fungi.grow(HYPHAE_WIDTH, HYPHAE_HEIGHT);
+            fungi.display(toggleFungiLayer);
+            fungiLayer.endDraw();
+        }
+
+        if(toggleBackgroundLayer)
+            image(backgroundLayer, 0, 0);
+        if(toggleDebugLayer)
+            image(debugLayer, 0, 0);
+        if(toggleFungiLayer)
+            image(fungiLayer, 0, 0);
+        if(toggleInterfaceLayer)
+            image(interfaceLayer, 0, 0);
     }
 
 
@@ -163,7 +210,7 @@ public class mycelium extends PApplet {
      * Dodawanie obiektów przez kliknięcie lewym przyciskiem myszki
      */
     public void mouseClicked() {
-        fungi.addRoot(new Vec2(mouseX, mouseY));
+        fungi.addRoot(new Vec2(mouseX, mouseY), HYPHAE_WIDTH);
     }
 
 
@@ -185,7 +232,7 @@ public class mycelium extends PApplet {
             Tip tip = (Tip) object1;
             CollisionShape collisionShape = (CollisionShape) object2;
             Hyphae tipOwner = tip.getOwner();
-            tipOwner.collisionWithHyphae(collisionShape);
+            tipOwner.collisionWithHyphae(collisionShape, HYPHAE_WIDTH, HYPHAE_HEIGHT);
         }
 
         /**
@@ -195,7 +242,7 @@ public class mycelium extends PApplet {
             CollisionShape collisionShape = (CollisionShape) object1;
             Tip tip = (Tip) object2;
             Hyphae tipOwner = tip.getOwner();
-            tipOwner.collisionWithHyphae(collisionShape);
+            tipOwner.collisionWithHyphae(collisionShape, HYPHAE_WIDTH, HYPHAE_HEIGHT);
         }
 
         /**

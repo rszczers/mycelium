@@ -22,25 +22,27 @@ public class Fungus {
         this.leafs = new ArrayList<>();
     }
 
-    public void addRoot(Vec2 location) {
+    public void addRoot(Vec2 location, int width) {
+        float off = ((float)width/2.0f);
         Vec2[] last = new Vec2[]{
-                world.coordPixelsToWorld(location.add(new Vec2(5.0f, 5.0f))),
-                world.coordPixelsToWorld(location.add(new Vec2(-5.0f, 5.0f))),
+                world.coordPixelsToWorld(location.add(new Vec2(off, off))),
+                world.coordPixelsToWorld(location.add(new Vec2(-off, off))),
         };
         Vec2[] next = new Vec2[]{
-                world.coordPixelsToWorld(location.add(new Vec2(-5.0f, 5.0f))),
-                world.coordPixelsToWorld(location.add(new Vec2(5.0f, 5.0f))),
+                world.coordPixelsToWorld(location.add(new Vec2(-off, off))),
+                world.coordPixelsToWorld(location.add(new Vec2(off, off))),
         };
 
         Hyphae firstHyphae = new Hyphae(context, world, this, null, next, 0.0, 1.0f);
+        firstHyphae.getShapes().get(0).init();
         roots.add(firstHyphae);
 
     }
 
-    public void grow() {
+    public void grow(float boxWidth, float boxHeight) {
         for (Hyphae r :
                 roots) {
-            r.grow();
+            r.grow(boxWidth, boxHeight);
         }
     }
 
@@ -55,7 +57,7 @@ public class Fungus {
         }
     }
 
-    public void display() {
+    public void display(boolean showCollisionShapes) {
 //        context.pushMatrix();
 //        context.translate(location.x, location.y);
 //        context.fill(255, 0, 0);
@@ -65,7 +67,7 @@ public class Fungus {
 
         for (Hyphae h:
              roots) {
-            h.display();
+            h.display(showCollisionShapes);
         }
     }
 

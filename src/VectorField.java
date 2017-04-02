@@ -16,7 +16,7 @@ public class VectorField {
                 block[i][j] = new Vec2(new Random().nextFloat() * 2 - 1, new Random().nextFloat() * 2 - 1);
                 block[i][j].normalize();
                 block[i][j].mulLocal(20);
-                //block[i][j].y = 0;
+                block[i][j].y = 0;
             }
         }
     }

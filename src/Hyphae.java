@@ -43,7 +43,9 @@ public class Hyphae {
         tipOffset.x = tipOffset.y;
         tipOffset.y = tmp;
         tipOffset.normalize();
-        this.tip = new Tip(world, fungus, middle.add(tipOffset.mulLocal(12.0f)), new Ball(context, world, 10), this);
+
+        int tipWidth = (int) world.scalarWorldToPixels(base[0].sub(base[1]).length());
+        this.tip = new Tip(world, fungus, middle.add(tipOffset.mulLocal(tipWidth)), new Ball(context, world, tipWidth), this);
 
         // Rotacja wektora prędkości czubka strzępka
         //if (phi > 0.1 || phi < -0.1) {
@@ -69,32 +71,33 @@ public class Hyphae {
     }
 
 
-    public void grow() {
+    public void grow(float boxWidth, float boxHeight) {
         if (isGrowing) {
-                for (CollisionShape colS :
-                        shapes) {
+            for (CollisionShape colS :
+                    shapes) {
+                if (!colS.isHasBody())
                     colS.init();
-                }
+            }
+
             int size = shapes.size();
-            Vec2[] last = shapes.get(size - 1).getTop().clone(); //Znajdź dwie współrzędne ostatniego CollisionShape'a
-            Vec2[] next = nextVertices(); //Znajdź dwie współrzędne dla czubka strzępka
-
-            Random random = new Random();
-            float leftOrRight = random.nextBoolean() ? 1.0f : -1.0f;
-
             float d = dist(shapes.get(size - 1), tip.getBody());
-            //        System.out.println("Distance: " + d);
-            if (d >= 30.0f) {
+
+            System.out.println(d);
+            if (d >= boxHeight) {
                 if (length % 20 == 5) {
-                    bisect(leftOrRight);
+                    Random random = new Random();
+                    float leftOrRight = random.nextBoolean() ? 1.0f : -1.0f;
+                    bisect(leftOrRight, boxWidth, boxHeight);
                 }
-                shapes.add(new CollisionShape(context, world, last, next, color));
+                Vec2[] last = shapes.get(size - 1).getTop(); //Znajdź dwie współrzędne ostatniego CollisionShape'a
+                CollisionShape newShape = new CollisionShape(context, world, last, nextVertices(), color);
+                shapes.add(newShape);
                 this.length++;
             }
         }
         for (Hyphae h :
                 childrens) {
-            h.grow();
+            h.grow(boxWidth, boxHeight);
         }
     }
 
@@ -111,7 +114,7 @@ public class Hyphae {
             this.shapes.add(new CollisionShape(context, world,  lastVertices, sideVertices, color));
     }
 
-    public void collisionWithHyphae(CollisionShape collisionShape){
+    public void collisionWithHyphae(CollisionShape collisionShape, float boxWidth, float boxHeight){
         Vec2[] left = collisionShape.getLeft();
         Vec2[] right = collisionShape.getRight();
         Vec2[] lastVert = this.getLastVertices();
@@ -130,10 +133,27 @@ public class Hyphae {
         left[1] = tmp;
 
         if(min < distLeft){
+            if(boxWidth < boxHeight) {
+                right[0] = right[0].sub(right[1]);
+                right[0].normalize();
+                right[0].mulLocal(world.scalarPixelsToWorld(boxWidth));
+                right[0] = right[1].add(right[0]);
+            } else {
+                throw new IllegalArgumentException("Za duże");
+            }
+
             System.out.println("Łączę w prawo!");
             joinHyphae(right);
         } else {
             System.out.println("Łoncze w lewo!");
+            if(boxWidth < boxHeight) {
+                left[1] = left[1].sub(left[0]);
+                left[1].normalize();
+                left[1].mulLocal(world.scalarPixelsToWorld(boxWidth));
+                left[1] = left[0].add(left[1]);
+            } else {
+                throw new IllegalArgumentException("Za duże");
+            }
             joinHyphae(left);
         }
         killHyphae();
@@ -146,33 +166,43 @@ public class Hyphae {
      * @return
      */
     private Vec2[] nextVertices() {
-        float phi = -(float) Math.PI / 2;
         Vec2[] coords = new Vec2[2];
         Vec2 tipLocation = tip.getBody().getPosition().clone();
-//        tipLocation.subLocal(new Vec2(0, 2));
         float r = world.scalarPixelsToWorld(((Ball) tip.getInterp()).getRadius()) / 2;
-        Vec2 direction = tip.getBody().getLinearVelocity().clone();
-        Vec2 offset = direction.clone();
-        offset.normalize();
-        offset.mulLocal(r + 1f);
-        float tmp = direction.x;
-        direction.x = -1 * direction.y;
-        direction.y = tmp;
+        Vec2 direction = new Vec2(tip.getBody().getLinearVelocity());
+        Vec2 offset = new Vec2(direction);
         direction.normalize();
-        direction.mulLocal(r);
-        coords[0] = tipLocation.add(direction).subLocal(offset);
-        coords[1] = tipLocation.sub(direction).subLocal(offset);
+        direction.mulLocal(2*r);
+        float tmp = offset.x;
+        offset.x = -1 * offset.y;
+        offset.y = tmp;
+        offset.normalize();
+        offset.mulLocal(r);
+        coords[0] = new Vec2(tipLocation);
+        coords[1] = new Vec2(tipLocation);
+        coords[0].addLocal(offset).subLocal(direction);
+        coords[1].subLocal(offset).subLocal(direction);
         return coords;
     }
 
 
-    private void bisect(float leftOrRight) {
+    private void bisect(float leftOrRight, float boxWidth, float boxHeight) {
         CollisionShape shapeToGrow = shapes.get(shapes.size() - 1);
         Vec2[] lastInit;
         if (leftOrRight == 1.0f) {  // Rosnij w lewo (sprawdzić)
             lastInit = shapeToGrow.getLeft();
+
         } else {    // Rosnij w prawo
             lastInit = shapeToGrow.getRight();
+        }
+
+        if(boxWidth < boxHeight) {
+            lastInit[0] = lastInit[0].sub(lastInit[1]);
+            lastInit[0].normalize();
+            lastInit[0].mulLocal(world.scalarPixelsToWorld(boxWidth));
+            lastInit[0] = lastInit[1].add(lastInit[0]);
+        } else {
+            throw new IllegalArgumentException("Za duże");
         }
 
         Hyphae newHyphae = new Hyphae(context, world, fungus, this, lastInit, leftOrRight * Math.PI / 3, tip.getBody().getLinearVelocity().length());
@@ -184,7 +214,7 @@ public class Hyphae {
     }
 
     private float dist(CollisionShape s1, Body s2) {
-        Vec2 ps1 = world.getBodyPixelCoord(s1.getBody()).clone();
+        Vec2 ps1 = new Vec2(world.getBodyPixelCoord(s1.getBody()));
         Vec2 ps2 = world.getBodyPixelCoord(s2).clone();
         float d = ps1.subLocal(ps2).length();
         return d;
@@ -198,30 +228,17 @@ public class Hyphae {
         }
     }
 
-    public void display() {
-//        Vec2[] tmp = nextVertices();
-//        for (int i = 0; i < tmp.length; i++) {
-//            tmp[i] = world.coordWorldToPixels(tmp[i]);
-//        }
-//        context.pushMatrix();
-//        context.strokeWeight(3);
-//        context.ellipse(tmp[0].x, tmp[0].y, 5.0f, 5.0f);
-//        context.textSize(12);
-//        context.text("1", tmp[0].x, tmp[0].y-20);
-//        context.ellipse(tmp[1].x, tmp[1].y, 5.0f, 5.0f);
-//        context.text("2", tmp[1].x, tmp[1].y-20);
-//        context.strokeWeight(1);
-//        context.popMatrix();
-
-        for (CollisionShape p :
-                shapes) {
-            p.display();
+    public void display(boolean showCollisionShapes) {
+        if (showCollisionShapes) {
+            for (CollisionShape p :
+                    shapes) {
+                p.display();
+            }
         }
         for (Hyphae h :
                 childrens) {
-            h.display();
+            h.display(showCollisionShapes);
         }
-        //        tip.display();
     }
 
     public Tip getTip() {

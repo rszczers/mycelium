@@ -31,7 +31,7 @@ public class CollisionShape {
         this.pShape = createCollisionShape(last, next);
         this.top = next.clone();
         this.bottom = last.clone();
-        hasBody = false;
+        this.hasBody = false;
     }
 
     /**
@@ -76,7 +76,6 @@ public class CollisionShape {
             ps.vertex(next[1].x, next[1].y);
             ps.vertex(last[1].x, last[1].y);
             ps.vertex(last[0].x, last[0].y);
-//                ps.setVisible(false);
         ps.endShape(PApplet.CLOSE);
         context.shape(ps);
         context.popMatrix();
@@ -85,15 +84,15 @@ public class CollisionShape {
 
     public Vec2[] getLeft(){
         Vec2[] left = new Vec2[2];
-        left[0] = bottom[0].clone();
-        left[1] = top[0].clone();
+        left[0] = new Vec2(bottom[0]);
+        left[1] = new Vec2(top[0]);
         return left;
     }
 
     public Vec2[] getRight(){
         Vec2[] right = new Vec2[2];
-        right[0] = top[1].clone();
-        right[1] = bottom[1].clone();
+        right[0] = new Vec2(top[1]);
+        right[1] = new Vec2(bottom[1]);
         return right;
     }
 
@@ -130,16 +129,17 @@ public class CollisionShape {
     }
 
     public void init(){
-        if(!hasBody) {
             this.bd = new BodyDef();
             this.bd.type = BodyType.STATIC;
-            Vec2 middle = top[0].add(top[1]).mul(0.5f);
+            Vec2 middle = top[0].add(bottom[1]).mul(0.5f);
             this.bd.position.set(middle);
             this.body = this.world.createBody(bd);
             this.body.createFixture(pShape, 1.0f);
             this.body.setUserData(this);
-            hasBody = true;
-        }
+            this.hasBody = true;
     }
 
+    public boolean isHasBody() {
+        return hasBody;
+    }
 }
