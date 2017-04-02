@@ -36,7 +36,7 @@ public class Ball implements Interpretation {
         bd = new BodyDef();
         bd.type = BodyType.DYNAMIC;
 //        bd.fixedRotation = true;
-        bd.linearDamping = 0.5f;
+        bd.linearDamping = 10.0f;
         bd.angularDamping = 0.9f;
 //        bd.bullet = true;
 
@@ -47,7 +47,7 @@ public class Ball implements Interpretation {
         // Definicja dowiązania ciała do kształtu
         fd = new FixtureDef();
         fd.shape = ps;
-        fd.density = 0.7f;
+        fd.density = 0.05f;
         fd.friction = 0.3f;
         fd.restitution = 0.0f;
 

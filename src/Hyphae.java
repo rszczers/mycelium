@@ -82,7 +82,7 @@ public class Hyphae {
             int size = shapes.size();
             float d = dist(shapes.get(size - 1), tip.getBody());
 
-            System.out.println(d);
+//            System.out.println(d);
             if (d >= boxHeight) {
                 if (length % 20 == 5) {
                     Random random = new Random();
@@ -141,11 +141,10 @@ public class Hyphae {
             } else {
                 throw new IllegalArgumentException("Za duże");
             }
-
-            System.out.println("Łączę w prawo!");
+//            System.out.println("Łączę w prawo!");
             joinHyphae(right);
         } else {
-            System.out.println("Łoncze w lewo!");
+//            System.out.println("Łoncze w lewo!");
             if(boxWidth < boxHeight) {
                 left[1] = left[1].sub(left[0]);
                 left[1].normalize();
@@ -269,5 +268,9 @@ public class Hyphae {
 
     public void setIsGrowing(boolean isGrowing){
         this.isGrowing = isGrowing;
+    }
+
+    public int getLength() {
+        return length;
     }
 }

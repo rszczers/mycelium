@@ -17,25 +17,26 @@ public class mycelium extends PApplet {
 
     private final static int WIDTH = 1200;
     private final static int HEIGHT = 800;
-    private final static int GRID = 20;
+    private final static int GRID = 400;
 
     private static final int HYPHAE_WIDTH = 5;
-    private static final int HYPHAE_HEIGHT = 40;
+    private static final int HYPHAE_HEIGHT = 20;
+    public static final float FORCE_VALUE = 20.0f;
 
-    private boolean drawCells = true;
-    private boolean drawGrids = true;
-    private boolean drawVectorFields = true;
+    private boolean drawCells = false;
+    private boolean drawGrids = false;
+    private boolean drawVectorFields = false;
     private boolean drawLabels = true;
     private boolean calculatePhysics = true;
     private boolean toggleBoundaries = false;
     private boolean toggleForceField = true;
-    private boolean toggleGravity = true;
+    private boolean toggleGravity = false;
     private boolean drawfps = true;
 
-    private boolean toggleBackgroundLayer = true;
-    private boolean toggleDebugLayer = true;
+    private boolean toggleBackgroundLayer = false;
+    private boolean toggleDebugLayer = false;
     private boolean toggleFungiLayer = true;
-    private boolean toggleInterfaceLayer = true;
+    private boolean toggleInterfaceLayer = false;
 
     public PGraphics backgroundLayer;
     public PGraphics debugLayer;
@@ -52,9 +53,8 @@ public class mycelium extends PApplet {
 //    private ArrayList<Tip> tips = new ArrayList<>();
     private Fungus fungi;
     private ArrayList<BoundaryBox> boundaries = new ArrayList<>();
-    private VectorField vf = new VectorField(GRID);
+    private VectorField vf;
     private ArrayList<Tip> tcoll;
-
 
     public static void main(String[] args) {
         PApplet.main("mycelium", args);
@@ -76,6 +76,9 @@ public class mycelium extends PApplet {
 
         world = new Box2DProcessing(this, 10);
         world.createWorld();
+        vf = new VectorField(GRID, world);
+
+
         if (toggleGravity) {
             world.setGravity(0, 10);
         } else {
@@ -136,7 +139,7 @@ public class mycelium extends PApplet {
         /**
          * Background shader
          */
-        if(toggleBackgroundLayer) {
+        if (toggleBackgroundLayer) {
             backgroundLayer.beginDraw();
             background(250);
             backgroundLayer.endDraw();
@@ -145,14 +148,15 @@ public class mycelium extends PApplet {
         /**
          * Debug screen
          */
-        if(toggleDebugLayer) {
+        if (toggleDebugLayer) {
             debugLayer.beginDraw();
             if (drawCells)
                 drawCells();
             if (drawGrids)
                 drawGrid();
-            if (drawVectorFields)
+            if (drawVectorFields) {
                 drawVectorField(vf);
+            }
 
             for (Tip t :
                     tcoll) {
@@ -165,13 +169,14 @@ public class mycelium extends PApplet {
                     t.display();
                 }
             }
+
             debugLayer.endDraw();
         }
 
         /**
          * Interface screen
          */
-        if(toggleInterfaceLayer) {
+        if (toggleInterfaceLayer) {
             interfaceLayer.beginDraw();
             if (drawLabels) {
                 fill(16, 16, 153);
@@ -195,14 +200,21 @@ public class mycelium extends PApplet {
             fungiLayer.endDraw();
         }
 
-        if(toggleBackgroundLayer)
+        if (toggleBackgroundLayer)
             image(backgroundLayer, 0, 0);
-        if(toggleDebugLayer)
+        if (toggleDebugLayer)
             image(debugLayer, 0, 0);
-        if(toggleFungiLayer)
+        if (toggleFungiLayer)
             image(fungiLayer, 0, 0);
-        if(toggleInterfaceLayer)
+        if (toggleInterfaceLayer)
             image(interfaceLayer, 0, 0);
+
+        for (Tip t :
+                tcoll) {
+            makeHypheField(t);
+
+        }
+
     }
 
 
@@ -232,7 +244,7 @@ public class mycelium extends PApplet {
             Tip tip = (Tip) object1;
             CollisionShape collisionShape = (CollisionShape) object2;
             Hyphae tipOwner = tip.getOwner();
-            if(tipOwner.getIsGrowing()) {
+            if (tipOwner.getIsGrowing()) {
                 tipOwner.collisionWithHyphae(collisionShape, HYPHAE_WIDTH, HYPHAE_HEIGHT);
             }
         }
@@ -244,7 +256,7 @@ public class mycelium extends PApplet {
             CollisionShape collisionShape = (CollisionShape) object1;
             Tip tip = (Tip) object2;
             Hyphae tipOwner = tip.getOwner();
-            if(tipOwner.getIsGrowing()) {
+            if (tipOwner.getIsGrowing()) {
                 tipOwner.collisionWithHyphae(collisionShape, HYPHAE_WIDTH, HYPHAE_HEIGHT);
             }
         }
@@ -354,7 +366,83 @@ public class mycelium extends PApplet {
         return new int[]{x * (WIDTH / GRID), y * (HEIGHT / GRID)};
     }
 
+    /**
+     * Zwraca współrzędne środka komórki
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    private Vec2 middleCords(int x, int y) {
+        int[] leftTopCords = vf2c(x, y);
+        Vec2 middleCords = new Vec2(leftTopCords[0], leftTopCords[1]);
+        Vec2 midC = middleCords.add((new Vec2(WIDTH / GRID, HEIGHT / GRID)).mul(0.5f));
+        return midC;
+    }
+
     public static void addTipToDelete(Tip tip) {
         tipsToDelete.add(tip);
     }
+
+    private void makeHypheField(Tip tip) {
+
+        if (tip.getOwner().getIsGrowing() && tip.getOwner().getLength() > 2) {
+
+            Vec2 tipCorInt = world.coordWorldToPixels(tip.getBody().getPosition());
+            float dist = (float) Math.sqrt((HEIGHT / GRID) * (HEIGHT / GRID) + (WIDTH / GRID) * (WIDTH / GRID)) + 1; //Przekątna prostokąta +1
+            Vec2 tipVeliocity = new Vec2(world.vectorWorldToPixels(tip.getBody().getLinearVelocity())); // Wektor prędkości
+            tipVeliocity.mulLocal(-1);
+            tipVeliocity.normalize();
+            tipVeliocity = tipVeliocity.mulLocal(dist);
+
+            Vec2 backTip = tipCorInt.add(tipVeliocity); // punkt zwiadowca
+//            fill(0, 240, 0);
+//            ellipse(backTip.x, backTip.y, 10, 10);
+
+            Vec2 ortogonalToBackTip = new Vec2(-tipVeliocity.y, tipVeliocity.x);
+            ortogonalToBackTip.normalize();
+            ortogonalToBackTip.mulLocal(Math.max(WIDTH / GRID / 2, HEIGHT / GRID / 2));
+
+            Vec2 leftPoint = new Vec2(backTip).addLocal(ortogonalToBackTip);
+            Vec2 rightPoint = new Vec2(backTip).subLocal(ortogonalToBackTip);
+//            fill(120, 0, 0);
+//            ellipse(leftPoint.x, leftPoint.y, 10, 10);
+//            ellipse(rightPoint.x, rightPoint.y, 10, 10);
+
+            if (tip.hasChanged(WIDTH, HEIGHT, GRID)) {
+                if (rightPoint.x < WIDTH && leftPoint.x > 0 && leftPoint.y < HEIGHT && leftPoint.y > 0 && rightPoint.y > 0 && rightPoint.y < HEIGHT) {
+                    try {
+                        int[] leftPresent = c2vf((int) leftPoint.x, (int) leftPoint.y);
+                        int[] rightPresent = c2vf((int) rightPoint.x, (int) rightPoint.y);
+                        int[] moreLeft = new int[2];
+
+                        moreLeft[0] = leftPresent[0] - 1;
+                        moreLeft[1] = leftPresent[1];
+                        int[] moreRight = new int[2];
+                        moreRight[0] = rightPresent[0] + 1;
+                        moreRight[1] = rightPresent[1];
+
+
+                        vf.standardBlock(leftPresent, leftPoint.sub(backTip), FORCE_VALUE);
+                        vf.standardBlock(rightPresent, rightPoint.sub(backTip), FORCE_VALUE);
+                        vf.standardBlock(moreLeft, leftPoint.sub(backTip), FORCE_VALUE);
+                        vf.standardBlock(moreRight, rightPoint.sub(backTip), FORCE_VALUE);
+                    } catch (Exception e) {
+
+                    }
+                }
+
+//        Vec2 leftPresent2 = middleCords(leftPresent[0], leftPresent[1]);
+//        Vec2 rightPresent2 = middleCords(rightPresent[0], rightPresent[1]);
+//        fill(0, 0, 120);
+//        ellipse(leftPresent2.x , leftPresent2.y, 10, 10);
+//        ellipse(rightPresent2.x, rightPresent2.y, 10, 10);
+
+
+//        System.out.println("Left" +leftPoint.sub(backTip));
+//        System.out.println("Right" +leftPoint.sub(backTip));
+            }
+        }
+    }
+
 }
