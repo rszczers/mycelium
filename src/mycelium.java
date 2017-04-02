@@ -232,7 +232,9 @@ public class mycelium extends PApplet {
             Tip tip = (Tip) object1;
             CollisionShape collisionShape = (CollisionShape) object2;
             Hyphae tipOwner = tip.getOwner();
-            tipOwner.collisionWithHyphae(collisionShape, HYPHAE_WIDTH, HYPHAE_HEIGHT);
+            if(tipOwner.getIsGrowing()) {
+                tipOwner.collisionWithHyphae(collisionShape, HYPHAE_WIDTH, HYPHAE_HEIGHT);
+            }
         }
 
         /**
@@ -242,7 +244,9 @@ public class mycelium extends PApplet {
             CollisionShape collisionShape = (CollisionShape) object1;
             Tip tip = (Tip) object2;
             Hyphae tipOwner = tip.getOwner();
-            tipOwner.collisionWithHyphae(collisionShape, HYPHAE_WIDTH, HYPHAE_HEIGHT);
+            if(tipOwner.getIsGrowing()) {
+                tipOwner.collisionWithHyphae(collisionShape, HYPHAE_WIDTH, HYPHAE_HEIGHT);
+            }
         }
 
         /**
