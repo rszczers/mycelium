@@ -77,7 +77,7 @@ public class CollisionShape {
             ps.vertex(last[1].x, last[1].y);
             ps.vertex(last[0].x, last[0].y);
         ps.endShape(PApplet.CLOSE);
-        context.shape(ps);
+//        context.shape(ps);
         context.popMatrix();
         return ps;
     }

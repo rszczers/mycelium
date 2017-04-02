@@ -4,12 +4,14 @@ import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
 import processing.core.PApplet;
 import processing.core.PGraphics;
+import processing.core.PShape;
 import processing.core.PVector;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 import Box2D.Box2DProcessing;
+import processing.opengl.PShader;
 
 
 public class mycelium extends PApplet {
@@ -33,14 +35,16 @@ public class mycelium extends PApplet {
     private boolean drawfps = true;
 
     private boolean toggleBackgroundLayer = true;
-    private boolean toggleDebugLayer = true;
-    private boolean toggleFungiLayer = true;
-    private boolean toggleInterfaceLayer = true;
+    private boolean toggleDebugLayer = false;
+    private boolean toggleFungiLayer = false;
+    private boolean toggleInterfaceLayer = false;
 
     public PGraphics backgroundLayer;
     public PGraphics debugLayer;
     public PGraphics fungiLayer;
     public PGraphics interfaceLayer;
+
+    private PShader backgroundShader;
 
     public static LinkedList<Tip> tipsToDelete;
 
@@ -66,7 +70,8 @@ public class mycelium extends PApplet {
 
     public void setup() {
         frameRate(60);
-        background(127);
+        background(0, 0, 127);
+        backgroundShader = loadShader("fale.glsl");
         tipsToDelete = new LinkedList<>();
 
         backgroundLayer = createGraphics(WIDTH, HEIGHT);
@@ -114,6 +119,7 @@ public class mycelium extends PApplet {
     public void draw() {
         if (calculatePhysics)
             world.step();
+            fungi.grow(HYPHAE_WIDTH, HYPHAE_HEIGHT);
         /**
          * Apply force to tip
          */
@@ -138,7 +144,22 @@ public class mycelium extends PApplet {
          */
         if(toggleBackgroundLayer) {
             backgroundLayer.beginDraw();
-            background(250);
+            Vec2[] tipsToShader = new Vec2[tcoll.size()];
+            for (int i = 0; i < tcoll.size(); i++) {
+                tipsToShader[i] = world.coordWorldToPixels(tcoll.get(i).getBody().getPosition());
+            }
+
+            backgroundShader.set("u_posSize", tcoll.size());
+            backgroundShader.set("u_resolution", (float) width, (float) height);
+            backgroundShader.set("u_mouse", (float) mouseX, (float) (height - mouseY));
+            backgroundShader.set("u_time", millis() / 1000.0f);
+
+            for(int i = 0; i < tcoll.size(); i++){
+                backgroundShader.set("u_positions[" + i + "]", (float)(tipsToShader[i].x), (float)height - tipsToShader[i].y);
+            }
+            shader(backgroundShader);
+            rect(0, 0, width, height);
+            resetShader();
             backgroundLayer.endDraw();
         }
 
@@ -190,8 +211,7 @@ public class mycelium extends PApplet {
          */
         if (toggleFungiLayer) {
             fungiLayer.beginDraw();
-            fungi.grow(HYPHAE_WIDTH, HYPHAE_HEIGHT);
-            fungi.display(toggleFungiLayer);
+            //fungi.display(toggleFungiLayer);
             fungiLayer.endDraw();
         }
 

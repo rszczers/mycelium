@@ -82,7 +82,6 @@ public class Hyphae {
             int size = shapes.size();
             float d = dist(shapes.get(size - 1), tip.getBody());
 
-            System.out.println(d);
             if (d >= boxHeight) {
                 if (length % 20 == 5) {
                     Random random = new Random();
