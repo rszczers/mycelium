@@ -106,6 +106,7 @@ public class Hyphae {
         tip.getBody().setGravityScale(0);
         this.isGrowing = false;
         mycelium.tipsToDelete.add(tip);
+        tip.setVisible(false);
     }
 
     public void joinHyphae(Vec2[] sideVertices){

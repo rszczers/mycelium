@@ -53,6 +53,7 @@ public class Tip {
         world.destroyBody(this.body);
         body.setUserData(null);
         owner.setIsGrowing(false);
+        this.visible = false;
     }
 
     public Hyphae getOwner(){
@@ -61,5 +62,9 @@ public class Tip {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public boolean isVisible() {
+        return visible;
     }
 }
