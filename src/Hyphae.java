@@ -262,4 +262,12 @@ public class Hyphae {
         int size = this.shapes.size();
         return this.shapes.get(size - 1).getTop();
     }
+
+    public boolean getIsGrowing(){
+        return isGrowing;
+    }
+
+    public void setIsGrowing(boolean isGrowing){
+        this.isGrowing = isGrowing;
+    }
 }
