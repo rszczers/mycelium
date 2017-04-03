@@ -8,14 +8,12 @@ import java.util.Random;
  */
 public class VectorField {
     private Vec2[][] block;
-    private Box2DProcessing world;
 
-    public VectorField(int n, Box2DProcessing world) {
+    public VectorField(int n, float gravityValue) {
         block = new Vec2[n][n];
-        this.world = world;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                block[i][j] = new Vec2(0.0f, -20.0f);
+                block[i][j] = new Vec2(0.0f, -gravityValue);
 //                block[i][j] = new Vec2(new Random().nextFloat() * 2 - 1, new Random().nextFloat() * 2 - 1);
 //                block[i][j] = new Vec2(new Random().nextFloat() * 2 - 1, new Random().nextFloat() * 2 - 1);
 //                block[i][j].normalize();

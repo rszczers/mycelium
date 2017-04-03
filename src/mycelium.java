@@ -6,6 +6,7 @@ import processing.core.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Random;
 
 import Box2D.Box2DProcessing;
 import processing.opengl.PShader;
@@ -21,6 +22,7 @@ public class mycelium extends PApplet {
     private static final int HYPHAE_WIDTH = 5;
     private static final int HYPHAE_HEIGHT = 20;
     public static final float FORCE_VALUE = 20.0f;
+    private static final float GRAVITY_VALUE = 20.0f;
 
     private boolean drawCells = true;
     private boolean drawGrids = true;
@@ -62,8 +64,7 @@ public class mycelium extends PApplet {
     private VectorField vf;
     private ArrayList<Tip> tcoll;
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         PApplet.main("mycelium", args);
     }
 
@@ -73,6 +74,7 @@ public class mycelium extends PApplet {
 
     public void setup() {
         frameRate(60);
+
         background(0);
         surface.setResizable(true);
 
@@ -91,7 +93,7 @@ public class mycelium extends PApplet {
 
         world = new Box2DProcessing(this, 10);
         world.createWorld();
-        vf = new VectorField(GRID, world);
+        vf = new VectorField(GRID, GRAVITY_VALUE);
 
 
         if (toggleGravity) {
@@ -189,7 +191,6 @@ public class mycelium extends PApplet {
         }
 
 
-
         /**
          * Debug screen
          */
@@ -257,7 +258,7 @@ public class mycelium extends PApplet {
 
         for (Tip t :
                 tcoll) {
-            makeHypheField(t);
+            t.makeHypheField(t, WIDTH, HEIGHT, GRID, vf, FORCE_VALUE);
 
         }
     }
@@ -267,6 +268,7 @@ public class mycelium extends PApplet {
         lastState[2] = toggleDebugLayer;
         lastState[3] = toggleInterfaceLayer;
     }
+
 
     private void resetState() {
         toggleBackgroundLayer = lastState[0];
@@ -488,7 +490,7 @@ public class mycelium extends PApplet {
     }
 
     /**
-     * Zwraca współrzędne środka komórki
+     * Zwraca współrzędne środka komórki o podanych indeksach
      *
      * @param x
      * @param y
@@ -504,66 +506,5 @@ public class mycelium extends PApplet {
     public static void addTipToDelete(Tip tip) {
         tipsToDelete.add(tip);
     }
-
-    private void makeHypheField(Tip tip) {
-
-        if (tip.getOwner().getIsGrowing() && tip.getOwner().getLength() > 2) {
-
-            Vec2 tipCorInt = world.coordWorldToPixels(tip.getBody().getPosition());
-            float dist = (float) Math.sqrt((height / GRID) * (height / GRID) + (width / GRID) * (width / GRID)) + 1; //Przekątna prostokąta +1
-            Vec2 tipVeliocity = new Vec2(world.vectorWorldToPixels(tip.getBody().getLinearVelocity())); // Wektor prędkości
-            tipVeliocity.mulLocal(-1);
-            tipVeliocity.normalize();
-            tipVeliocity = tipVeliocity.mulLocal(dist);
-
-            Vec2 backTip = tipCorInt.add(tipVeliocity); // punkt zwiadowca
-//            fill(0, 240, 0);
-//            ellipse(backTip.x, backTip.y, 10, 10);
-
-            Vec2 ortogonalToBackTip = new Vec2(-tipVeliocity.y, tipVeliocity.x);
-            ortogonalToBackTip.normalize();
-            ortogonalToBackTip.mulLocal(Math.max(width / GRID / 2, height / GRID / 2));
-
-            Vec2 leftPoint = new Vec2(backTip).addLocal(ortogonalToBackTip);
-            Vec2 rightPoint = new Vec2(backTip).subLocal(ortogonalToBackTip);
-//            fill(120, 0, 0);
-//            ellipse(leftPoint.x, leftPoint.y, 10, 10);
-//            ellipse(rightPoint.x, rightPoint.y, 10, 10);
-
-            if (tip.hasChanged(width, height, GRID)) {
-                if (rightPoint.x < width && leftPoint.x > 0 && leftPoint.y < height && leftPoint.y > 0 && rightPoint.y > 0 && rightPoint.y < height) {
-                    try {
-                        int[] leftPresent = c2vf((int) leftPoint.x, (int) leftPoint.y);
-                        int[] rightPresent = c2vf((int) rightPoint.x, (int) rightPoint.y);
-                        int[] moreLeft = new int[2];
-
-                        moreLeft[0] = leftPresent[0] - 1;
-                        moreLeft[1] = leftPresent[1];
-                        int[] moreRight = new int[2];
-                        moreRight[0] = rightPresent[0] + 1;
-                        moreRight[1] = rightPresent[1];
-
-
-                        vf.standardBlock(leftPresent, leftPoint.sub(backTip), FORCE_VALUE);
-                        vf.standardBlock(rightPresent, rightPoint.sub(backTip), FORCE_VALUE);
-                        vf.standardBlock(moreLeft, leftPoint.sub(backTip), FORCE_VALUE);
-                        vf.standardBlock(moreRight, rightPoint.sub(backTip), FORCE_VALUE);
-                    } catch (Exception e) {
-
-                    }
-                }
-
-//        Vec2 leftPresent2 = middleCords(leftPresent[0], leftPresent[1]);
-//        Vec2 rightPresent2 = middleCords(rightPresent[0], rightPresent[1]);
-//        fill(0, 0, 120);
-//        ellipse(leftPresent2.x , leftPresent2.y, 10, 10);
-//        ellipse(rightPresent2.x, rightPresent2.y, 10, 10);
-
-
-//        System.out.println("Left" +leftPoint.sub(backTip));
-//        System.out.println("Right" +leftPoint.sub(backTip));
-            }
-        }
-    }
-
 }
+
