@@ -16,7 +16,7 @@ public class mycelium extends PApplet {
 
     private final static int WIDTH = 1200;
     private final static int HEIGHT = 800;
-    private final static int GRID = 400;
+    private final static int GRID = 100;
 
     private static final int HYPHAE_WIDTH = 5;
     private static final int HYPHAE_HEIGHT = 20;
