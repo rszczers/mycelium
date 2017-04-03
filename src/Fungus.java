@@ -70,6 +70,9 @@ public class Fungus {
             h.display(showCollisionShapes);
         }
     }
+    public void removeTip(Tip tip){
+        leafs.remove(tip);
+    }
 
     public ArrayList<Tip> getTips() {
         return leafs;
