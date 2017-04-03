@@ -16,7 +16,7 @@ public class mycelium extends PApplet {
 
     private final static int WIDTH = 1200;
     private final static int HEIGHT = 800;
-    private final static int GRID = 100;
+    private final static int GRID = 50;
 
     private static final int HYPHAE_WIDTH = 5;
     private static final int HYPHAE_HEIGHT = 20;
@@ -33,8 +33,8 @@ public class mycelium extends PApplet {
     private boolean drawfps = true;
 
     private boolean toggleBackgroundLayer = false;
-    private boolean toggleDebugLayer = false;
-    private boolean toggleFungiLayer = true;
+    private boolean toggleDebugLayer = true;
+    private boolean toggleFungiLayer = false;
     private boolean toggleInterfaceLayer = false;
 
     public PGraphics backgroundLayer;
@@ -177,6 +177,7 @@ public class mycelium extends PApplet {
                     t.display();
                 }
             }
+            fungi.display(toggleDebugLayer);
 
             debugLayer.endDraw();
         }
@@ -229,8 +230,6 @@ public class mycelium extends PApplet {
             rect(0, 0, width, height);
             resetShader();
             backbuffer = get();
-
-            //fungi.display(toggleFungiLayer);
             fungiLayer.endDraw();
         }
 
