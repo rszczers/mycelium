@@ -58,7 +58,8 @@ public class mycelium extends PApplet {
     private VectorField vf;
     private ArrayList<Tip> tcoll;
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         PApplet.main("mycelium", args);
     }
 
@@ -247,8 +248,9 @@ public class mycelium extends PApplet {
             makeHypheField(t);
 
         }
-
     }
+
+
 
 
     /**
@@ -258,6 +260,21 @@ public class mycelium extends PApplet {
         fungi.addRoot(new Vec2(mouseX, mouseY), HYPHAE_WIDTH);
     }
 
+    public void keyPressed() {
+        if (key == 'd' || key == 'D') {
+            toggleDebugLayer = !toggleDebugLayer;
+        }
+        if (key == 'f' || key == 'F') {
+            toggleFungiLayer = !toggleFungiLayer;
+        }
+        if (key == 'i' || key == 'I') {
+            toggleInterfaceLayer = !toggleInterfaceLayer;
+        }
+        if (key == 'b' || key == 'B') {
+            toggleBackgroundLayer = !toggleBackgroundLayer;
+        }
+
+    }
 
     public void beginContact(Contact c) {
 
