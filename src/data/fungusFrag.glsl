@@ -4,10 +4,9 @@ precision mediump int;
 #endif
 #define PI 3.1415926535897932384626433832795
 uniform int u_posSize;
-uniform vec2 u_positions[60];
+uniform vec2 u_positions[100];
 uniform vec2 u_resolution;
 uniform sampler2D u_buf;
-uniform sampler2D u_background;
 
 
 float rand(vec2 co){

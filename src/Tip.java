@@ -2,6 +2,7 @@ import Box2D.Box2DProcessing;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import processing.core.PApplet;
+import processing.core.PGraphics;
 
 import java.util.Arrays;
 
@@ -41,11 +42,11 @@ public class Tip {
         body.applyForce(world.vectorPixelsToWorld(force), body.getPosition());
     }
 
-    public void display() {
+    public void display(PGraphics layer) {
         Vec2 v = world.getBodyPixelCoord(body);
         float phi = body.getAngle();
         if (visible) {
-            interp.display(v, phi);
+            interp.display(v, phi, layer);
         }
     }
 

@@ -7,6 +7,7 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 
 /**
  * Created by rszczers on 11.03.17.
@@ -42,11 +43,11 @@ public class BoundaryBox {
         body.setUserData(this);
     }
 
-    void display() {
-        context.fill(127, 0, 0);
-        context.stroke(127, 0, 0);
-        context.rectMode(PConstants.CENTER);
-        context.rect(x, y, width, height);
-        context.noFill();
+    void display(PGraphics layer) {
+        layer.fill(127, 0, 0);
+        layer.stroke(127, 0, 0);
+        layer.rectMode(PConstants.CENTER);
+        layer.rect(x, y, width, height);
+        layer.noFill();
     }
 }

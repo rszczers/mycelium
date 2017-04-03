@@ -2,6 +2,7 @@ import Box2D.Box2DProcessing;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import processing.core.PApplet;
+import processing.core.PGraphics;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -229,16 +230,15 @@ public class Hyphae {
         }
     }
 
-    public void display(boolean showCollisionShapes) {
+    public void display(boolean showCollisionShapes, PGraphics layer) {
         if (showCollisionShapes) {
-            for (CollisionShape p :
-                    shapes) {
-                p.display();
+            for (int i = 0; i < shapes.size(); i++) {
+                shapes.get(i).display(layer);
             }
         }
         for (Hyphae h :
                 childrens) {
-            h.display(showCollisionShapes);
+            h.display(showCollisionShapes, layer);
         }
     }
 

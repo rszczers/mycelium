@@ -8,6 +8,7 @@ import org.jbox2d.dynamics.BodyType;
 import org.jbox2d.dynamics.FixtureDef;
 import org.jbox2d.dynamics.joints.DistanceJointDef;
 import processing.core.PApplet;
+import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.opengl.PShader;
 
@@ -60,18 +61,18 @@ public class Ball implements Interpretation {
 
     }
 
-    public void display(Vec2 v, float phi) {
-        context.pushMatrix();
-        context.translate(v.x, v.y);
-        context.rotate(-phi);
+    public void display(Vec2 v, float phi, PGraphics layer) {
+        layer.pushMatrix();
+        layer.translate(v.x, v.y);
+        layer.rotate(-phi);
 
-            context.fill(255, 255, 255);
-            context.ellipse(0, 0, radius, radius);
-            context.stroke(0);
-            context.strokeWeight(2);
-            context.fill(0, 0, 255);
-            context.line(0, 0, radius / 2, 0);
-            context.strokeWeight(1);
+            layer.fill(255, 255, 255);
+            layer.ellipse(0, 0, radius, radius);
+            layer.stroke(0);
+            layer.strokeWeight(2);
+            layer.fill(0, 0, 255);
+            layer.line(0, 0, radius / 2, 0);
+            layer.strokeWeight(1);
 //        context.noStroke();
 
         // Tutaj jest fragment chmurkowego szejdera
@@ -82,7 +83,7 @@ public class Ball implements Interpretation {
 //        context.point(0, 0);
 //        context.strokeWeight(10);
         //context.resetShader();
-        context.popMatrix();
+        layer.popMatrix();
 
     }
     public int getRadius() {return radius;}
