@@ -125,7 +125,7 @@ public class mycelium extends PApplet {
     public void draw() {
         if (calculatePhysics)
             world.step();
-        
+
         fungi.grow(HYPHAE_WIDTH, HYPHAE_HEIGHT);
 
         /**
@@ -307,7 +307,6 @@ public class mycelium extends PApplet {
     }
 
     public void beginContact(Contact c) {
-
         Fixture f1 = c.getFixtureA();
         Fixture f2 = c.getFixtureB();
 
@@ -366,6 +365,8 @@ public class mycelium extends PApplet {
         }
     }
 
+    public void endContact(Contact c) {}
+
     /**
      * Mało mądra metoda do rysowania siatki
      */
@@ -402,7 +403,6 @@ public class mycelium extends PApplet {
                 line(x2, y2, cx1.x, cx1.y);
                 PVector cx2 = px1.sub(px2).rotate(radians(-30)).add(px2);
                 line(x2, y2, cx2.x, cx2.y);
-
             }
         }
     }
