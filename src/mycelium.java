@@ -6,6 +6,7 @@ import processing.core.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Random;
 
 import Box2D.Box2DProcessing;
 import processing.opengl.PShader;
@@ -242,7 +243,7 @@ public class mycelium extends PApplet {
 
         for (Tip t :
                 tcoll) {
-            makeHypheField(t);
+            t.makeHypheField(t, WIDTH, HEIGHT, GRID, vf, FORCE_VALUE);
 
         }
     }
@@ -412,7 +413,7 @@ public class mycelium extends PApplet {
     }
 
     /**
-     * Zwraca współrzędne środka komórki
+     * Zwraca współrzędne środka komórki o podanych indeksach
      *
      * @param x
      * @param y
@@ -427,71 +428,6 @@ public class mycelium extends PApplet {
 
     public static void addTipToDelete(Tip tip) {
         tipsToDelete.add(tip);
-    }
-
-    private void makeHypheField(Tip tip) {
-
-        if (tip.getOwner().getIsGrowing() && tip.getOwner().getLength() > 2) {
-
-            Vec2 tipCorInt = world.coordWorldToPixels(tip.getBody().getPosition());
-            float dist = (float) Math.sqrt((HEIGHT / GRID) * (HEIGHT / GRID) + (WIDTH / GRID) * (WIDTH / GRID)) + 1; //Przekątna prostokąta +1
-            Vec2 tipVeliocity = new Vec2(world.vectorWorldToPixels(tip.getBody().getLinearVelocity())); // Wektor prędkości
-            tipVeliocity.mulLocal(-1);
-            tipVeliocity.normalize();
-            tipVeliocity = tipVeliocity.mulLocal(dist);
-
-            Vec2 backTip = tipCorInt.add(tipVeliocity); // punkt zwiadowca
-//            fill(0, 240, 0);
-//            ellipse(backTip.x, backTip.y, 10, 10);
-
-            Vec2 ortogonalToBackTip = new Vec2(-tipVeliocity.y, tipVeliocity.x);
-            ortogonalToBackTip.normalize();
-            ortogonalToBackTip.mulLocal(dist / 2);
-
-            Vec2 leftPoint = new Vec2(backTip).addLocal(ortogonalToBackTip);
-            Vec2 rightPoint = new Vec2(backTip).subLocal(ortogonalToBackTip);
-            int intelectRange = 20;
-            Vec2[] leftPointArr = new Vec2[intelectRange];
-            Vec2[] rightPointArr = new Vec2[intelectRange];
-            for (int i = 0; i < intelectRange; i++) {
-                leftPointArr[i] = new Vec2(backTip).addLocal((ortogonalToBackTip).mul(i + 1));
-                rightPointArr[i] = new Vec2(backTip).subLocal((ortogonalToBackTip).mul(i + 1));
-
-                // Czesanie pola
-//                fill(120, 0, 0);
-//                ellipse(leftPointArr[i].x, leftPointArr[i].y, 5, 5);
-//                ellipse(rightPointArr[i].x, rightPointArr[i].y, 5, 5);
-            }
-
-            if (tip.hasChanged(WIDTH, HEIGHT, GRID)) { // Sprawdza, czy tip zmienił komórkę siatki
-                fungiIntelect(intelectRange, leftPointArr, rightPointArr, backTip, world.scalarPixelsToWorld(WIDTH / GRID));
-            }
-        }
-    }
-
-    /**
-     * Zmienia pole wektorowe wraz ze wzrostem grzyba, zależnie od zakresu jego intelektu
-     *
-     * @param n
-     */
-    public void fungiIntelect(int n, Vec2[] leftPoint, Vec2[] rightPoint, Vec2 backTip, float gridWidth) {
-        try {
-            int[] moreLeft;
-            int[] moreRight;
-            Vec2 leftForce = leftPoint[0].subLocal(backTip);
-            Vec2 rightForce = rightPoint[0].subLocal(backTip);
-
-            for (int i = 0; i < leftPoint.length; i++) {
-                moreLeft = c2vf((int) leftPoint[i].x, (int) leftPoint[i].y);
-                moreRight = c2vf((int) rightPoint[i].x, (int) rightPoint[i].y);
-
-                vf.standardBlock(moreLeft, leftForce, FORCE_VALUE / ((float) ((i + 1) * (i + 1))));
-                vf.standardBlock(moreRight, rightForce, FORCE_VALUE / ((float) ((i + 1) * (i + 1))));
-
-            }
-        } catch (Exception e) {
-
-        }
     }
 }
 

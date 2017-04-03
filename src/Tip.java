@@ -44,7 +44,7 @@ public class Tip {
     public void display() {
         Vec2 v = world.getBodyPixelCoord(body);
         float phi = body.getAngle();
-        if(visible) {
+        if (visible) {
             interp.display(v, phi);
         }
     }
@@ -52,7 +52,10 @@ public class Tip {
     public Body getBody() {
         return body;
     }
-    public Interpretation getInterp() {return interp; }
+
+    public Interpretation getInterp() {
+        return interp;
+    }
 
     public void killBody() {
         world.destroyBody(this.body);
@@ -73,7 +76,33 @@ public class Tip {
     }
 
     /**
+     * Zamienia współrzędne tablicy komórek na współrzędne piksela lewego górnego rogu odpowiedniej komórki
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    private int[] vf2c(int x, int y, int width, int height, int grid) {
+        return new int[]{x * (width / grid), y * (width / height)};
+    }
+
+    /**
+     * Zwraca współrzędne środka komórki o danych indeksach
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    private Vec2 middleCords(int x, int y, int width, int height, int grid) {
+        int[] leftTopCords = vf2c(x, y, width, height, grid);
+        Vec2 middleCords = new Vec2(leftTopCords[0], leftTopCords[1]);
+        Vec2 midC = middleCords.add((new Vec2(width / grid, height / grid)).mul(0.5f));
+        return midC;
+    }
+
+    /**
      * Sprawdza, czy tip zmienił komórkę siatki
+     *
      * @param width
      * @param height
      * @param grid
@@ -82,9 +111,9 @@ public class Tip {
     public boolean hasChanged(int width, int height, int grid) {
         boolean result;
         Vec2 position = world.coordWorldToPixels(body.getPosition());
-        coordDiff[diffCounder] = c2vf((int)position.x, (int)position.y, width, height, grid);
+        coordDiff[diffCounder] = c2vf((int) position.x, (int) position.y, width, height, grid);
 //        System.out.println("POZYCJA\t " + diffCounder + "\t " + Arrays.toString(coordDiff[diffCounder]));
-        if(coordDiff[0][0] != coordDiff[1][0] || coordDiff[0][1] != coordDiff[1][1]) {
+        if (coordDiff[0][0] != coordDiff[1][0] || coordDiff[0][1] != coordDiff[1][1]) {
             result = true;
         } else {
             result = false;
@@ -94,7 +123,71 @@ public class Tip {
         return result;
     }
 
-    public Hyphae getOwner(){
+    public void makeHypheField(Tip tip, int width, int height, int grid, VectorField vf, float forceField) {
+        try {
+            if (tip.getOwner().getIsGrowing() && tip.getOwner().getLength() > 2) {
+
+                Vec2 tipCorInt = world.coordWorldToPixels(tip.getBody().getPosition());
+                float dist = (float) Math.sqrt((height / grid) * (height / grid) + (width / grid) * (width / grid)) + 1; //Przekątna prostokąta +1
+                Vec2 tipVeliocity = new Vec2(world.vectorWorldToPixels(tip.getBody().getLinearVelocity())); // Wektor prędkości
+                tipVeliocity.normalize();
+                tipVeliocity = tipVeliocity.mulLocal(dist);
+
+                Vec2 backTip = tipCorInt.sub(tipVeliocity); // punkt zwiadowca
+
+                Vec2 ortogonalToBackTip = new Vec2(-tipVeliocity.y, tipVeliocity.x);
+                ortogonalToBackTip.normalize();
+                ortogonalToBackTip.mulLocal(dist / 2);
+
+                int intelectRange = 20;
+
+                Vec2[] leftPointArr = new Vec2[intelectRange];
+                Vec2[] rightPointArr = new Vec2[intelectRange];
+
+                for (int i = 0; i < intelectRange; i++) {
+                    leftPointArr[i] = new Vec2(backTip).addLocal((ortogonalToBackTip).mul(i + 1));
+                    rightPointArr[i] = new Vec2(backTip).subLocal((ortogonalToBackTip).mul(i + 1));
+                }
+
+                if (tip.hasChanged(width, height, grid)) {  // Sprawdza, czy tip zmienił komórkę siatki
+                    int[] moreLeft;
+                    int[] moreRight;
+                    Vec2 leftForce = leftPointArr[0].subLocal(backTip);
+                    Vec2 rightForce = rightPointArr[0].subLocal(backTip);
+
+                    // TODO Wyznaczyć wektor siły dla komórki w której jest punkt zwiadowca
+//                    int[] c = c2vf((int) backTip.x, (int) backTip.y, width, height, grid);
+//                    vf.standardBlock(c, leftForce, forceField);
+
+                    for (int i = 0; i < intelectRange; i++) {
+                        moreLeft = c2vf((int) leftPointArr[i].x, (int) leftPointArr[i].y, width, height, grid);
+                        moreRight = c2vf((int) rightPointArr[i].x, (int) rightPointArr[i].y, width, height, grid);
+
+                        vf.standardBlock(moreLeft, leftForce, forceField / ((float) ((i + 1) * (i + 1))));
+                        vf.standardBlock(moreRight, rightForce, forceField / ((float) ((i + 1) * (i + 1))));
+                    }
+                }
+//               GRZEBIEŃ
+//                int[] c = c2vf((int) backTip.x, (int)backTip.y);
+//                Vec2 mid = middleCords(c[0], c[1]);
+//                fill(0, 225, 0);
+//                ellipse(mid.x, mid.y, 8, 8);
+//
+//                for (int i = 0; i < intelectRange; i++) {
+//                    fill(120, 0, 0);
+//                    ellipse(leftPointArr[i].x, leftPointArr[i].y, 5, 5);
+//                    ellipse(rightPointArr[i].x, rightPointArr[i].y, 5, 5);
+//                }
+
+            }
+        } catch (Exception e) {
+
+        }
+
+    }
+
+
+    public Hyphae getOwner() {
         return owner;
     }
 
