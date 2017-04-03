@@ -161,6 +161,7 @@ public class mycelium extends PApplet {
              * Fungus screen
              */
             fungiLayer.beginDraw();
+            fungiLayer.background(0);
             ArrayList<Vec2> tipsToDisplay = new ArrayList<>();
             for (int i = 0; i < tcoll.size(); i++) {
 //                if(tcoll.get(i).isVisible())
