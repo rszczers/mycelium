@@ -31,6 +31,7 @@ public class mycelium extends PApplet {
     private boolean toggleForceField = true;
     private boolean toggleGravity = false;
     private boolean drawfps = true;
+    private boolean toggleFullscreen = false;
 
     private boolean toggleBackgroundLayer = true;
     private boolean toggleDebugLayer = false;
@@ -70,14 +71,16 @@ public class mycelium extends PApplet {
     public void setup() {
         frameRate(60);
         background(0);
+        surface.setResizable(true);
+
         fungiShader = loadShader("fale.glsl");
         tipsToDelete = new LinkedList<>();
 
-        backgroundLayer = createGraphics(WIDTH, HEIGHT);
-        debugLayer = createGraphics(WIDTH, HEIGHT);
-        fungiLayer = createGraphics(WIDTH, HEIGHT);
-        interfaceLayer = createGraphics(WIDTH, HEIGHT);
-        backbuffer = new PImage(WIDTH, HEIGHT);
+        backgroundLayer = createGraphics(width, height);
+        debugLayer = createGraphics(width, height);
+        fungiLayer = createGraphics(width, height);
+        interfaceLayer = createGraphics(width, height);
+        backbuffer = new PImage(width, height);
 
         world = new Box2DProcessing(this, 10);
         world.createWorld();
@@ -106,13 +109,13 @@ public class mycelium extends PApplet {
         // ograniczenia
         if (toggleBoundaries) {
             boundaries.add(new BoundaryBox(world, this,
-                    WIDTH / 2, 5, WIDTH, 10));
+                    width / 2, 5, width, 10));
             boundaries.add(new BoundaryBox(world, this,
-                    WIDTH / 2, HEIGHT - 5, WIDTH, 10));
+                    width / 2, height - 5, width, 10));
             boundaries.add(new BoundaryBox(world, this,
-                    5, HEIGHT / 2, 10, HEIGHT));
+                    5, height / 2, 10, height));
             boundaries.add(new BoundaryBox(world, this,
-                    WIDTH - 5, HEIGHT / 2, 10, HEIGHT));
+                    width - 5, height / 2, 10, height));
         }
 
 
@@ -122,7 +125,9 @@ public class mycelium extends PApplet {
     public void draw() {
         if (calculatePhysics)
             world.step();
-            fungi.grow(HYPHAE_WIDTH, HYPHAE_HEIGHT);
+        
+        fungi.grow(HYPHAE_WIDTH, HYPHAE_HEIGHT);
+
         /**
          * Apply force to tip
          */
@@ -187,23 +192,23 @@ public class mycelium extends PApplet {
             fungiLayer.beginDraw();
             ArrayList<Vec2> tipsToDisplay = new ArrayList<>();
             for (int i = 0; i < tcoll.size(); i++) {
-                if(tcoll.get(i).isVisible())
+//                if(tcoll.get(i).isVisible())
                     tipsToDisplay.add(world.coordWorldToPixels(tcoll.get(i).getBody().getPosition()));
             }
 
             fungiShader.set("u_posSize", tipsToDisplay.size());
             fungiShader.set("u_resolution", (float) width, (float) height);
-            fungiShader.set("u_mouse", (float) mouseX, (float) (height - mouseY));
-            fungiShader.set("u_time", millis() / 1000.0f);
+//            fungiShader.set("u_mouse", (float) mouseX, (float) (height - mouseY));
+//            fungiShader.set("u_time", millis() / 1000.0f);
             fungiShader.set("u_buf", backbuffer);
             for(int i = 0; i < tipsToDisplay.size(); i++){
                 fungiShader.set("u_positions[" + i + "]", (float)(tipsToDisplay.get(i).x), (float)height - tipsToDisplay.get(i).y);
             }
             shader(fungiShader);
             rect(0, 0, width, height);
+            backbuffer = get();
             resetShader();
             fungiLayer.endDraw();
-            backbuffer = get();
         }
 
         /**
@@ -220,7 +225,7 @@ public class mycelium extends PApplet {
 
                 fill(16, 16, 153);
                 textSize(32);
-                text(mouseX / (WIDTH / GRID) + "; " + mouseY / (HEIGHT / GRID) + "\n", width / 2, 60);
+                text(mouseX / (width / GRID) + "; " + mouseY / (height / GRID) + "\n", width / 2, 60);
             }
             if (drawfps) {
                 fill(0, 0, 180, 0);
@@ -246,8 +251,6 @@ public class mycelium extends PApplet {
 
         }
     }
-
-
 
 
     /**
@@ -286,7 +289,17 @@ public class mycelium extends PApplet {
         if (key == 'r' || key == 'R') {
             reset();
         }
-
+        if (key == ENTER || key == RETURN) {
+            if (toggleFullscreen == false) {
+                reset();
+                surface.setSize(displayWidth, displayHeight);
+                toggleFullscreen = true;
+            } else {
+                reset();
+                surface.setSize(WIDTH, HEIGHT);
+                toggleFullscreen = false;
+            }
+        }
     }
 
     private void reset() {
@@ -359,11 +372,11 @@ public class mycelium extends PApplet {
     private void drawGrid() {
         stroke(90);
         strokeWeight(1);
-        for (int x = WIDTH / GRID; x < WIDTH; x += WIDTH / GRID) {
-            line(x, 0, x, HEIGHT);
+        for (int x = width / GRID; x < width; x += width / GRID) {
+            line(x, 0, x, height);
         }
-        for (int y = HEIGHT / GRID; y < HEIGHT; y += HEIGHT / GRID) {
-            line(0, y, WIDTH, y);
+        for (int y = height / GRID; y < height; y += height / GRID) {
+            line(0, y, width, y);
         }
     }
 
@@ -377,8 +390,8 @@ public class mycelium extends PApplet {
         for (int i = 0; i < vf.getBlock().length; i++) {
             for (int j = 0; j < vf.getBlock().length; j++) {
                 int[] c = vf2c(i, j);
-                int x1 = c[0] + (WIDTH / (2 * GRID));
-                int y1 = c[1] + (HEIGHT / (2 * GRID));
+                int x1 = c[0] + (width / (2 * GRID));
+                int y1 = c[1] + (height / (2 * GRID));
                 int x2 = x1 + (int) (vf.getBlock()[i][j].x);
                 int y2 = y1 + (int) (vf.getBlock()[i][j].y);
                 line(x1, y1, x2, y2);
@@ -399,14 +412,14 @@ public class mycelium extends PApplet {
      */
     private void drawCells() {
         rectMode(CORNER);
-        int dw = WIDTH / GRID;
-        int dh = HEIGHT / GRID;
-        for (int x = 0; x < WIDTH; x += dw) {
-            for (int y = 0; y < HEIGHT; y += dh) {
+        int dw = width / GRID;
+        int dh = height / GRID;
+        for (int x = 0; x < width; x += dw) {
+            for (int y = 0; y < height; y += dh) {
                 strokeWeight(1);
                 stroke(1);
                 fill(cellColor[x / dw][y / dh][0], cellColor[x / dw][y / dh][1], cellColor[x / dw][y / dh][2]);
-                rect(x, y, WIDTH / GRID, HEIGHT / GRID);
+                rect(x, y, width / GRID, height / GRID);
             }
         }
     }
@@ -419,7 +432,7 @@ public class mycelium extends PApplet {
      * @return
      */
     private int[] c2vf(int x, int y) {
-        return new int[]{x / (WIDTH / GRID), y / (HEIGHT / GRID)};
+        return new int[]{x / (width / GRID), y / (height / GRID)};
     }
 
     /**
@@ -430,7 +443,7 @@ public class mycelium extends PApplet {
      * @return
      */
     private int[] vf2c(int x, int y) {
-        return new int[]{x * (WIDTH / GRID), y * (HEIGHT / GRID)};
+        return new int[]{x * (width / GRID), y * (height / GRID)};
     }
 
     /**
@@ -443,7 +456,7 @@ public class mycelium extends PApplet {
     private Vec2 middleCords(int x, int y) {
         int[] leftTopCords = vf2c(x, y);
         Vec2 middleCords = new Vec2(leftTopCords[0], leftTopCords[1]);
-        Vec2 midC = middleCords.add((new Vec2(WIDTH / GRID, HEIGHT / GRID)).mul(0.5f));
+        Vec2 midC = middleCords.add((new Vec2(width / GRID, height / GRID)).mul(0.5f));
         return midC;
     }
 
@@ -456,7 +469,7 @@ public class mycelium extends PApplet {
         if (tip.getOwner().getIsGrowing() && tip.getOwner().getLength() > 2) {
 
             Vec2 tipCorInt = world.coordWorldToPixels(tip.getBody().getPosition());
-            float dist = (float) Math.sqrt((HEIGHT / GRID) * (HEIGHT / GRID) + (WIDTH / GRID) * (WIDTH / GRID)) + 1; //Przekątna prostokąta +1
+            float dist = (float) Math.sqrt((height / GRID) * (height / GRID) + (width / GRID) * (width / GRID)) + 1; //Przekątna prostokąta +1
             Vec2 tipVeliocity = new Vec2(world.vectorWorldToPixels(tip.getBody().getLinearVelocity())); // Wektor prędkości
             tipVeliocity.mulLocal(-1);
             tipVeliocity.normalize();
@@ -468,7 +481,7 @@ public class mycelium extends PApplet {
 
             Vec2 ortogonalToBackTip = new Vec2(-tipVeliocity.y, tipVeliocity.x);
             ortogonalToBackTip.normalize();
-            ortogonalToBackTip.mulLocal(Math.max(WIDTH / GRID / 2, HEIGHT / GRID / 2));
+            ortogonalToBackTip.mulLocal(Math.max(width / GRID / 2, height / GRID / 2));
 
             Vec2 leftPoint = new Vec2(backTip).addLocal(ortogonalToBackTip);
             Vec2 rightPoint = new Vec2(backTip).subLocal(ortogonalToBackTip);
@@ -476,8 +489,8 @@ public class mycelium extends PApplet {
 //            ellipse(leftPoint.x, leftPoint.y, 10, 10);
 //            ellipse(rightPoint.x, rightPoint.y, 10, 10);
 
-            if (tip.hasChanged(WIDTH, HEIGHT, GRID)) {
-                if (rightPoint.x < WIDTH && leftPoint.x > 0 && leftPoint.y < HEIGHT && leftPoint.y > 0 && rightPoint.y > 0 && rightPoint.y < HEIGHT) {
+            if (tip.hasChanged(width, height, GRID)) {
+                if (rightPoint.x < width && leftPoint.x > 0 && leftPoint.y < height && leftPoint.y > 0 && rightPoint.y > 0 && rightPoint.y < height) {
                     try {
                         int[] leftPresent = c2vf((int) leftPoint.x, (int) leftPoint.y);
                         int[] rightPresent = c2vf((int) rightPoint.x, (int) rightPoint.y);

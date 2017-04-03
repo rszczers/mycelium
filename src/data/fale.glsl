@@ -6,8 +6,6 @@ precision mediump int;
 uniform int u_posSize;
 uniform vec2 u_positions[60];
 uniform vec2 u_resolution;
-uniform vec2 u_mouse;
-uniform float u_time;
 uniform sampler2D u_buf;
 
 
@@ -30,5 +28,5 @@ void main() {
 
 
 
-	gl_FragColor = vec4(pct, pct, pct, pct) + texture2D(u_buf, texPos) * 0.99;
+	gl_FragColor = vec4(pct, pct, pct, pct) + texture2D(u_buf, texPos) * 0.95;
 }
