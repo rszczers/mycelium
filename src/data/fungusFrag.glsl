@@ -6,9 +6,8 @@ precision mediump int;
 uniform int u_posSize;
 uniform vec2 u_positions[60];
 uniform vec2 u_resolution;
-uniform vec2 u_mouse;
-uniform float u_time;
 uniform sampler2D u_buf;
+uniform sampler2D u_background;
 
 
 float rand(vec2 co){
@@ -24,11 +23,9 @@ void main() {
         vec2 pos = u_positions[i]/u_resolution - st;
         vec2 tC = u_positions[i]/u_resolution - st;
 //        float blender = (1 - smoothstep(0.0, 0.01, length(tC)));
-        float blender = smoothstep(0.0, 1.0, pow(tC.x*tC.x+tC.y*tC.y, -0.5)/1000);
+        float blender = smoothstep(0.0, 0.5, pow(tC.x*tC.x+tC.y*tC.y, -0.5)/2000);
         pct += blender;
     }
-
-
-
-	gl_FragColor = vec4(pct, pct, pct, pct) + texture2D(u_buf, texPos) * 0.96;
+//	gl_FragColor = vec4(pct, pct, pct, pct) + texture2D(u_background, texPos);
+	gl_FragColor = vec4(pct, pct, pct, pct) + texture2D(u_buf, texPos) * 0.98;
 }
