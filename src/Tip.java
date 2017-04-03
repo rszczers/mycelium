@@ -13,7 +13,6 @@ public class Tip {
     private Box2DProcessing world;
     private Body body;
     private Hyphae owner;
-    private boolean visible;
 
     private int[][] coordDiff = new int[2][2];
     private int diffCounder = 0;
@@ -22,7 +21,6 @@ public class Tip {
         this.world = world;
         this.interp = interp;
         this.owner = owner;
-        this.visible = true;
 
         // Ustalenie pozycji komórki w BodyDef
         interp.getBodyDef().position.set(world.coordPixelsToWorld(location));
@@ -44,9 +42,7 @@ public class Tip {
     public void display() {
         Vec2 v = world.getBodyPixelCoord(body);
         float phi = body.getAngle();
-        if (visible) {
             interp.display(v, phi);
-        }
     }
 
     public Body getBody() {
@@ -57,11 +53,21 @@ public class Tip {
         return interp;
     }
 
+    public void colideWithOtherTip(Tip tip) {
+        Hyphae hyp1 = this.getOwner();
+        Hyphae hyp2 = tip.getOwner();
+        Vec2[] base = hyp1.getLastVertices();
+        Vec2[] top = hyp2.getLastVertices();
+        hyp1.addToShapes(base, top);
+        hyp1.killHyphae();
+        hyp2.killHyphae();
+
+    }
+
     public void killBody() {
         world.destroyBody(this.body);
         body.setUserData(null);
         owner.setIsGrowing(false);
-        this.visible = false;
     }
 
     /**
@@ -124,48 +130,61 @@ public class Tip {
     }
 
     public void makeHypheField(Tip tip, int width, int height, int grid, VectorField vf, float forceField) {
-        try {
-            if (tip.getOwner().getIsGrowing() && tip.getOwner().getLength() > 2) {
+        if (tip.getOwner().getIsGrowing() && tip.getOwner().getLength() > 2) {
 
-                Vec2 tipCorInt = world.coordWorldToPixels(tip.getBody().getPosition());
-                float dist = (float) Math.sqrt((height / grid) * (height / grid) + (width / grid) * (width / grid)) + 1; //Przekątna prostokąta +1
-                Vec2 tipVeliocity = new Vec2(world.vectorWorldToPixels(tip.getBody().getLinearVelocity())); // Wektor prędkości
-                tipVeliocity.normalize();
-                tipVeliocity = tipVeliocity.mulLocal(dist);
+            Vec2 tipCorInt = world.coordWorldToPixels(tip.getBody().getPosition());
+            float dist = (float) Math.sqrt((height / grid) * (height / grid) + (width / grid) * (width / grid)) + 1; //Przekątna prostokąta +1
+            Vec2 tipVeliocity = new Vec2(world.vectorWorldToPixels(tip.getBody().getLinearVelocity())); // Wektor prędkości
+            tipVeliocity.normalize();
+            tipVeliocity = tipVeliocity.mulLocal(dist);
 
-                Vec2 backTip = tipCorInt.sub(tipVeliocity); // punkt zwiadowca
+            Vec2 backTip = tipCorInt.sub(tipVeliocity); // punkt zwiadowca
 
-                Vec2 ortogonalToBackTip = new Vec2(-tipVeliocity.y, tipVeliocity.x);
-                ortogonalToBackTip.normalize();
-                ortogonalToBackTip.mulLocal(dist / 2);
+            Vec2 ortogonalToBackTip = new Vec2(-tipVeliocity.y, tipVeliocity.x);
+            ortogonalToBackTip.normalize();
+            ortogonalToBackTip.mulLocal(dist / 2);
 
-                int intelectRange = 20;
+            int intelectRange = 20;
 
-                Vec2[] leftPointArr = new Vec2[intelectRange];
-                Vec2[] rightPointArr = new Vec2[intelectRange];
+            Vec2[] leftPointArr = new Vec2[intelectRange];
+            Vec2[] rightPointArr = new Vec2[intelectRange];
 
+            try {
                 for (int i = 0; i < intelectRange; i++) {
                     leftPointArr[i] = new Vec2(backTip).addLocal((ortogonalToBackTip).mul(i + 1));
                     rightPointArr[i] = new Vec2(backTip).subLocal((ortogonalToBackTip).mul(i + 1));
                 }
+            } catch (Exception e) {
+            }
 
-                if (tip.hasChanged(width, height, grid)) {  // Sprawdza, czy tip zmienił komórkę siatki
+            if (tip.hasChanged(width, height, grid)) {  // Sprawdza, czy tip zmienił komórkę siatki
+
+                try {
                     int[] moreLeft;
                     int[] moreRight;
                     Vec2 leftForce = leftPointArr[0].subLocal(backTip);
                     Vec2 rightForce = rightPointArr[0].subLocal(backTip);
 
                     // TODO Wyznaczyć wektor siły dla komórki w której jest punkt zwiadowca
-//                    int[] c = c2vf((int) backTip.x, (int) backTip.y, width, height, grid);
-//                    vf.standardBlock(c, leftForce, forceField);
+                    int[] indexes = c2vf((int) backTip.x, (int) backTip.y, width, height, grid);
+                    Vec2 middlePoint = middleCords(indexes[0], indexes[1], width, height, grid);
+                    if (backTip.x - middlePoint.x > 0) {
+                        vf.standardBlock(indexes, rightForce, forceField);
+                    } else {
+                        vf.standardBlock(indexes, leftForce, forceField);
+                    }
 
                     for (int i = 0; i < intelectRange; i++) {
-                        moreLeft = c2vf((int) leftPointArr[i].x, (int) leftPointArr[i].y, width, height, grid);
-                        moreRight = c2vf((int) rightPointArr[i].x, (int) rightPointArr[i].y, width, height, grid);
+                        if (leftPointArr[i].x > 0 && leftPointArr[i].y > 0) {
+                            moreLeft = c2vf((int) leftPointArr[i].x, (int) leftPointArr[i].y, width, height, grid);
+                            moreRight = c2vf((int) rightPointArr[i].x, (int) rightPointArr[i].y, width, height, grid);
 
-                        vf.standardBlock(moreLeft, leftForce, forceField / ((float) ((i + 1) * (i + 1))));
-                        vf.standardBlock(moreRight, rightForce, forceField / ((float) ((i + 1) * (i + 1))));
+//                            System.out.println(moreLeft[0] + "\t" + moreLeft[1]);
+                            vf.standardBlock(moreLeft, leftForce, forceField / ((float) ((i + 1) * (i + 1))));
+                            vf.standardBlock(moreRight, rightForce, forceField / ((float) ((i + 1) * (i + 1))));
+                        }
                     }
+                } catch (Exception e) {
                 }
 //               GRZEBIEŃ
 //                int[] c = c2vf((int) backTip.x, (int)backTip.y);
@@ -180,22 +199,11 @@ public class Tip {
 //                }
 
             }
-        } catch (Exception e) {
-
         }
 
     }
 
-
     public Hyphae getOwner() {
         return owner;
-    }
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
-    public boolean isVisible() {
-        return visible;
     }
 }
