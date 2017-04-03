@@ -17,7 +17,7 @@ public class mycelium extends PApplet {
 
     private final static int WIDTH = 1200;
     private final static int HEIGHT = 800;
-    private final static int GRID = 50;
+    private final static int GRID = 20;
 
     private static final int HYPHAE_WIDTH = 5;
     private static final int HYPHAE_HEIGHT = 20;
@@ -312,8 +312,10 @@ public class mycelium extends PApplet {
          */
         if (object1.getClass() == Tip.class && object2.getClass() == CollisionShape.class) {
             Tip tip1 = (Tip) object1;
-            CollisionShape tip2 = (CollisionShape) object2;
-            System.out.println("Tip-Tip");
+            Tip tip2 = (Tip) object2;
+//            System.out.println("Tip-Tip");
+            tip1.killBody();
+            tip2.killBody();
         }
 
         /**
