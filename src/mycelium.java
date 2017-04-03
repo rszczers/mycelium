@@ -22,9 +22,9 @@ public class mycelium extends PApplet {
     private static final int HYPHAE_HEIGHT = 20;
     public static final float FORCE_VALUE = 20.0f;
 
-    private boolean drawCells = false;
-    private boolean drawGrids = false;
-    private boolean drawVectorFields = false;
+    private boolean drawCells = true;
+    private boolean drawGrids = true;
+    private boolean drawVectorFields = true;
     private boolean drawLabels = true;
     private boolean calculatePhysics = true;
     private boolean toggleBoundaries = false;
@@ -32,9 +32,9 @@ public class mycelium extends PApplet {
     private boolean toggleGravity = false;
     private boolean drawfps = true;
 
-    private boolean toggleBackgroundLayer = false;
-    private boolean toggleDebugLayer = true;
-    private boolean toggleFungiLayer = false;
+    private boolean toggleBackgroundLayer = true;
+    private boolean toggleDebugLayer = false;
+    private boolean toggleFungiLayer = true;
     private boolean toggleInterfaceLayer = false;
 
     public PGraphics backgroundLayer;
@@ -69,7 +69,7 @@ public class mycelium extends PApplet {
 
     public void setup() {
         frameRate(60);
-        background(0, 0, 127);
+        background(0);
         fungiShader = loadShader("fale.glsl");
         tipsToDelete = new LinkedList<>();
 
@@ -147,10 +147,8 @@ public class mycelium extends PApplet {
          */
         if (toggleBackgroundLayer) {
             backgroundLayer.beginDraw();
-
             backgroundLayer.endDraw();
         }
-
 
 
         /**
@@ -177,9 +175,35 @@ public class mycelium extends PApplet {
                     t.display();
                 }
             }
-            fungi.display(toggleDebugLayer);
 
+            fungi.display(toggleDebugLayer);
             debugLayer.endDraw();
+        }
+
+        /**
+         * Fungus screen
+         */
+        if (toggleFungiLayer) {
+            fungiLayer.beginDraw();
+            ArrayList<Vec2> tipsToDisplay = new ArrayList<>();
+            for (int i = 0; i < tcoll.size(); i++) {
+                if(tcoll.get(i).isVisible())
+                    tipsToDisplay.add(world.coordWorldToPixels(tcoll.get(i).getBody().getPosition()));
+            }
+
+            fungiShader.set("u_posSize", tipsToDisplay.size());
+            fungiShader.set("u_resolution", (float) width, (float) height);
+            fungiShader.set("u_mouse", (float) mouseX, (float) (height - mouseY));
+            fungiShader.set("u_time", millis() / 1000.0f);
+            fungiShader.set("u_buf", backbuffer);
+            for(int i = 0; i < tipsToDisplay.size(); i++){
+                fungiShader.set("u_positions[" + i + "]", (float)(tipsToDisplay.get(i).x), (float)height - tipsToDisplay.get(i).y);
+            }
+            shader(fungiShader);
+            rect(0, 0, width, height);
+            resetShader();
+            fungiLayer.endDraw();
+            backbuffer = get();
         }
 
         /**
@@ -205,32 +229,6 @@ public class mycelium extends PApplet {
                 text((int)frameRate, 10, 60);
             }
             interfaceLayer.endDraw();
-        }
-
-        /**
-         * Fungus screen
-         */
-        if (toggleFungiLayer) {
-            fungiLayer.beginDraw();
-            ArrayList<Vec2> tipsToDisplay = new ArrayList<>();
-            for (int i = 0; i < tcoll.size(); i++) {
-                if(tcoll.get(i).isVisible())
-                    tipsToDisplay.add(world.coordWorldToPixels(tcoll.get(i).getBody().getPosition()));
-            }
-
-            fungiShader.set("u_posSize", tipsToDisplay.size());
-            fungiShader.set("u_resolution", (float) width, (float) height);
-            fungiShader.set("u_mouse", (float) mouseX, (float) (height - mouseY));
-            fungiShader.set("u_time", millis() / 1000.0f);
-            fungiShader.set("u_buf", backbuffer);
-            for(int i = 0; i < tipsToDisplay.size(); i++){
-                fungiShader.set("u_positions[" + i + "]", (float)(tipsToDisplay.get(i).x), (float)height - tipsToDisplay.get(i).y);
-            }
-            shader(fungiShader);
-            rect(0, 0, width, height);
-            resetShader();
-            backbuffer = get();
-            fungiLayer.endDraw();
         }
 
         if (toggleBackgroundLayer)
@@ -262,17 +260,37 @@ public class mycelium extends PApplet {
     public void keyPressed() {
         if (key == 'd' || key == 'D') {
             toggleDebugLayer = !toggleDebugLayer;
+            toggleFungiLayer = !toggleFungiLayer;
+            String tmp = toggleDebugLayer ? "on" : "off";
+            System.out.println("Debug mode " + tmp);
         }
         if (key == 'f' || key == 'F') {
             toggleFungiLayer = !toggleFungiLayer;
+            toggleDebugLayer = !toggleDebugLayer;
+            String tmp = toggleFungiLayer ? "on" : "off";
+            System.out.println("Fungi layer " + tmp);
         }
         if (key == 'i' || key == 'I') {
             toggleInterfaceLayer = !toggleInterfaceLayer;
+            String tmp = toggleInterfaceLayer ? "on" : "off";
+            System.out.println("Interface " + tmp);
         }
         if (key == 'b' || key == 'B') {
             toggleBackgroundLayer = !toggleBackgroundLayer;
+            String tmp = toggleBackgroundLayer ? "on" : "off";
+            System.out.println("Background " + tmp);
+        }
+        if (key == 'q' || key == 'Q') {
+            exit();
+        }
+        if (key == 'r' || key == 'R') {
+            reset();
         }
 
+    }
+
+    private void reset() {
+        setup();
     }
 
     public void beginContact(Contact c) {

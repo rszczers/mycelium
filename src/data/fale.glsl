@@ -30,5 +30,5 @@ void main() {
 
 
 
-	gl_FragColor = vec4(pct, pct, pct, pct) + texture2D(u_buf, texPos) * 0.96;
+	gl_FragColor = vec4(pct, pct, pct, pct) + texture2D(u_buf, texPos) * 0.99;
 }
