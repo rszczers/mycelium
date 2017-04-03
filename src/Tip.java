@@ -72,6 +72,13 @@ public class Tip {
         return new int[]{x / (width / grid), y / (height / grid)};
     }
 
+    /**
+     * Sprawdza, czy tip zmienił komórkę siatki
+     * @param width
+     * @param height
+     * @param grid
+     * @return
+     */
     public boolean hasChanged(int width, int height, int grid) {
         boolean result;
         Vec2 position = world.coordWorldToPixels(body.getPosition());

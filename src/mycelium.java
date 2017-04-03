@@ -21,10 +21,11 @@ public class mycelium extends PApplet {
     private static final int HYPHAE_WIDTH = 5;
     private static final int HYPHAE_HEIGHT = 20;
     public static final float FORCE_VALUE = 20.0f;
+    private static final float GRAVITY_VALUE = 20.0f;
 
-    private boolean drawCells = false;
-    private boolean drawGrids = false;
-    private boolean drawVectorFields = false;
+    private boolean drawCells = true;
+    private boolean drawGrids = true;
+    private boolean drawVectorFields = true;
     private boolean drawLabels = true;
     private boolean calculatePhysics = true;
     private boolean toggleBoundaries = false;
@@ -58,8 +59,7 @@ public class mycelium extends PApplet {
     private VectorField vf;
     private ArrayList<Tip> tcoll;
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         PApplet.main("mycelium", args);
     }
 
@@ -69,7 +69,6 @@ public class mycelium extends PApplet {
 
     public void setup() {
         frameRate(60);
-        background(0, 0, 127);
         fungiShader = loadShader("fale.glsl");
         tipsToDelete = new LinkedList<>();
 
@@ -81,7 +80,7 @@ public class mycelium extends PApplet {
 
         world = new Box2DProcessing(this, 10);
         world.createWorld();
-        vf = new VectorField(GRID, world);
+        vf = new VectorField(GRID, GRAVITY_VALUE);
 
 
         if (toggleGravity) {
@@ -122,7 +121,7 @@ public class mycelium extends PApplet {
     public void draw() {
         if (calculatePhysics)
             world.step();
-            fungi.grow(HYPHAE_WIDTH, HYPHAE_HEIGHT);
+        fungi.grow(HYPHAE_WIDTH, HYPHAE_HEIGHT);
         /**
          * Apply force to tip
          */
@@ -150,7 +149,6 @@ public class mycelium extends PApplet {
 
             backgroundLayer.endDraw();
         }
-
 
 
         /**
@@ -191,7 +189,7 @@ public class mycelium extends PApplet {
                 rectMode(CENTER);
                 noStroke();
                 fill(0, 255, 0, 0);
-                rect(width / 2+50, 50, 115, 50);
+                rect(width / 2 + 50, 50, 115, 50);
                 rectMode(CORNER);
 
                 fill(16, 16, 153);
@@ -202,7 +200,7 @@ public class mycelium extends PApplet {
                 fill(0, 0, 180, 0);
                 rect(10, 30, 55, 40);
                 fill(0, 255, 0);
-                text((int)frameRate, 10, 60);
+                text((int) frameRate, 10, 60);
             }
             interfaceLayer.endDraw();
         }
@@ -214,7 +212,7 @@ public class mycelium extends PApplet {
             fungiLayer.beginDraw();
             ArrayList<Vec2> tipsToDisplay = new ArrayList<>();
             for (int i = 0; i < tcoll.size(); i++) {
-                if(tcoll.get(i).isVisible())
+                if (tcoll.get(i).isVisible())
                     tipsToDisplay.add(world.coordWorldToPixels(tcoll.get(i).getBody().getPosition()));
             }
 
@@ -223,8 +221,8 @@ public class mycelium extends PApplet {
             fungiShader.set("u_mouse", (float) mouseX, (float) (height - mouseY));
             fungiShader.set("u_time", millis() / 1000.0f);
             fungiShader.set("u_buf", backbuffer);
-            for(int i = 0; i < tipsToDisplay.size(); i++){
-                fungiShader.set("u_positions[" + i + "]", (float)(tipsToDisplay.get(i).x), (float)height - tipsToDisplay.get(i).y);
+            for (int i = 0; i < tipsToDisplay.size(); i++) {
+                fungiShader.set("u_positions[" + i + "]", (float) (tipsToDisplay.get(i).x), (float) height - tipsToDisplay.get(i).y);
             }
             shader(fungiShader);
             rect(0, 0, width, height);
@@ -248,8 +246,6 @@ public class mycelium extends PApplet {
 
         }
     }
-
-
 
 
     /**
@@ -450,48 +446,52 @@ public class mycelium extends PApplet {
 
             Vec2 ortogonalToBackTip = new Vec2(-tipVeliocity.y, tipVeliocity.x);
             ortogonalToBackTip.normalize();
-            ortogonalToBackTip.mulLocal(Math.max(WIDTH / GRID / 2, HEIGHT / GRID / 2));
+            ortogonalToBackTip.mulLocal(dist / 2);
 
             Vec2 leftPoint = new Vec2(backTip).addLocal(ortogonalToBackTip);
             Vec2 rightPoint = new Vec2(backTip).subLocal(ortogonalToBackTip);
-//            fill(120, 0, 0);
-//            ellipse(leftPoint.x, leftPoint.y, 10, 10);
-//            ellipse(rightPoint.x, rightPoint.y, 10, 10);
+            int intelectRange = 20;
+            Vec2[] leftPointArr = new Vec2[intelectRange];
+            Vec2[] rightPointArr = new Vec2[intelectRange];
+            for (int i = 0; i < intelectRange; i++) {
+                leftPointArr[i] = new Vec2(backTip).addLocal((ortogonalToBackTip).mul(i + 1));
+                rightPointArr[i] = new Vec2(backTip).subLocal((ortogonalToBackTip).mul(i + 1));
 
-            if (tip.hasChanged(WIDTH, HEIGHT, GRID)) {
-                if (rightPoint.x < WIDTH && leftPoint.x > 0 && leftPoint.y < HEIGHT && leftPoint.y > 0 && rightPoint.y > 0 && rightPoint.y < HEIGHT) {
-                    try {
-                        int[] leftPresent = c2vf((int) leftPoint.x, (int) leftPoint.y);
-                        int[] rightPresent = c2vf((int) rightPoint.x, (int) rightPoint.y);
-                        int[] moreLeft = new int[2];
+                // Czesanie pola
+//                fill(120, 0, 0);
+//                ellipse(leftPointArr[i].x, leftPointArr[i].y, 5, 5);
+//                ellipse(rightPointArr[i].x, rightPointArr[i].y, 5, 5);
+            }
 
-                        moreLeft[0] = leftPresent[0] - 1;
-                        moreLeft[1] = leftPresent[1];
-                        int[] moreRight = new int[2];
-                        moreRight[0] = rightPresent[0] + 1;
-                        moreRight[1] = rightPresent[1];
-
-
-                        vf.standardBlock(leftPresent, leftPoint.sub(backTip), FORCE_VALUE);
-                        vf.standardBlock(rightPresent, rightPoint.sub(backTip), FORCE_VALUE);
-                        vf.standardBlock(moreLeft, leftPoint.sub(backTip), FORCE_VALUE);
-                        vf.standardBlock(moreRight, rightPoint.sub(backTip), FORCE_VALUE);
-                    } catch (Exception e) {
-
-                    }
-                }
-
-//        Vec2 leftPresent2 = middleCords(leftPresent[0], leftPresent[1]);
-//        Vec2 rightPresent2 = middleCords(rightPresent[0], rightPresent[1]);
-//        fill(0, 0, 120);
-//        ellipse(leftPresent2.x , leftPresent2.y, 10, 10);
-//        ellipse(rightPresent2.x, rightPresent2.y, 10, 10);
-
-
-//        System.out.println("Left" +leftPoint.sub(backTip));
-//        System.out.println("Right" +leftPoint.sub(backTip));
+            if (tip.hasChanged(WIDTH, HEIGHT, GRID)) { // Sprawdza, czy tip zmienił komórkę siatki
+                fungiIntelect(intelectRange, leftPointArr, rightPointArr, backTip, world.scalarPixelsToWorld(WIDTH / GRID));
             }
         }
     }
 
+    /**
+     * Zmienia pole wektorowe wraz ze wzrostem grzyba, zależnie od zakresu jego intelektu
+     *
+     * @param n
+     */
+    public void fungiIntelect(int n, Vec2[] leftPoint, Vec2[] rightPoint, Vec2 backTip, float gridWidth) {
+        try {
+            int[] moreLeft;
+            int[] moreRight;
+            Vec2 leftForce = leftPoint[0].subLocal(backTip);
+            Vec2 rightForce = rightPoint[0].subLocal(backTip);
+
+            for (int i = 0; i < leftPoint.length; i++) {
+                moreLeft = c2vf((int) leftPoint[i].x, (int) leftPoint[i].y);
+                moreRight = c2vf((int) rightPoint[i].x, (int) rightPoint[i].y);
+
+                vf.standardBlock(moreLeft, leftForce, FORCE_VALUE / ((float) ((i + 1) * (i + 1))));
+                vf.standardBlock(moreRight, rightForce, FORCE_VALUE / ((float) ((i + 1) * (i + 1))));
+
+            }
+        } catch (Exception e) {
+
+        }
+    }
 }
+
