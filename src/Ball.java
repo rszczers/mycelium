@@ -37,7 +37,7 @@ public class Ball implements Interpretation {
         bd = new BodyDef();
         bd.type = BodyType.DYNAMIC;
 //        bd.fixedRotation = true;
-        bd.linearDamping = 10.0f;
+        bd.linearDamping = 5f;
         bd.angularDamping = 0.9f;
 //        bd.bullet = true;
 

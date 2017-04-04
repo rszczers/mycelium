@@ -51,11 +51,10 @@ public class Hyphae {
         // Rotacja wektora prędkości czubka strzępka
         //if (phi > 0.1 || phi < -0.1) {
         if (parent != null) {
-            Vec2 velocityRot = parent.getTip().getBody().getLinearVelocity().clone();// new Vec2(0, v0);
+            Vec2 velocityRot = new Vec2(parent.getTip().getBody().getLinearVelocity());// new Vec2(0, v0);
             tmp = velocityRot.x;
-
-            velocityRot.x = (float) (velocityRot.x * Math.cos(phi) - velocityRot.y * Math.sin(phi));
-            velocityRot.y = (float) (tmp * Math.sin(phi) + velocityRot.y * Math.cos(phi));
+            velocityRot.x =  (float) (velocityRot.x * Math.cos(phi) - velocityRot.y * Math.sin(phi));
+            velocityRot.y =  (float) (tmp * Math.sin(phi) + velocityRot.y * Math.cos(phi));
 //            System.out.println("Prędkość na początku: " + tip.getBody().getLinearVelocity() + "\n" +
 //                    "Prędkość po rotacji: " + velocityRot);
             this.tip.getBody().setLinearVelocity(velocityRot);
@@ -85,7 +84,7 @@ public class Hyphae {
 
 //            System.out.println(d);
             if (d >= boxHeight) {
-                if (length % 20 == 5) {
+                if (length % 14 == 7) {
                     Random random = new Random();
                     float leftOrRight = random.nextBoolean() ? 1.0f : -1.0f;
                     bisect(leftOrRight, boxWidth, boxHeight);

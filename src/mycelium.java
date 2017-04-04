@@ -17,12 +17,12 @@ public class mycelium extends PApplet {
 
     private final static int WIDTH = 1200;
     private final static int HEIGHT = 800;
-    private final static int GRID = 50;
+    private final static int GRID = 100;
 
     private static final int HYPHAE_WIDTH = 5;
     private static final int HYPHAE_HEIGHT = 20;
-    public static final float FORCE_VALUE = 20.0f;
-    private static final float GRAVITY_VALUE = 20.0f;
+    public static final float FORCE_VALUE = 200.0f;
+    private static final float GRAVITY_VALUE = 5.0f;
 
     private boolean drawCells = true;
     private boolean drawGrids = true;
@@ -148,7 +148,7 @@ public class mycelium extends PApplet {
                     Vec2 coords = world.coordWorldToPixels(t.getBody().getPosition());
                     int[] xy = c2vf((int) coords.x, (int) coords.y);
                     t.applyForce(vf.getBlock()[xy[0]][xy[1]]); // !!!
-                    t.makeHypheField(t, WIDTH, HEIGHT, GRID, vf, FORCE_VALUE);
+                    t.makeHypheField(WIDTH, HEIGHT, GRID, vf, FORCE_VALUE);
                 } catch (ArrayIndexOutOfBoundsException e) {
                     tcoll.get(i).killBody(); // usuń obiekt z systemu fizycznego
                     tcoll.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
@@ -199,7 +199,7 @@ public class mycelium extends PApplet {
          */
         if (toggleDebugLayer) {
             debugLayer.beginDraw();
-            debugLayer.background(0);
+            debugLayer.background(160);
             if (drawCells)
                 drawCells();
             if (drawGrids)
