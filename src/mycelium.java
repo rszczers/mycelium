@@ -17,12 +17,12 @@ public class mycelium extends PApplet {
 
     private final static int WIDTH = 1200;
     private final static int HEIGHT = 800;
-    private final static int GRID = 50;
+    private final static int GRID = 100;
 
     private static final int HYPHAE_WIDTH = 5;
     private static final int HYPHAE_HEIGHT = 20;
-    public static final float FORCE_VALUE = 20.0f;
-    private static final float GRAVITY_VALUE = 20.0f;
+    public static final float FORCE_VALUE = 200.0f;
+    private static final float GRAVITY_VALUE = 5.0f;
 
     private boolean drawCells = true;
     private boolean drawGrids = true;
@@ -34,6 +34,7 @@ public class mycelium extends PApplet {
     private boolean toggleGravity = false;
     private boolean toggleFps = true;
     private boolean toggleFullscreen = false;
+    private boolean drawTips = true;
 
     private boolean toggleBackgroundLayer = true;
     private boolean toggleDebugLayer = false;
@@ -93,8 +94,8 @@ public class mycelium extends PApplet {
 
         world = new Box2DProcessing(this, 10);
         world.createWorld();
-        vf = new VectorField(GRID, GRAVITY_VALUE);
 
+        vf = new VectorField(GRID, GRAVITY_VALUE);
 
         if (toggleGravity) {
             world.setGravity(0, 10);
@@ -151,9 +152,9 @@ public class mycelium extends PApplet {
                 try {
                     Tip t = tcoll.get(i);
                     Vec2 coords = world.coordWorldToPixels(t.getBody().getPosition());
-                    float[] bp = {coords.x, coords.y};
-                    int[] xy = c2vf((int) bp[0], (int) bp[1]);
+                    int[] xy = c2vf((int) coords.x, (int) coords.y);
                     t.applyForce(vf.getBlock()[xy[0]][xy[1]]); // !!!
+                    t.makeHypheField(WIDTH, HEIGHT, GRID, vf, FORCE_VALUE);
                 } catch (ArrayIndexOutOfBoundsException e) {
                     tcoll.get(i).killBody(); // usuń obiekt z systemu fizycznego
                     tcoll.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
@@ -161,47 +162,50 @@ public class mycelium extends PApplet {
             }
         }
 
-        /**
-         * Fungus screen
-         */
-        fungiLayer.beginDraw();
-        ArrayList<Vec2> tipsToDisplay = new ArrayList<>();
-        for (int i = 0; i < tcoll.size(); i++) {
+        if (!toggleDebugLayer) {
+            /**
+             * Fungus screen
+             */
+            fungiLayer.beginDraw();
+            fungiLayer.background(0);
+            ArrayList<Vec2> tipsToDisplay = new ArrayList<>();
+            for (int i = 0; i < tcoll.size(); i++) {
 //                if(tcoll.get(i).isVisible())
                 tipsToDisplay.add(world.coordWorldToPixels(tcoll.get(i).getBody().getPosition()));
-        }
-        fungiShader.set("u_posSize", tipsToDisplay.size());
-        fungiShader.set("u_resolution", (float) width, (float) height);
-        fungiShader.set("u_buf", backbuffer);
-        for(int i = 0; i < tipsToDisplay.size(); i++){
-            fungiShader.set("u_positions[" + i + "]", (float)(tipsToDisplay.get(i).x), (float)height - tipsToDisplay.get(i).y);
-        }
-        fungiLayer.shader(fungiShader);
-        fungiLayer.rect(0, 0, width, height);
-        backbuffer = fungiLayer.get();
-        fungiLayer.resetShader();
-        fungiLayer.endDraw();
+            }
+            fungiShader.set("u_posSize", tipsToDisplay.size());
+            fungiShader.set("u_resolution", (float) width, (float) height);
+            fungiShader.set("u_buf", backbuffer);
+            for (int i = 0; i < tipsToDisplay.size(); i++) {
+                fungiShader.set("u_positions[" + i + "]", (float) (tipsToDisplay.get(i).x), (float) height - tipsToDisplay.get(i).y);
+            }
+            fungiLayer.shader(fungiShader);
+            fungiLayer.rect(0, 0, width, height);
+            backbuffer = fungiLayer.get();
+            fungiLayer.resetShader();
+            fungiLayer.endDraw();
 
-        /**
-         * Background shader
-         */
-        if (toggleBackgroundLayer) {
-            backgroundLayer.beginDraw();
-            backgroundShader.set("u_resolution", (float) width, (float) height);
-            backgroundShader.set("u_time", millis() / 1000.0f);
-            backgroundShader.set("u_backbuffer", backbuffer);
-            backgroundLayer.shader(backgroundShader);
-            backgroundLayer.rect(0, 0, width, height);
-            backgroundLayer.resetShader();
-            backgroundLayer.endDraw();
+            /**
+             * Background shader
+             */
+            if (toggleBackgroundLayer) {
+                backgroundLayer.beginDraw();
+                backgroundShader.set("u_resolution", (float) width, (float) height);
+                backgroundShader.set("u_time", millis() / 1000.0f);
+                backgroundShader.set("u_backbuffer", backbuffer);
+                backgroundLayer.shader(backgroundShader);
+                backgroundLayer.rect(0, 0, width, height);
+                backgroundLayer.resetShader();
+                backgroundLayer.endDraw();
+            }
         }
-
 
         /**
          * Debug screen
          */
         if (toggleDebugLayer) {
             debugLayer.beginDraw();
+            debugLayer.background(160);
             if (drawCells)
                 drawCells();
             if (drawGrids)
@@ -209,20 +213,21 @@ public class mycelium extends PApplet {
             if (drawVectorFields) {
                 drawVectorField(vf);
             }
-
-            for (Tip t :
-                    tcoll) {
-                t.display();
+            if (drawTips) {
+                for (int i = 0; i < tcoll.size(); i++) {
+                    tcoll.get(i).display(debugLayer);
+                }
             }
 
             if (toggleBoundaries) {
                 for (BoundaryBox t :
                         boundaries) {
-                    t.display();
+                    t.display(debugLayer);
                 }
             }
 
-            fungi.display(toggleDebugLayer);
+            fungi.display(toggleDebugLayer, debugLayer);
+
             debugLayer.endDraw();
         }
 
@@ -259,15 +264,11 @@ public class mycelium extends PApplet {
         else if (toggleDebugLayer)
             image(debugLayer, 0, 0);
 
-        if (toggleInterfaceLayer)
+        if (toggleInterfaceLayer) {
             image(interfaceLayer, 0, 0);
-
-        for (Tip t :
-                tcoll) {
-            t.makeHypheField(t, WIDTH, HEIGHT, GRID, vf, FORCE_VALUE);
-
         }
     }
+
     private void saveState() {
         lastState[0] = toggleBackgroundLayer;
         lastState[1] = toggleFungiLayer;
@@ -331,6 +332,24 @@ public class mycelium extends PApplet {
             }
             String tmp = toggleBackgroundLayer ? "on" : "off";
             System.out.println("Background " + tmp);
+        }
+        if (toggleDebugLayer == true) {
+            if (key == 'v' || key == 'V') {
+                drawVectorFields = !drawVectorFields;
+                System.out.println("VF switched.");;
+            }
+            if (key == 'c' || key == 'C') {
+                drawCells = !drawCells;
+                System.out.println("Cells switched.");
+            }
+            if (key == 'g' || key == 'G') {
+                drawGrids = !drawGrids;
+                System.out.println("Grid switched.");
+            }
+            if (key == 's' || key == 'S') {
+                drawTips = !drawTips;
+                System.out.println("Tips switched.");
+            }
         }
         if (key == 'q' || key == 'Q') {
             exit();
@@ -420,14 +439,15 @@ public class mycelium extends PApplet {
      * Mało mądra metoda do rysowania siatki
      */
     private void drawGrid() {
-        stroke(90);
-        strokeWeight(1);
+        debugLayer.stroke(90);
+        debugLayer.strokeWeight(1);
         for (int x = width / GRID; x < width; x += width / GRID) {
-            line(x, 0, x, height);
+            debugLayer.line(x, 0, x, height);
         }
         for (int y = height / GRID; y < height; y += height / GRID) {
-            line(0, y, width, y);
+            debugLayer.line(0, y, width, y);
         }
+        debugLayer.noStroke();
     }
 
     /**
@@ -436,7 +456,8 @@ public class mycelium extends PApplet {
      * @param vf
      */
     private void drawVectorField(VectorField vf) {
-        stroke(1, 0, 0);
+        debugLayer.stroke(20, 20, 20);
+        debugLayer.strokeWeight(1);
         for (int i = 0; i < vf.getBlock().length; i++) {
             for (int j = 0; j < vf.getBlock().length; j++) {
                 int[] c = vf2c(i, j);
@@ -444,33 +465,34 @@ public class mycelium extends PApplet {
                 int y1 = c[1] + (height / (2 * GRID));
                 int x2 = x1 + (int) (vf.getBlock()[i][j].x);
                 int y2 = y1 + (int) (vf.getBlock()[i][j].y);
-                line(x1, y1, x2, y2);
-
+                debugLayer.line(x1, y1, x2, y2);
                 PVector px2 = new PVector(x2, y2);
                 PVector px1 = new PVector(x1, y1);
                 PVector cx1 = px1.sub(px2).normalize().rotate(radians(15)).mult(10).add(px2);
-                line(x2, y2, cx1.x, cx1.y);
+                debugLayer.line(x2, y2, cx1.x, cx1.y);
                 PVector cx2 = px1.sub(px2).rotate(radians(-30)).add(px2);
-                line(x2, y2, cx2.x, cx2.y);
+                debugLayer.line(x2, y2, cx2.x, cx2.y);
             }
         }
+        debugLayer.noStroke();
     }
 
     /**
      * Zaznacza obszary, w których pole wektorowe zdefiniowane jest tak samo
      */
     private void drawCells() {
-        rectMode(CORNER);
+        debugLayer.rectMode(CORNER);
         int dw = width / GRID;
         int dh = height / GRID;
+        debugLayer.strokeWeight(0);
+//        stroke(255, 0, 0);
         for (int x = 0; x < width; x += dw) {
             for (int y = 0; y < height; y += dh) {
-                strokeWeight(1);
-                stroke(1);
-                fill(cellColor[x / dw][y / dh][0], cellColor[x / dw][y / dh][1], cellColor[x / dw][y / dh][2]);
-                rect(x, y, width / GRID, height / GRID);
+                debugLayer.fill(cellColor[x / dw][y / dh][0], cellColor[x / dw][y / dh][1], cellColor[x / dw][y / dh][2]);
+                debugLayer.rect(x, y, width / GRID, height / GRID);
             }
         }
+        debugLayer.noStroke();
     }
 
     /**

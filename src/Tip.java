@@ -2,6 +2,7 @@ import Box2D.Box2DProcessing;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import processing.core.PApplet;
+import processing.core.PGraphics;
 
 import java.util.Arrays;
 
@@ -39,10 +40,10 @@ public class Tip {
         body.applyForce(world.vectorPixelsToWorld(force), body.getPosition());
     }
 
-    public void display() {
+    public void display(PGraphics layer) {
         Vec2 v = world.getBodyPixelCoord(body);
         float phi = body.getAngle();
-            interp.display(v, phi);
+        interp.display(v, phi, layer);
     }
 
     public Body getBody() {
@@ -93,7 +94,7 @@ public class Tip {
     }
 
     /**
-     * Zwraca współrzędne środka komórki o danych indeksach
+     * Zwraca współrzędne środka komórki o danych indeksach siatki (NIE WYŚWIETLACZA)
      *
      * @param x
      * @param y
@@ -129,6 +130,7 @@ public class Tip {
         return result;
     }
 
+
     public void makeHypheField(Tip tip, int width, int height, int grid, VectorField vf, float forceField) {
         if (tip.getOwner().getIsGrowing() && tip.getOwner().getLength() > 2) {
 
@@ -140,18 +142,32 @@ public class Tip {
 
             Vec2 backTip = tipCorInt.sub(tipVeliocity); // punkt zwiadowca
 
-            Vec2 ortogonalToBackTip = new Vec2(-tipVeliocity.y, tipVeliocity.x);
-            ortogonalToBackTip.normalize();
-            ortogonalToBackTip.mulLocal(dist / 2);
 
-            int intelectRange = 20;
+                Vec2 ortogonalToBackTip = new Vec2(-tipVeliocity.y, tipVeliocity.x); // Obrót znormalizowano-pomnożonego wektora prędkości tipa
+                ortogonalToBackTip.normalize();
+                ortogonalToBackTip.mulLocal(dist / 2.0f); // wektor jest długości połowy długości przekątnej komórki
 
-            Vec2[] leftPointArr = new Vec2[intelectRange];
-            Vec2[] rightPointArr = new Vec2[intelectRange];
+                /*
+                tutaj jest rozum grzyba, do wyciecia
+                 */
+                float cellWidth = width/grid;
+                float cellHeight = height/grid;
+
+                float r = ((Ball)(interp)).getRadius();
+                int fungusIntenectFactor = 20;  // liczba tipów w prawo i w lewo, nie w sumie
+                // zalezy od tipa, ale
+                float fungusIntelect = r * fungusIntenectFactor;
+                int howManyCellsIsIt = (int)(Math.ceil(fungusIntelect / cellWidth));
+
+                int intelectRange = howManyCellsIsIt; // TODO UALEŻNIĆ OD ABSOLUTNEJ WARTOSCI (teraz to jest liczba zwiadowców (po lewej i prawej, w sumie 2*n))
+
+                Vec2[] leftPointArr = new Vec2[intelectRange]; //Tablica lewych zwiadowców
+                Vec2[] rightPointArr = new Vec2[intelectRange]; //Tablica prawych zwiadowców
+
 
             try {
                 for (int i = 0; i < intelectRange; i++) {
-                    leftPointArr[i] = new Vec2(backTip).addLocal((ortogonalToBackTip).mul(i + 1));
+                    leftPointArr[i] = new Vec2(backTip).addLocal((ortogonalToBackTip).mul(i + 1)); //Definicja zwiadowców
                     rightPointArr[i] = new Vec2(backTip).subLocal((ortogonalToBackTip).mul(i + 1));
                 }
             } catch (Exception e) {
@@ -159,30 +175,65 @@ public class Tip {
 
             if (tip.hasChanged(width, height, grid)) {  // Sprawdza, czy tip zmienił komórkę siatki
 
-                try {
-                    int[] moreLeft;
-                    int[] moreRight;
-                    Vec2 leftForce = leftPointArr[0].subLocal(backTip);
-                    Vec2 rightForce = rightPointArr[0].subLocal(backTip);
 
-                    // TODO Wyznaczyć wektor siły dla komórki w której jest punkt zwiadowca
-                    int[] indexes = c2vf((int) backTip.x, (int) backTip.y, width, height, grid);
-                    Vec2 middlePoint = middleCords(indexes[0], indexes[1], width, height, grid);
-                    if (backTip.x - middlePoint.x > 0) {
-                        vf.standardBlock(indexes, rightForce, forceField);
+                try {
+
+                if (this.hasChanged(width, height, grid)) {  // Sprawdza, czy tip zmienił komórkę siatki
+                    int[] moreLeft;   // Współrzędne komórek sąsiednich w których są zwiadowcy (definicje w pętli niżej)
+                    int[] moreRight; // j/w
+
+                    Vec2 leftForce = leftPointArr[0].subLocal(backTip); // siła w lewo
+                    Vec2 rightForce = rightPointArr[0].subLocal(backTip); // siłą w prawo
+
+
+                    Vec2 backTipVelocity = new Vec2(world.vectorWorldToPixels(this.getBody().getLinearVelocity()));
+                    float cosphi = backTipVelocity.x/backTipVelocity.length(); //nachylenie wektora prędkości backtip
+
+//                    backTipVelocity.normalize();
+                    int[] cellCoordsInInt = c2vf((int)backTip.x, (int)backTip.y, width, height, grid); //glupi output motody, zamiast Vec2 zwraca tablicę intów
+                    Vec2 cellCoordsOfBackTip = new Vec2(cellCoordsInInt[0], cellCoordsInInt[1]);
+                    Vec2 backTipCellCenterAbsCoords =
+                            middleCords(cellCoordsInInt[0], cellCoordsInInt[1], width, height, grid);
+                    Vec2 backTipRelativeToMiddlePosition = backTip.sub(backTipCellCenterAbsCoords);
+//                    backTipRelativeToMiddlePosition.normalize();
+
+                    float phi;
+                    if (backTipVelocity.y > 0) {
+                        phi = (float) (Math.PI / 2 - Math.acos(cosphi));
                     } else {
-                        vf.standardBlock(indexes, leftForce, forceField);
+                        phi = (float) (Math.PI / 2 + Math.acos(cosphi));
                     }
 
-                    for (int i = 0; i < intelectRange; i++) {
-                        if (leftPointArr[i].x > 0 && leftPointArr[i].y > 0) {
-                            moreLeft = c2vf((int) leftPointArr[i].x, (int) leftPointArr[i].y, width, height, grid);
-                            moreRight = c2vf((int) rightPointArr[i].x, (int) rightPointArr[i].y, width, height, grid);
+                    Vec2 rotatedRelativeBackTipPosition = new Vec2(
+                            (float)(backTipRelativeToMiddlePosition.x * Math.cos(phi) -
+                                    backTipRelativeToMiddlePosition.y * Math.sin(phi)),
+                            (float)(backTipRelativeToMiddlePosition.x * Math.sin(phi) +
+                                    backTipRelativeToMiddlePosition.y * Math.cos(phi)));
 
-//                            System.out.println(moreLeft[0] + "\t" + moreLeft[1]);
-                            vf.standardBlock(moreLeft, leftForce, forceField / ((float) ((i + 1) * (i + 1))));
-                            vf.standardBlock(moreRight, rightForce, forceField / ((float) ((i + 1) * (i + 1))));
-                        }
+//                    float forceFraction = world.scalarPixelsToWorld()
+                    if(rotatedRelativeBackTipPosition.x >= 0) {
+                        vf.standardBlock(cellCoordsInInt, leftForce, forceValue/(cellWidth*cellWidth));
+                    } else {
+                        vf.standardBlock(cellCoordsInInt, rightForce, forceValue/(cellWidth*cellWidth));
+                    }
+
+
+                    // TODO Wyznaczyć wektor siły dla komórki w której jest punkt zwiadowca
+//                    int[] c = c2vf((int) backTip.x, (int) backTip.y, width, height, grid);
+//                    System.out.println(intelectRange);
+                    for (int i = 0; i < intelectRange; i++) {
+                        moreLeft = c2vf((int) leftPointArr[i].x, (int) leftPointArr[i].y, width, height, grid); //współrzędna komórki w której jest ity
+                        // lewy zwiadowca
+                        moreRight = c2vf((int) rightPointArr[i].x, (int) rightPointArr[i].y, width, height, grid); // podobnie
+                        float fraction = world.scalarPixelsToWorld((i+1)*(i+1)*cellHeight*cellHeight);
+//                        System.out.println(fraction);
+//                        vf.standardBlock(moreLeft, leftForce, forceValue / ((i+1)*(i+1))); //aktualizuje pole siłowe odpowiednio
+                        vf.standardBlock(moreLeft, leftForce, forceValue/fraction); //aktualizuje pole siłowe odpowiednio
+//                        vf.standardBlock(moreLeft, leftForce, forceValue/((float)Math.log(i+1)+1.0f)); //aktualizuje pole siłowe odpowiednio
+//                        vf.standardBlock(moreRight, rightForce, forceValue / ((i+1)*(i+1)));
+                        vf.standardBlock(moreRight, rightForce, forceValue/fraction);
+//                        vf.standardBlock(moreRight, rightForce, forceValue/((float)Math.log(i+1)+1.0f));
+
                     }
                 } catch (Exception e) {
                 }
@@ -199,7 +250,9 @@ public class Tip {
 //                }
 
             }
+
         }
+
 
     }
 

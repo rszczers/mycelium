@@ -1,6 +1,8 @@
 import Box2D.Box2DProcessing;
 import org.jbox2d.common.Vec2;
 import processing.core.PApplet;
+import processing.core.PGraphics;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -57,17 +59,15 @@ public class Fungus {
         }
     }
 
-    public void display(boolean showCollisionShapes) {
+    public void display(boolean showCollisionShapes, PGraphics layer) {
 //        context.pushMatrix();
 //        context.translate(location.x, location.y);
 //        context.fill(255, 0, 0);
 //        context.ellipse(0, 0, 10, 10);
 //        context.noStroke();
 //        context.popMatrix();
-
-        for (Hyphae h:
-             roots) {
-            h.display(showCollisionShapes);
+        for (int i = 0; i < roots.size(); i++) {
+            roots.get(i).display(showCollisionShapes, layer);
         }
     }
 

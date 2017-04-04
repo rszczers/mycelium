@@ -5,6 +5,7 @@ import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.BodyDef;
 import org.jbox2d.dynamics.BodyType;
 import processing.core.PApplet;
+import processing.core.PGraphics;
 import processing.core.PShape;
 
 /**
@@ -124,8 +125,8 @@ public class CollisionShape {
         return bottom;
     }
 
-    public void display() {
-        context.shape(dShape);
+    public void display(PGraphics layer) {
+        layer.shape(dShape);
     }
 
     public void init(){

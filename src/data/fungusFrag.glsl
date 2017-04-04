@@ -4,13 +4,12 @@ precision mediump int;
 #endif
 #define PI 3.1415926535897932384626433832795
 uniform int u_posSize;
-uniform vec2 u_positions[60];
+uniform vec2 u_positions[100];
 uniform vec2 u_resolution;
 uniform sampler2D u_buf;
-uniform sampler2D u_background;
 
 
-float rand(vec2 co){
+float rand(vec2 co) {
     return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
 
@@ -23,9 +22,9 @@ void main() {
         vec2 pos = u_positions[i]/u_resolution - st;
         vec2 tC = u_positions[i]/u_resolution - st;
 //        float blender = (1 - smoothstep(0.0, 0.01, length(tC)));
-        float blender = smoothstep(0.0, 0.5, pow(tC.x*tC.x+tC.y*tC.y, -0.5)/2000);
+        float blender = (1.0 - smoothstep(0.0, 1.0, length(tC)*300));
         pct += blender;
     }
 //	gl_FragColor = vec4(pct, pct, pct, pct) + texture2D(u_background, texPos);
-	gl_FragColor = vec4(pct, pct, pct, pct) + texture2D(u_buf, texPos) * 0.98;
+	gl_FragColor = vec4(pct, pct, pct, pct) + texture2D(u_buf, texPos) ;
 }
