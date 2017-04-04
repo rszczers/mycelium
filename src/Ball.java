@@ -22,13 +22,6 @@ public class Ball implements Interpretation {
     private FixtureDef fd;
     private PApplet context;
 
-    private PShader pointShader;
-    private PShader newShader;
-    private PImage cloud1;
-    private PImage cloud2;
-    private PImage cloud3;
-
-
     public Ball(PApplet context, Box2DProcessing world, int radius) {
         this.context = context;
         this.radius = radius;
@@ -37,9 +30,9 @@ public class Ball implements Interpretation {
         bd = new BodyDef();
         bd.type = BodyType.DYNAMIC;
 //        bd.fixedRotation = true;
-        bd.linearDamping = 5f;
+        bd.linearDamping = 10.0f;
         bd.angularDamping = 0.9f;
-//        bd.bullet = true;
+        bd.bullet = true;
 
         // Definicja kształtu
         ps = new CircleShape();
@@ -48,8 +41,8 @@ public class Ball implements Interpretation {
         // Definicja dowiązania ciała do kształtu
         fd = new FixtureDef();
         fd.shape = ps;
-        fd.density = 0.05f;
-        fd.friction = 0.3f;
+        fd.density = 0.01f;
+        fd.friction = 0.5f;
         fd.restitution = 0.0f;
 
         //pointShader = context.loadShader("spritefrag.glsl", "spritevert.glsl");

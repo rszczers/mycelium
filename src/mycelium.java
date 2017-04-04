@@ -15,14 +15,14 @@ import processing.opengl.PShader;
 public class mycelium extends PApplet {
     private Box2DProcessing world;
 
-    private final static int WIDTH = 1200;
+    private final static int WIDTH = 800;
     private final static int HEIGHT = 800;
-    private final static int GRID = 100;
+    private final static int GRID = 800;
 
-    private static final int HYPHAE_WIDTH = 5;
-    private static final int HYPHAE_HEIGHT = 20;
+    private static final int HYPHAE_WIDTH = 4;
+    private static final int HYPHAE_HEIGHT = 40;
     public static final float FORCE_VALUE = 200.0f;
-    private static final float GRAVITY_VALUE = 5.0f;
+    private static final float GRAVITY_VALUE = 1.0f;
 
     private boolean drawCells = true;
     private boolean drawGrids = true;
@@ -132,6 +132,36 @@ public class mycelium extends PApplet {
     }
 
     public void draw() {
+        /**
+         * Debug screen
+         */
+        if (toggleDebugLayer) {
+            debugLayer.beginDraw();
+            debugLayer.background(160);
+            if (drawCells)
+                drawCells();
+            if (drawGrids)
+                drawGrid();
+            if (drawVectorFields) {
+                drawVectorField(vf);
+            }
+            if (drawTips) {
+                for (int i = 0; i < tcoll.size(); i++) {
+                    tcoll.get(i).display(debugLayer);
+                }
+            }
+
+            if (toggleBoundaries) {
+                for (BoundaryBox t :
+                        boundaries) {
+                    t.display(debugLayer);
+                }
+            }
+
+            fungi.display(toggleDebugLayer, debugLayer);
+
+            debugLayer.endDraw();
+        }
 
         if (calculatePhysics)
             world.step();
@@ -154,7 +184,7 @@ public class mycelium extends PApplet {
                     Vec2 coords = world.coordWorldToPixels(t.getBody().getPosition());
                     int[] xy = c2vf((int) coords.x, (int) coords.y);
                     t.applyForce(vf.getBlock()[xy[0]][xy[1]]); // !!!
-                    t.makeHypheField(WIDTH, HEIGHT, GRID, vf, FORCE_VALUE);
+                    t.makeHypheField(WIDTH, HEIGHT, GRID, vf, FORCE_VALUE, debugLayer);
                 } catch (ArrayIndexOutOfBoundsException e) {
                     tcoll.get(i).killBody(); // usuń obiekt z systemu fizycznego
                     tcoll.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
@@ -200,36 +230,6 @@ public class mycelium extends PApplet {
             }
         }
 
-        /**
-         * Debug screen
-         */
-        if (toggleDebugLayer) {
-            debugLayer.beginDraw();
-            debugLayer.background(160);
-            if (drawCells)
-                drawCells();
-            if (drawGrids)
-                drawGrid();
-            if (drawVectorFields) {
-                drawVectorField(vf);
-            }
-            if (drawTips) {
-                for (int i = 0; i < tcoll.size(); i++) {
-                    tcoll.get(i).display(debugLayer);
-                }
-            }
-
-            if (toggleBoundaries) {
-                for (BoundaryBox t :
-                        boundaries) {
-                    t.display(debugLayer);
-                }
-            }
-
-            fungi.display(toggleDebugLayer, debugLayer);
-
-            debugLayer.endDraw();
-        }
 
 
         /**

@@ -13,7 +13,8 @@ public class VectorField {
         block = new Vec2[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                block[i][j] = new Vec2(2.0f*(new Random().nextFloat() * 2 - 1), -gravityValue);
+//                block[i][j] = new Vec2(0.0f*(new Random().nextFloat() * 2 - 1), -gravityValue);
+                block[i][j] = new Vec2(0.0f, -gravityValue);
 //                block[i][j] = new Vec2(new Random().nextFloat() * 2 - 1, new Random().nextFloat() * 2 - 1);
 //                block[i][j] = new Vec2(new Random().nextFloat() * 2 - 1, new Random().nextFloat() * 2 - 1);
 //                block[i][j].normalize();
@@ -27,11 +28,13 @@ public class VectorField {
     }
 
     public void standardBlock(int[] coord, Vec2 v, float forceValue){
-        v.normalize();
-        v.mulLocal(forceValue);
-        block[coord[0]][coord[1]].addLocal(v);
-//        block[coord[0]][coord[1]].normalize();
-//        block[coord[0]][coord[1]].mulLocal(forceValue);
+        if(coord[0] < block.length && coord[1] < block.length && coord[0] >= 0 && coord[1] >= 0) {
+            v.normalize();
+            v.mulLocal(forceValue);
+            block[coord[0]][coord[1]].addLocal(v);
+            block[coord[0]][coord[1]].normalize();
+//            block[coord[0]][coord[1]].mulLocal(forceValue);
+        }
     }
 
     public Vec2[][] getBlock() {

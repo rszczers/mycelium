@@ -53,8 +53,8 @@ public class Hyphae {
         if (parent != null) {
             Vec2 velocityRot = new Vec2(parent.getTip().getBody().getLinearVelocity());// new Vec2(0, v0);
             tmp = velocityRot.x;
-            velocityRot.x =  (float) (velocityRot.x * Math.cos(phi) - velocityRot.y * Math.sin(phi));
-            velocityRot.y =  (float) (tmp * Math.sin(phi) + velocityRot.y * Math.cos(phi));
+            velocityRot.x = (float) (velocityRot.x * Math.cos(phi) - velocityRot.y * Math.sin(phi));
+            velocityRot.y = (float) (tmp * Math.sin(phi) + velocityRot.y * Math.cos(phi));
 //            System.out.println("Prędkość na początku: " + tip.getBody().getLinearVelocity() + "\n" +
 //                    "Prędkość po rotacji: " + velocityRot);
             this.tip.getBody().setLinearVelocity(velocityRot);
@@ -84,14 +84,14 @@ public class Hyphae {
 
 //            System.out.println(d);
             if (d >= boxHeight) {
-                if (length % 14 == 7) {
+                Vec2[] last = shapes.get(size - 1).getTop(); //Znajdź dwie współrzędne ostatniego CollisionShape'a
+                CollisionShape newShape = new CollisionShape(context, world, last, nextVertices(), color);
+                shapes.add(newShape);
+                if (length % 20 == 10) {
                     Random random = new Random();
                     float leftOrRight = random.nextBoolean() ? 1.0f : -1.0f;
                     bisect(leftOrRight, boxWidth, boxHeight);
                 }
-                Vec2[] last = shapes.get(size - 1).getTop(); //Znajdź dwie współrzędne ostatniego CollisionShape'a
-                CollisionShape newShape = new CollisionShape(context, world, last, nextVertices(), color);
-                shapes.add(newShape);
                 this.length++;
             }
         }
