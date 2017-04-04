@@ -14,7 +14,6 @@ public class Tip {
     private Box2DProcessing world;
     private Body body;
     private Hyphae owner;
-    private boolean visible;
 
     private int[][] coordDiff = new int[2][2];
     private int diffCounder = 0;
@@ -23,7 +22,6 @@ public class Tip {
         this.world = world;
         this.interp = interp;
         this.owner = owner;
-        this.visible = true;
 
         // Ustalenie pozycji komórki w BodyDef
         interp.getBodyDef().position.set(world.coordPixelsToWorld(location));
@@ -45,9 +43,7 @@ public class Tip {
     public void display(PGraphics layer) {
         Vec2 v = world.getBodyPixelCoord(body);
         float phi = body.getAngle();
-        if (visible) {
-            interp.display(v, phi, layer);
-        }
+        interp.display(v, phi, layer);
     }
 
     public Body getBody() {
@@ -58,11 +54,21 @@ public class Tip {
         return interp;
     }
 
+    public void colideWithOtherTip(Tip tip) {
+        Hyphae hyp1 = this.getOwner();
+        Hyphae hyp2 = tip.getOwner();
+        Vec2[] base = hyp1.getLastVertices();
+        Vec2[] top = hyp2.getLastVertices();
+        hyp1.addToShapes(base, top);
+        hyp1.killHyphae();
+        hyp2.killHyphae();
+
+    }
+
     public void killBody() {
         world.destroyBody(this.body);
         body.setUserData(null);
         owner.setIsGrowing(false);
-        this.visible = false;
     }
 
     /**
@@ -124,17 +130,18 @@ public class Tip {
         return result;
     }
 
-    public void makeHypheField(int width, int height, int grid, VectorField vf, float forceValue) {
-//        try {
-            if (this.getOwner().getIsGrowing() && this.getOwner().getLength() > 2) {
 
-                Vec2 tipCorInt = world.coordWorldToPixels(this.getBody().getPosition()); // Pozycja tipa
-                float dist = (float) Math.sqrt((height / grid) * (height / grid) + (width / grid) * (width / grid)) + 1; //Przekątna prostokąta + 1
-                Vec2 tipVeliocity = new Vec2(world.vectorWorldToPixels(this.getBody().getLinearVelocity())); // Wektor prędkości
-                tipVeliocity.normalize();
-                tipVeliocity = tipVeliocity.mulLocal(dist);
+    public void makeHypheField(Tip tip, int width, int height, int grid, VectorField vf, float forceField) {
+        if (tip.getOwner().getIsGrowing() && tip.getOwner().getLength() > 2) {
 
-                Vec2 backTip = tipCorInt.sub(tipVeliocity); // punkt zwiadowca
+            Vec2 tipCorInt = world.coordWorldToPixels(tip.getBody().getPosition());
+            float dist = (float) Math.sqrt((height / grid) * (height / grid) + (width / grid) * (width / grid)) + 1; //Przekątna prostokąta +1
+            Vec2 tipVeliocity = new Vec2(world.vectorWorldToPixels(tip.getBody().getLinearVelocity())); // Wektor prędkości
+            tipVeliocity.normalize();
+            tipVeliocity = tipVeliocity.mulLocal(dist);
+
+            Vec2 backTip = tipCorInt.sub(tipVeliocity); // punkt zwiadowca
+
 
                 Vec2 ortogonalToBackTip = new Vec2(-tipVeliocity.y, tipVeliocity.x); // Obrót znormalizowano-pomnożonego wektora prędkości tipa
                 ortogonalToBackTip.normalize();
@@ -157,10 +164,19 @@ public class Tip {
                 Vec2[] leftPointArr = new Vec2[intelectRange]; //Tablica lewych zwiadowców
                 Vec2[] rightPointArr = new Vec2[intelectRange]; //Tablica prawych zwiadowców
 
+
+            try {
                 for (int i = 0; i < intelectRange; i++) {
                     leftPointArr[i] = new Vec2(backTip).addLocal((ortogonalToBackTip).mul(i + 1)); //Definicja zwiadowców
                     rightPointArr[i] = new Vec2(backTip).subLocal((ortogonalToBackTip).mul(i + 1));
                 }
+            } catch (Exception e) {
+            }
+
+            if (tip.hasChanged(width, height, grid)) {  // Sprawdza, czy tip zmienił komórkę siatki
+
+
+                try {
 
                 if (this.hasChanged(width, height, grid)) {  // Sprawdza, czy tip zmienił komórkę siatki
                     int[] moreLeft;   // Współrzędne komórek sąsiednich w których są zwiadowcy (definicje w pętli niżej)
@@ -217,7 +233,9 @@ public class Tip {
 //                        vf.standardBlock(moreRight, rightForce, forceValue / ((i+1)*(i+1)));
                         vf.standardBlock(moreRight, rightForce, forceValue/fraction);
 //                        vf.standardBlock(moreRight, rightForce, forceValue/((float)Math.log(i+1)+1.0f));
+
                     }
+                } catch (Exception e) {
                 }
 //               GRZEBIEŃ
 //                int[] c = c2vf((int) backTip.x, (int)backTip.y);
@@ -232,22 +250,13 @@ public class Tip {
 //                }
 
             }
-//        } catch (Exception e) {
-//
-//        }
+
+        }
+
 
     }
-
 
     public Hyphae getOwner() {
         return owner;
-    }
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
-    public boolean isVisible() {
-        return visible;
     }
 }

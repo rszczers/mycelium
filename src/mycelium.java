@@ -132,8 +132,14 @@ public class mycelium extends PApplet {
     }
 
     public void draw() {
+
         if (calculatePhysics)
             world.step();
+
+//        for (Tip t :
+//                tipsToDelete) {
+//            t.killBody();
+//        }
 
         fungi.grow(HYPHAE_WIDTH, HYPHAE_HEIGHT);
 
@@ -405,10 +411,10 @@ public class mycelium extends PApplet {
         /**
          * Kolizja Tip -- Tip
          */
-        if (object1.getClass() == Tip.class && object2.getClass() == CollisionShape.class) {
+        if (object1.getClass() == Tip.class && object2.getClass() == Tip.class) {
             Tip tip1 = (Tip) object1;
-            CollisionShape tip2 = (CollisionShape) object2;
-            System.out.println("Tip-Tip");
+            Tip tip2 = (Tip) object2;
+            tip1.colideWithOtherTip(tip2);
         }
 
         /**
