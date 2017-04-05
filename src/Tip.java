@@ -197,9 +197,9 @@ public class Tip {
 
             float backTipFraction = 1.0f;
             if (rotatedRelativeBackTipPosition.x >= 0) {
-                vf.standardBlock(backTipCellCoords, rightForce, forceValue / backTipFraction);
+                vf.standardBlock(backTipCellCoords, rightForce, forceValue);
             } else {
-                vf.standardBlock(backTipCellCoords, leftForce, forceValue / backTipFraction);
+                vf.standardBlock(backTipCellCoords, leftForce, forceValue);
             }
         }
     }

@@ -358,7 +358,9 @@ public class mycelium extends PApplet {
             System.out.println("Fungus sense range: " + FUNGUS_BRAIN_SIZE);
         }
         if (key == '-') {
-            FUNGUS_BRAIN_SIZE -= 1;
+            if (FUNGUS_BRAIN_SIZE > 0) {
+                FUNGUS_BRAIN_SIZE -= 1;
+            }
             System.out.println("Fungus sense range: " + FUNGUS_BRAIN_SIZE);
         }
         if (key == 'b' || key == 'B') {
