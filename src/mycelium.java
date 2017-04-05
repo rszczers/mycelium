@@ -16,13 +16,13 @@ public class mycelium extends PApplet {
     private final static int WIDTH = 800;
     private final static int HEIGHT = 800;
     private static int GRID = 100;
-    private static int FUNGUS_BRAIN_SIZE = 15;
+    private static int FUNGUS_BRAIN_SIZE = 20;
 
     private static final int HYPHAE_WIDTH = 4;
-    private static final int HYPHAE_HEIGHT = 30;
-    public static final float FORCE_VALUE = 20.0f;
-    private static final float GRAVITY_VALUE = 20.0f;
-
+    private static final int HYPHAE_HEIGHT = 10;
+    public static final float FORCE_VALUE = 10.0f;
+    private static final float GRAVITY_VALUE = 10.0f;
+//
     private boolean drawCells = true;
     private boolean drawGrids = true;
     private boolean drawVectorFields = true;
@@ -30,7 +30,7 @@ public class mycelium extends PApplet {
     private boolean calculatePhysics = true;
     private boolean toggleBoundaries = false;
     private boolean toggleForceField = true;
-    private boolean toggleGravity = true;
+    private boolean toggleGravity = false;
     private boolean toggleFps = true;
     private boolean toggleFullscreen = false;
     private boolean drawTips = true;
@@ -83,6 +83,7 @@ public class mycelium extends PApplet {
         fungiShader = loadShader("fungusFrag.glsl");
         backgroundShader = loadShader("backgroundFrag.glsl");
         fungiFlashShader = loadShader("flash.glsl");
+
         tipsToDelete = new LinkedList<>();
 
         backgroundLayer = createGraphics(width, height, P2D);

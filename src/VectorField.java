@@ -17,7 +17,8 @@ public class VectorField {
             for (int j = 0; j < n; j++) {
 //                block[i][j] = new Vec2(0.0f*(new Random().nextFloat() * 2 - 1), -gravityValue);
                 block[i][j] = new Vec2(0.0f, 0.0f);
-//                block[i][j] = new Vec2(0.0f, 0.0f);
+                block[i][j] = new Vec2(0.0f, -gravityValue);
+//                block[i][j] = new Vec2(1.0f*(new Random().nextFloat() * 2 - 1), 0.0f);
 //                block[i][j] = new Vec2(new Random().nextFloat() * 2 - 1, new Random().nextFloat() * 2 - 1);
 //                block[i][j] = new Vec2(new Random().nextFloat() * 2 - 1, new Random().nextFloat() * 2 - 1);
 //                block[i][j].normalize();
