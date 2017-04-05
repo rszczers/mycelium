@@ -5,6 +5,7 @@ precision mediump float;
 uniform float u_time;
 uniform vec2 u_resolution;
 uniform sampler2D u_backbuffer;
+uniform sampler2D u_flashbuffer;
 
 // Component wise blending
 #define Blend(base, blend, funcf)       vec3(funcf(base.r, blend.r), funcf(base.g, blend.g), funcf(base.b, blend.b))
@@ -94,5 +95,7 @@ void main(void)
 	color = BlendScreen(color,stars);
 	stars = genstars(1.0, 70.0, 1.0, p.xy + offset * n) * 0.8;
 	color = BlendScreen(color, stars);
-	gl_FragColor = vec4(color, 1.0) + texture2D(u_backbuffer, texPos);
+
+
+	gl_FragColor = vec4(color, 1.0)  + texture2D(u_backbuffer, texPos) + texture2D(u_flashbuffer, texPos);
 }

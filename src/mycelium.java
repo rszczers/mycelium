@@ -6,23 +6,22 @@ import processing.core.*;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Random;
 
 import Box2D.Box2DProcessing;
 import processing.opengl.PShader;
-
 
 public class mycelium extends PApplet {
     private Box2DProcessing world;
 
     private final static int WIDTH = 800;
     private final static int HEIGHT = 800;
-    private final static int GRID = 800;
+    private static int GRID = 100;
+    private static int FUNGUS_BRAIN_SIZE = 15;
 
     private static final int HYPHAE_WIDTH = 4;
-    private static final int HYPHAE_HEIGHT = 40;
-    public static final float FORCE_VALUE = 200.0f;
-    private static final float GRAVITY_VALUE = 1.0f;
+    private static final int HYPHAE_HEIGHT = 30;
+    public static final float FORCE_VALUE = 20.0f;
+    private static final float GRAVITY_VALUE = 20.0f;
 
     private boolean drawCells = true;
     private boolean drawGrids = true;
@@ -31,7 +30,7 @@ public class mycelium extends PApplet {
     private boolean calculatePhysics = true;
     private boolean toggleBoundaries = false;
     private boolean toggleForceField = true;
-    private boolean toggleGravity = false;
+    private boolean toggleGravity = true;
     private boolean toggleFps = true;
     private boolean toggleFullscreen = false;
     private boolean drawTips = true;
@@ -43,17 +42,20 @@ public class mycelium extends PApplet {
 
     public PGraphics backgroundLayer;
     public PImage backbuffer;
+    public PImage flashbuffer;
     public PImage backgroundBuffer;
     public PGraphics debugLayer;
     public PGraphics fungiLayer;
+    public PGraphics fungiFlashLayer;
     public PGraphics interfaceLayer;
 
     private PShader fungiShader;
+    private PShader fungiFlashShader;
     private PShader backgroundShader;
 
     public static LinkedList<Tip> tipsToDelete;
 
-    private static float[][][] cellColor = new float[GRID][GRID][3];
+    private static float[][][] cellColor;
 
     boolean[] lastState = new boolean[4]; // ostatni uruchomiony ekran
     /**
@@ -75,46 +77,36 @@ public class mycelium extends PApplet {
 
     public void setup() {
         frameRate(60);
-
         background(0);
         surface.setResizable(true);
 
         fungiShader = loadShader("fungusFrag.glsl");
         backgroundShader = loadShader("backgroundFrag.glsl");
-
+        fungiFlashShader = loadShader("flash.glsl");
         tipsToDelete = new LinkedList<>();
 
         backgroundLayer = createGraphics(width, height, P2D);
         debugLayer = createGraphics(width, height, P2D);
         fungiLayer = createGraphics(width, height, P2D);
+        fungiFlashLayer = createGraphics(width, height, P2D);
         interfaceLayer = createGraphics(width, height, P2D);
 
         backbuffer = new PImage(width, height);
+        flashbuffer = new PImage(width, height);
         backgroundBuffer = new PImage(width, height);
-
+        cellColor = new float[GRID][GRID][3];
         world = new Box2DProcessing(this, 10);
         world.createWorld();
 
         vf = new VectorField(GRID, GRAVITY_VALUE);
 
         if (toggleGravity) {
-            world.setGravity(0, 10);
+            world.setGravity(0, 200);
         } else {
             world.setGravity(0, 0);
         }
 
         world.listenForCollisions();
-
-        // określ kolory kwadratów w których pole jest takie samo.
-        if (drawCells) {
-            for (int i = 0; i < GRID; i++) {
-                for (int j = 0; j < GRID; j++) {
-                    for (int k = 0; k < 3; k++) {
-                        cellColor[i][j][k] = 100 + vf.getBlock()[i][j].length();
-                    }
-                }
-            }
-        }
 
         // ograniczenia
         if (toggleBoundaries) {
@@ -132,6 +124,9 @@ public class mycelium extends PApplet {
     }
 
     public void draw() {
+        if (calculatePhysics)
+            world.step();
+
         /**
          * Debug screen
          */
@@ -158,13 +153,22 @@ public class mycelium extends PApplet {
                 }
             }
 
-            fungi.display(toggleDebugLayer, debugLayer);
+            // określ kolory kwadratów w których pole jest takie samo.
+            if (drawCells) {
+                for (int i = 0; i < GRID; i++) {
+                    for (int j = 0; j < GRID; j++) {
+                        for (int k = 0; k < 3; k++) {
+                            cellColor[i][j][0] = vf.getBlock()[i][j].length();
+                            cellColor[i][j][1] = 60;
+                            cellColor[i][j][2] = 60;
+                        }
+                    }
+                }
+            }
 
+            fungi.display(toggleDebugLayer, debugLayer);
             debugLayer.endDraw();
         }
-
-        if (calculatePhysics)
-            world.step();
 
 //        for (Tip t :
 //                tipsToDelete) {
@@ -184,7 +188,7 @@ public class mycelium extends PApplet {
                     Vec2 coords = world.coordWorldToPixels(t.getBody().getPosition());
                     int[] xy = c2vf((int) coords.x, (int) coords.y);
                     t.applyForce(vf.getBlock()[xy[0]][xy[1]]); // !!!
-                    t.makeHypheField(WIDTH, HEIGHT, GRID, vf, FORCE_VALUE, debugLayer);
+                    t.makeHypheField(FUNGUS_BRAIN_SIZE, WIDTH, HEIGHT, GRID, vf, FORCE_VALUE, debugLayer);
                 } catch (ArrayIndexOutOfBoundsException e) {
                     tcoll.get(i).killBody(); // usuń obiekt z systemu fizycznego
                     tcoll.remove(i); //wyrzucanie obiektów, które wyleciały poza scenę
@@ -216,6 +220,23 @@ public class mycelium extends PApplet {
             fungiLayer.endDraw();
 
             /**
+             * Fungus flash screen
+             */
+            fungiFlashLayer.beginDraw();
+            fungiFlashLayer.background(0);
+            fungiFlashShader.set("u_posSize", tipsToDisplay.size());
+            fungiFlashShader.set("u_resolution", (float) width, (float) height);
+            fungiFlashShader.set("u_buf", flashbuffer);
+            for (int i = 0; i < tipsToDisplay.size(); i++) {
+                fungiFlashShader.set("u_positions[" + i + "]", (float) (tipsToDisplay.get(i).x), (float) height - tipsToDisplay.get(i).y);
+            }
+            fungiFlashLayer.shader(fungiFlashShader);
+            fungiFlashLayer.rect(0, 0, width, height);
+            flashbuffer = fungiFlashLayer.get();
+            fungiFlashLayer.resetShader();
+            fungiFlashLayer.endDraw();
+
+            /**
              * Background shader
              */
             if (toggleBackgroundLayer) {
@@ -223,13 +244,13 @@ public class mycelium extends PApplet {
                 backgroundShader.set("u_resolution", (float) width, (float) height);
                 backgroundShader.set("u_time", millis() / 1000.0f);
                 backgroundShader.set("u_backbuffer", backbuffer);
+                backgroundShader.set("u_flashbuffer", flashbuffer);
                 backgroundLayer.shader(backgroundShader);
                 backgroundLayer.rect(0, 0, width, height);
                 backgroundLayer.resetShader();
                 backgroundLayer.endDraw();
             }
         }
-
 
 
         /**
@@ -350,8 +371,57 @@ public class mycelium extends PApplet {
                 drawTips = !drawTips;
                 System.out.println("Tips switched.");
             }
+            if (key == '1') {
+                try {
+                    noLoop();
+                    this.GRID = 20;
+                    reset();
+                    loop();
+                } catch (Exception e) {}
+            }
+            if (key == '2') {
+                try {
+                    noLoop();
+                    this.GRID = 40;
+                    reset();
+                    loop();
+                } catch (Exception e) {}
+            }
+            if (key == '3') {
+                try {
+                    noLoop();
+                    this.GRID = 100;
+                    reset();
+                    loop();
+                } catch (Exception e) {}
+            }
+            if (key == '4') {
+                try {
+                    noLoop();
+                    this.GRID = 100;
+                    reset();
+                    loop();
+                } catch (Exception e) {}
+            }
+            if (key == '5') {
+                try {
+                    noLoop();
+                    this.GRID = 400;
+                    reset();
+                    loop();
+                } catch (Exception e) {}
+            }
+            if (key == '6') {
+                try {
+                    noLoop();
+                    this.GRID = 800;
+                    reset();
+                    loop();
+                } catch (Exception e) {}
+            }
         }
         if (key == 'q' || key == 'Q') {
+            noLoop();
             exit();
         }
         if (key == 'r' || key == 'R') {
@@ -460,11 +530,15 @@ public class mycelium extends PApplet {
         debugLayer.strokeWeight(1);
         for (int i = 0; i < vf.getBlock().length; i++) {
             for (int j = 0; j < vf.getBlock().length; j++) {
+//                Vec2 toShow = world.vectorWorldToPixels(vf.getBlock()[i][j]);
+                Vec2 toShow = new Vec2(vf.getBlock()[i][j]);
+                toShow.normalize();
+                toShow.mulLocal(15.0f);
                 int[] c = vf2c(i, j);
                 int x1 = c[0] + (width / (2 * GRID));
                 int y1 = c[1] + (height / (2 * GRID));
-                int x2 = x1 + (int) (vf.getBlock()[i][j].x);
-                int y2 = y1 + (int) (vf.getBlock()[i][j].y);
+                int x2 = x1 + (int) (toShow.x);
+                int y2 = y1 + (int) (toShow.y);
                 debugLayer.line(x1, y1, x2, y2);
                 PVector px2 = new PVector(x2, y2);
                 PVector px1 = new PVector(x1, y1);

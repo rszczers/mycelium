@@ -23,12 +23,12 @@ void main() {
         vec2 pos = u_positions[i]/u_resolution - st;
         vec2 tC = u_positions[i]/u_resolution - st;
 //        float blender = (1 - smoothstep(0.0, 0.01, length(tC)));
-//        float blender2 = smoothstep(0.0, 1.0, pow(tC.x*tC.x+tC.y*tC.y, -0.5)/1200);
-        float blender = (1.0 - smoothstep(0.0, 1.0, length(tC)*300));
+        float blender = smoothstep(0.0, 1.0, pow(tC.x*tC.x+tC.y*tC.y, -0.5)/2000);
+//        float blender = (1.0 - smoothstep(0.0, 1.0, length(tC)*200));
         pct += blender;
 //        pct2 += blender2;
     }
 
 //	gl_FragColor = vec4(pct, pct, pct, pct) + texture2D(u_background, texPos);
-	gl_FragColor = vec4(pct, pct, pct, pct) + texture2D(u_buf, texPos) * 0.99;
+	gl_FragColor = vec4(pct, pct, pct, pct) + texture2D(u_buf, texPos) * 0.8;
 }

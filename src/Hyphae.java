@@ -53,14 +53,14 @@ public class Hyphae {
         if (parent != null) {
             Vec2 velocityRot = new Vec2(parent.getTip().getBody().getLinearVelocity());// new Vec2(0, v0);
             tmp = velocityRot.x;
-            velocityRot.x = (float) (velocityRot.x * Math.cos(phi) - velocityRot.y * Math.sin(phi));
-            velocityRot.y = (float) (tmp * Math.sin(phi) + velocityRot.y * Math.cos(phi));
+            velocityRot.x = v0 * (float) (velocityRot.x * Math.cos(phi) - velocityRot.y * Math.sin(phi));
+            velocityRot.y = v0 * (float) (tmp * Math.sin(phi) + velocityRot.y * Math.cos(phi));
 //            System.out.println("Prędkość na początku: " + tip.getBody().getLinearVelocity() + "\n" +
 //                    "Prędkość po rotacji: " + velocityRot);
             this.tip.getBody().setLinearVelocity(velocityRot);
 
         } else {
-            this.tip.getBody().setLinearVelocity(new Vec2(0.0f, 0.1f));
+            this.tip.getBody().setLinearVelocity(new Vec2(0.0f, 1.0f));
         }
 
         // Konstrukcja kształtu do kolizji i wyświetlania
@@ -187,22 +187,28 @@ public class Hyphae {
 
 
     private void bisect(float leftOrRight, float boxWidth, float boxHeight) {
-        CollisionShape shapeToGrow = shapes.get(shapes.size() - 1);
+        CollisionShape shapeToGrow = shapes.get(shapes.size() - 4);
         Vec2[] lastInit;
         if (leftOrRight == 1.0f) {  // Rosnij w lewo (sprawdzić)
             lastInit = shapeToGrow.getLeft();
-
         } else {    // Rosnij w prawo
             lastInit = shapeToGrow.getRight();
         }
 
         if(boxWidth < boxHeight) {
-            lastInit[0] = lastInit[0].sub(lastInit[1]);
-            lastInit[0].normalize();
-            lastInit[0].mulLocal(world.scalarPixelsToWorld(boxWidth));
-            lastInit[0] = lastInit[1].add(lastInit[0]);
+            if (leftOrRight == 1.0f) {
+                lastInit[1] = lastInit[1].sub(lastInit[0]);
+                lastInit[1].normalize();
+                lastInit[1].mulLocal(world.scalarPixelsToWorld(boxWidth));
+                lastInit[1] = lastInit[0].add(lastInit[1]);
+            } else {
+                lastInit[0] = lastInit[0].sub(lastInit[1]);
+                lastInit[0].normalize();
+                lastInit[0].mulLocal(world.scalarPixelsToWorld(boxWidth));
+                lastInit[0] = lastInit[1].add(lastInit[0]);
+            }
         } else {
-            throw new IllegalArgumentException("Za duże");
+            throw new IllegalArgumentException("bisect error: boxWidth < boxHeight");
         }
 
         Hyphae newHyphae = new Hyphae(context, world, fungus, this, lastInit, leftOrRight * Math.PI / 3, tip.getBody().getLinearVelocity().length());

@@ -132,11 +132,12 @@ public class Tip {
     }
 
 
-    public void makeHypheField(int width, int height, int grid, VectorField vf, float forceValue, PGraphics layer) {
-        if (this.getOwner().getIsGrowing() && this.getOwner().getLength() > 2 && this.hasChanged(width, height, grid)) {
-//        if (this.getOwner().getIsGrowing() && this.getOwner().getLength() > 2 ) {
+    public void makeHypheField(int fungusIntenectFactor, int width, int height, int grid, VectorField vf, float forceValue, PGraphics layer) {
+        if (this.getOwner().getIsGrowing() && this.hasChanged(width, height, grid) && this.getOwner().getLength() > 1) {
+//
             Vec2 tipCorInt = world.coordWorldToPixels(this.getBody().getPosition());
-            float dist = (float) Math.sqrt((height / grid) * (height / grid) + (width / grid) * (width / grid)) + 1; //Przekątna prostokąta +1
+            float dist = (float) Math.sqrt((height / grid) * (height / grid) + (width / grid) * (width / grid)); //Przekątna prostokąta +1
+//            float dist = height + 1;
             Vec2 tipVeliocity = new Vec2(world.vectorWorldToPixels(this.getBody().getLinearVelocity())); // Wektor prędkości
             tipVeliocity.normalize();
             tipVeliocity = tipVeliocity.mulLocal(dist);
@@ -146,76 +147,64 @@ public class Tip {
             float cellHeight = height / grid;
 
             float r = ((Ball) (interp)).getRadius();
-            int fungusIntenectFactor = 50;  // liczba tipów w prawo i w lewo, nie w sumie
             float fungusIntelect = r * fungusIntenectFactor;
             Vec2 maxReachVec = new Vec2(-tipVeliocity.y, tipVeliocity.x); // Obrót znormalizowano-pomnożonego wektora prędkości tipa
             maxReachVec.normalize();
             maxReachVec.mulLocal(fungusIntelect);
 
             Vec2 leftForce = maxReachVec.mul(-1.0f);
-//            leftForce.normalize();
+            leftForce.normalize();
             Vec2 rightForce = new Vec2(maxReachVec);
-//            rightForce.normalize();
+            rightForce.normalize();
 
             Vec2 leftEnd = backTip.sub(maxReachVec);
             Vec2 rightEnd = backTip.add(maxReachVec);
 
-//            layer.beginDraw();
-//            layer.fill(255, 0, 0);
-//            layer.ellipse(leftEnd.x, leftEnd.y, 10, 10);
-//            layer.ellipse(rightEnd.x, rightEnd.y, 10, 10);
-//            layer.endDraw();
-
             int[] backTipCellCoords = c2vf((int) backTip.x, (int) backTip.y, width, height, grid); //glupi output motody, zamiast Vec2 zwraca tablicę intów
-            Vec2 cellCoordsOfBackTip = new Vec2(backTipCellCoords[0], backTipCellCoords[1]);
+//            Vec2 cellCoordsOfBackTip = new Vec2(backTipCellCoords[0], backTipCellCoords[1]);
             int[] xyleft = c2vf((int) leftEnd.x, (int) leftEnd.y, width, height, grid);
             int[] xyright = c2vf((int) rightEnd.x, (int) rightEnd.y, width, height, grid);
-            ArrayList<int[]> cellsToChangeToLeft = brasenham(backTipCellCoords[0], backTipCellCoords[1], xyleft[0], xyleft[1]);
-            ArrayList<int[]> cellsToChangeToRight = brasenham(backTipCellCoords[0], backTipCellCoords[1], xyright[0], xyright[1]);
 
+
+
+            ArrayList<int[]> cellsToChangeToLeft = brasenham(backTipCellCoords[0], backTipCellCoords[1], xyleft[0], xyleft[1], grid);
+            ArrayList<int[]> cellsToChangeToRight = brasenham(backTipCellCoords[0], backTipCellCoords[1], xyright[0], xyright[1], grid);
+            float s = (float) cellsToChangeToLeft.size();
             for (int i = 0; i < cellsToChangeToLeft.size(); i++) {
-//                System.out.println(Arrays.toString(cellsToChangeToLeft.get(i)));
-                vf.standardBlock(cellsToChangeToLeft.get(i), leftForce, forceValue/((i+1)*(i+1)));
-//                layer.beginDraw();
-//                layer.fill(255, 0, 0);
-//                layer.rect(cellsToChangeToLeft.get(i)[0], cellsToChangeToLeft.get(i)[1], cellWidth, cellHeight);
-//                layer.endDraw();
+//                vf.standardBlock(cellsToChangeToLeft.get(i), leftForce, forceValue/(i+1));
+                vf.standardBlock(cellsToChangeToLeft.get(i), leftForce, (-forceValue/s)*i+forceValue);
             }
             for (int i = 0; i < cellsToChangeToRight.size(); i++) {
-                vf.standardBlock(cellsToChangeToRight.get(i), rightForce, forceValue/((i+1)*(i+1)));
+                vf.standardBlock(cellsToChangeToRight.get(i), rightForce, (-forceValue/s)*i+forceValue);
             }
 
-            try {
-                    Vec2 backTipVelocity = new Vec2(world.vectorWorldToPixels(this.getBody().getLinearVelocity()));
-                    float cosphi = backTipVelocity.x / backTipVelocity.length(); //nachylenie wektora prędkości backtip
-                    Vec2 backTipCellCenterAbsCoords =
-                            middleCords(backTipCellCoords[0], backTipCellCoords[1], width, height, grid);
-                    Vec2 backTipRelativeToMiddlePosition = backTip.sub(backTipCellCenterAbsCoords);
-                    float phi;
-                    if (backTipVelocity.y > 0) {
-                        phi = (float) (Math.PI / 2 - Math.acos(cosphi));
-                    } else {
-                        phi = (float) (Math.PI / 2 + Math.acos(cosphi));
-                    }
-                    Vec2 rotatedRelativeBackTipPosition = new Vec2(
-                            (float) (backTipRelativeToMiddlePosition.x * Math.cos(phi) -
-                                    backTipRelativeToMiddlePosition.y * Math.sin(phi)),
-                            (float) (backTipRelativeToMiddlePosition.x * Math.sin(phi) +
-                                    backTipRelativeToMiddlePosition.y * Math.cos(phi)));
-//                    float backTipFraction = (cellWidth * cellWidth);
-                    float backTipFraction = 1.0f;
-                    if (rotatedRelativeBackTipPosition.x >= 0) {
-                        vf.standardBlock(backTipCellCoords, rightForce, forceValue / backTipFraction);
-                    } else {
-                        vf.standardBlock(backTipCellCoords, leftForce, forceValue / backTipFraction);
-                    }
-            } catch (IndexOutOfBoundsException e) {
-                System.err.println("chuj");
+            Vec2 backTipVelocity = new Vec2(world.vectorWorldToPixels(this.getBody().getLinearVelocity()));
+            float cosphi = backTipVelocity.x / backTipVelocity.length(); //nachylenie wektora prędkości backtip
+            Vec2 backTipCellCenterAbsCoords =
+                    middleCords(backTipCellCoords[0], backTipCellCoords[1], width, height, grid);
+            Vec2 backTipRelativeToMiddlePosition = backTip.sub(backTipCellCenterAbsCoords);
+            float phi;
+            if (backTipVelocity.y > 0) {
+                phi = (float) (Math.PI / 2 - Math.acos(cosphi));
+            } else {
+                phi = (float) (Math.PI / 2 + Math.acos(cosphi));
+            }
+            Vec2 rotatedRelativeBackTipPosition = new Vec2(
+                    (float) (backTipRelativeToMiddlePosition.x * Math.cos(phi) -
+                            backTipRelativeToMiddlePosition.y * Math.sin(phi)),
+                    (float) (backTipRelativeToMiddlePosition.x * Math.sin(phi) +
+                            backTipRelativeToMiddlePosition.y * Math.cos(phi)));
+
+            float backTipFraction = 1.0f;
+            if (rotatedRelativeBackTipPosition.x >= 0) {
+                vf.standardBlock(backTipCellCoords, rightForce, forceValue / backTipFraction);
+            } else {
+                vf.standardBlock(backTipCellCoords, leftForce, forceValue / backTipFraction);
             }
         }
     }
 
-    private ArrayList<int[]> brasenham(int x0, int y0, int x1, int y1) {
+    private ArrayList<int[]> brasenham(int x0, int y0, int x1, int y1, int limit) {
         ArrayList<int[]> out = new ArrayList<>();
 
         int dx = Math.abs(x1-x0), sx = x0<x1 ? 1 : -1;
@@ -223,7 +212,9 @@ public class Tip {
         int err = (dx>dy ? dx : -dy)/2, e2;
 
         for(;;) {
-            out.add(new int[]{x0, y0});
+            if (x0 >= 0 && y0 >= 0 && x0 < limit && y0 < limit) {
+                out.add(new int[]{x0, y0});
+            }
             if (x0==x1 && y0==y1) break;
             e2 = err;
             if (e2 >-dx) { err -= dy; x0 += sx; }

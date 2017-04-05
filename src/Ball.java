@@ -23,14 +23,15 @@ public class Ball implements Interpretation {
     private PApplet context;
 
     public Ball(PApplet context, Box2DProcessing world, int radius) {
+        radius = 4;
         this.context = context;
-        this.radius = radius;
+        this.radius = 4;
 
         // Definicja BodyDef
         bd = new BodyDef();
         bd.type = BodyType.DYNAMIC;
 //        bd.fixedRotation = true;
-        bd.linearDamping = 10.0f;
+        bd.linearDamping = 25.0f;
         bd.angularDamping = 0.9f;
         bd.bullet = true;
 
@@ -41,8 +42,8 @@ public class Ball implements Interpretation {
         // Definicja dowiązania ciała do kształtu
         fd = new FixtureDef();
         fd.shape = ps;
-        fd.density = 0.01f;
-        fd.friction = 0.5f;
+        fd.density = 0.1f;
+        fd.friction = 0.0f;
         fd.restitution = 0.0f;
 
         //pointShader = context.loadShader("spritefrag.glsl", "spritevert.glsl");

@@ -1,6 +1,8 @@
 import Box2D.Box2DProcessing;
 import org.jbox2d.common.Vec2;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -14,7 +16,8 @@ public class VectorField {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
 //                block[i][j] = new Vec2(0.0f*(new Random().nextFloat() * 2 - 1), -gravityValue);
-                block[i][j] = new Vec2(0.0f, -gravityValue);
+                block[i][j] = new Vec2(0.0f, 0.0f);
+//                block[i][j] = new Vec2(0.0f, 0.0f);
 //                block[i][j] = new Vec2(new Random().nextFloat() * 2 - 1, new Random().nextFloat() * 2 - 1);
 //                block[i][j] = new Vec2(new Random().nextFloat() * 2 - 1, new Random().nextFloat() * 2 - 1);
 //                block[i][j].normalize();
@@ -28,14 +31,16 @@ public class VectorField {
     }
 
     public void standardBlock(int[] coord, Vec2 v, float forceValue){
-        if(coord[0] < block.length && coord[1] < block.length && coord[0] >= 0 && coord[1] >= 0) {
-            v.normalize();
-            v.mulLocal(forceValue);
-            block[coord[0]][coord[1]].addLocal(v);
-            block[coord[0]][coord[1]].normalize();
+//        if(coord[0] < block.length && coord[1] < block.length && coord[0] >= 0 && coord[1] >= 0) {
+//            Vec2 tmp = new Vec2(v);
+//            tmp.normalize();
+//            tmp.mulLocal(forceValue);
+
+            block[coord[0]][coord[1]].addLocal(v.mul(forceValue));
+//            block[coord[0]][coord[1]].normalize();
 //            block[coord[0]][coord[1]].mulLocal(forceValue);
         }
-    }
+//    }
 
     public Vec2[][] getBlock() {
         return block;
