@@ -1,3 +1,4 @@
+import com.jogamp.newt.event.KeyEvent;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.Fixture;
@@ -16,13 +17,13 @@ public class mycelium extends PApplet {
     private final static int WIDTH = 800;
     private final static int HEIGHT = 800;
     private static int GRID = 800;
-    private static int FUNGUS_BRAIN_SIZE = 10;
+    private static int FUNGUS_BRAIN_SIZE = 12;
 
     private static final int HYPHAE_WIDTH = 4;
     private static final int HYPHAE_HEIGHT = 10;
     public static final float FORCE_VALUE = 10.0f;
     private static final float GRAVITY_VALUE = 10.0f;
-//
+
     private boolean drawCells = true;
     private boolean drawGrids = true;
     private boolean drawVectorFields = true;
@@ -34,6 +35,7 @@ public class mycelium extends PApplet {
     private boolean toggleFps = true;
     private boolean toggleFullscreen = false;
     private boolean drawTips = true;
+    private boolean drawHelpScreen = false;
 
     private boolean toggleBackgroundLayer = true;
     private boolean toggleDebugLayer = false;
@@ -44,6 +46,7 @@ public class mycelium extends PApplet {
     public PImage backbuffer;
     public PImage flashbuffer;
     public PImage backgroundBuffer;
+    public PImage helpImage;
     public PGraphics debugLayer;
     public PGraphics fungiLayer;
     public PGraphics fungiFlashLayer;
@@ -91,6 +94,8 @@ public class mycelium extends PApplet {
         fungiLayer = createGraphics(width, height, P2D);
         fungiFlashLayer = createGraphics(width, height, P2D);
         interfaceLayer = createGraphics(width, height, P2D);
+
+        helpImage = loadImage("help.png");
 
         backbuffer = new PImage(width, height);
         flashbuffer = new PImage(width, height);
@@ -288,6 +293,9 @@ public class mycelium extends PApplet {
         if (toggleInterfaceLayer) {
             image(interfaceLayer, 0, 0);
         }
+        if (drawHelpScreen) {
+            image(helpImage, (WIDTH-640)/2, (HEIGHT-480)/2);
+        }
     }
 
     private void saveState() {
@@ -472,6 +480,11 @@ public class mycelium extends PApplet {
                 toggleFullscreen = false;
             }
         }
+
+        if (key == 'h' || key == 'H') {
+            drawHelpScreen = !drawHelpScreen;
+            System.out.println("Help screen turned " + drawHelpScreen);
+        }
     }
 
     private void reset() {
@@ -643,4 +656,3 @@ public class mycelium extends PApplet {
         tipsToDelete.add(tip);
     }
 }
-

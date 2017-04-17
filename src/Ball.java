@@ -23,9 +23,9 @@ public class Ball implements Interpretation {
     private PApplet context;
 
     public Ball(PApplet context, Box2DProcessing world, int radius) {
-        radius = 4;
+        radius = 2;
         this.context = context;
-        this.radius = 4;
+        this.radius = 2;
 
         // Definicja BodyDef
         bd = new BodyDef();
@@ -42,7 +42,7 @@ public class Ball implements Interpretation {
         // Definicja dowiązania ciała do kształtu
         fd = new FixtureDef();
         fd.shape = ps;
-        fd.density = 0.05f;
+        fd.density = 0.25f;
         fd.friction = 0.0f;
         fd.restitution = 0.0f;
 
