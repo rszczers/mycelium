@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="jar" build-on-make="true" name="mycelium:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/mycelium_jar</output-path>
+    <output-path>$PROJECT_DIR$/bin</output-path>
     <root id="archive" name="mycelium.jar">
       <element id="module-output" name="mycelium" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jbox2d/jbox2d-library/2.2.1.1/jbox2d-library-2.2.1.1.jar" path-in-jar="/" />
