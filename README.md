@@ -12,4 +12,5 @@ java -jar bin/mycelium.jar
 
 (click to view full youtube demo)
 
+## Controls
 ![alt tag](https://github.com/rszczers/mycelium/blob/master/src/data/help.png)
