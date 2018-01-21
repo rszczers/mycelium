@@ -1,15 +1,16 @@
-import com.jogamp.newt.event.KeyEvent;
+import Box2D.Box2DProcessing;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.contacts.Contact;
-import processing.core.*;
+import processing.core.PApplet;
+import processing.core.PGraphics;
+import processing.core.PImage;
+import processing.core.PVector;
+import processing.opengl.PShader;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-
-import Box2D.Box2DProcessing;
-import processing.opengl.PShader;
 
 public class mycelium extends PApplet {
     private Box2DProcessing world;

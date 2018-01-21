@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="org.processing:core:3.3.6" type="repository">
+    <properties maven-id="org.processing:core:3.3.6" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/core-3.3.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
