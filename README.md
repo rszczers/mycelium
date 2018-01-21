@@ -1,5 +1,5 @@
 # Mycelium growth
-This projects aims to roughly simulate growth of mycelium. We wrote it with help of [Processing](https://processing.org/) and [JBox2D](https://github.com/jbox2d/jbox2d) libraries.
+This Intellij Idea projects aims to roughly simulate growth of mycelium. We wrote it with help of [Processing](https://processing.org/) and [JBox2D](https://github.com/jbox2d/jbox2d) libraries.
 
 ## How to run
 In project directory run
