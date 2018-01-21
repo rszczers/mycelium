@@ -7,8 +7,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="org.jbox2d:jbox2d-library:2.2.1.1" level="project" />
+    <orderEntry type="library" name="org.jbox2d:jbox2d-library:2.2.1.1" level="project" />
     <orderEntry type="library" name="org.processing:core:3.3.6" level="project" />
-    <orderEntry type="library" name="gluegen-rt-natives-linux-aarch64" level="project" />
+    <orderEntry type="library" name="processing-3.3.6-dependencies" level="project" />
   </component>
 </module>
