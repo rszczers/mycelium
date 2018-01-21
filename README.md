@@ -1,7 +1,7 @@
-# mycelium
-Mycelium growth with Processing and JBox2D
+# Mycelium growth
+This projects aims to roughly simulate growth of mycelium. We wrote it with help of [Processing](https://processing.org/) and [JBox2D](https://github.com/jbox2d/jbox2d) libraries.
 
-## Usage
+## How to run
 In project directory run
 <pre>
 java -jar bin/mycelium.jar
